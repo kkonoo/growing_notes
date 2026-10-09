@@ -71,14 +71,17 @@ export function pickTips(age) {
   return TIPS.filter(t => Object.entries(t.when).some(([unit, [a, b]]) => age[unit] != null && age[unit] >= a && age[unit] <= b));
 }
 
-// ---------- 그리기: 제목 목록, 누르면 펼침 ----------
+// ---------- 그리기: 처음엔 접힌 한 줄 → 누르면 제목 목록 → 제목을 누르면 내용 ----------
+// 펼친 상태는 기억하지 않음 (앱을 열 때마다 접힌 채로)
+let blockOpen = false;
 const opened = new Set();
 export function tipsBlock(list, rerender) {
   if (!list.length) return null;
-  const sec = h('section', 'block tips');
-  const head = h('div', 'block-head');
-  head.append(h('h2', null, '📌 지금 챙길 것'));
+  const sec = h('section', `block tips${blockOpen ? ' open' : ''}`);
+  const head = button(`📌 지금 챙길 것 · ${list.length}개`, () => { blockOpen = !blockOpen; rerender(); }, 'tips-head');
+  head.setAttribute('aria-expanded', blockOpen);
   sec.append(head);
+  if (!blockOpen) return sec;
   for (const t of list) {
     const open = opened.has(t.id);
     const row = button(`${t.emoji} ${t.title}`, () => { if (open) opened.delete(t.id); else opened.add(t.id); rerender(); }, `tip-title${open ? ' open' : ''}`);

@@ -255,7 +255,13 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
   border: 0; border-top: 1px solid var(--line); background: none;
   text-align: left; font-weight: 600; cursor: pointer;
 }
-.tips .block-head + .tip-title { border-top: 0; }
+.tips { padding-top: 4px; padding-bottom: 4px; }
+.tips-head {
+  display: flex; align-items: center; width: 100%; min-height: 44px; padding: 0;
+  border: 0; background: none; font-weight: 700; font-size: 1.02em; text-align: left; cursor: pointer;
+}
+.tips-head::after { content: '▾'; margin-left: auto; color: var(--muted); }
+.tips.open .tips-head::after { content: '▴'; }
 .tip-title::after { content: ' ▾'; color: var(--muted); }
 .tip-title.open::after { content: ' ▴'; }
 .tip-body p { margin: 0 0 8px; }

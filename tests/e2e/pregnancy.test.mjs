@@ -19,7 +19,9 @@ test('임신 등록 → 예정일 기준 주수', async () => {
   await fillForm(A.page, { nickname: '콩콩이', dueDate: dayFromToday(30) }, '등록');
   await A.page.locator('.hero-big', { hasText: '35주 5일' }).waitFor();
   assert.match(await A.page.locator('.hero').innerText(), /D-30/);
-  // 지금 챙길 것: 32주부터 출산 후 할 일 안내, 누르면 펼쳐져 공식 링크
+  // 지금 챙길 것: 처음엔 접힘 → 펼치면 32주부터 출산 후 할 일 안내, 누르면 공식 링크
+  assert.equal(await A.page.locator('.tip-title').count(), 0, '처음엔 접힘');
+  await A.page.getByRole('button', { name: /지금 챙길 것 · 1개/ }).click();
   await A.page.getByRole('button', { name: /출산 후 바로 할 일 미리 보기/ }).click();
   assert.match(await A.page.locator('.tip-body').innerText(), /출생 후 1개월 안에/);
   assert.equal(await A.page.locator('.tip-links a', { hasText: '정부24' }).getAttribute('href'), 'https://www.gov.kr');

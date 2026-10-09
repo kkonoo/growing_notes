@@ -33,21 +33,21 @@ function toRecord(d) {
   return { ...x, id: d.id, at: x.at.toDate(), data, pending: d.metadata.hasPendingWrites };
 }
 
-// subjectId가 ids 중 하나인 기록, 최근 것부터. limit = 최대 개수, since = 이 시각 이후만 (없으면 전부)
-// 그리는 동안 부르면 화면에 보이는 동안 구독 유지 → { list, loaded, more(더 있을 수 있음), error }
+// subjectId가 ids 중 하나인 기록, 최근 것부터. since ≤ at < until (없으면 처음부터 · 끝까지)
+// 그리는 동안 부르면 화면에 보이는 동안 구독 유지 → { list, loaded, error }
 // 구독이 실패하면(색인을 만드는 중, 권한 등) Firestore는 다시 시도하지 않으므로 5초 뒤 새로 구독
 // 인덱스: subjectId + at(내림차순) 하나로 모두 (firestore.indexes.json)
-export function watchRecords(ids, { limit, since } = {}) {
-  const key = `rec:${state.familyId}:${ids.join(',')}:${limit || ''}:${since ? +since : ''}`;
+export function watchRecords(ids, { since, until } = {}) {
+  const key = `rec:${state.familyId}:${ids.join(',')}:${since ? +since : ''}:${until ? +until : ''}`;
   return keep(key, () => {
-    const w = { list: [], loaded: false, more: false };
+    const w = { list: [], loaded: false };
     const q = F.query(famCol('records'), F.where('subjectId', 'in', ids),
       ...(since ? [F.where('at', '>=', F.Timestamp.fromDate(since))] : []),
-      F.orderBy('at', 'desc'), ...(limit ? [F.limit(limit)] : []));
+      ...(until ? [F.where('at', '<', F.Timestamp.fromDate(until))] : []),
+      F.orderBy('at', 'desc'));
     const unsub = F.onSnapshot(q, { includeMetadataChanges: true }, snap => {
       w.list = snap.docs.map(toRecord);
       w.loaded = true;
-      w.more = !!limit && snap.size >= limit;
       state.pending[key] = snap.metadata.hasPendingWrites;
       render();
     }, e => {

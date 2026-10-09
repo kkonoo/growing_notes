@@ -1,21 +1,60 @@
-// 타임라인 탭: 이 아이(또는 임신)의 기록을 날짜별로, 최근 것부터. 임신에서 이어진 아이면 임신 중 기록도 같이
+// 타임라인 탭: 이 아이(또는 임신)의 기록을 한 달씩, 날짜별로 최근 것부터. 임신에서 이어진 아이면 임신 중 기록도 같이
+// ‹ 2026년 10월 › 로 넘기고, 제목을 누르면 연·월 고르기. 종류 필터. 한 번에 한 달치만 읽음 (몇 년 쌓여도 같은 양)
 import { render } from './state.js';
 import { dateStr } from './stage.js';
 import { watchRecords, loadNotice, TYPES } from './records.js';
 import { memberLabel } from './family.js';
 import { h, button, fmtDay, fmtTime } from './ui.js';
 
-const PAGE = 50;
-const limits = new Map(); // 아이별 "더 보기"로 늘린 개수
+const pad = n => String(n).padStart(2, '0');
+const ymOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+const months = new Map();  // 아이별 보고 있는 달 'YYYY-MM' (기본: 이번 달)
+const filters = new Map(); // 아이별 종류 필터 (기본: 전체)
+let picking = null;        // 연·월 고르기를 펼친 아이 { key, year }
+
+const typeOf = r => TYPES[r.type] || { emoji: '📝', label: r.type, text: () => '' };
+const emojiOf = (t, r) => (typeof t.emoji === 'function' ? t.emoji(r) : t.emoji);
 
 export function timelineTab(s, el) {
+  const thisMonth = ymOf(new Date()), ym = months.get(s.key) || thisMonth;
+  const [y, m] = ym.split('-').map(Number);
+  const show = v => { months.set(s.key, v); picking = null; render(); };
+  const shift = d => show(ymOf(new Date(y, m - 1 + d, 1)));
+
+  const nav = h('div', 'month-nav');
+  const prev = button('‹', () => shift(-1), 'icon-btn'), next = button('›', () => shift(1), 'icon-btn');
+  prev.setAttribute('aria-label', '이전 달');
+  next.setAttribute('aria-label', '다음 달');
+  next.disabled = ym >= thisMonth;
+  const title = button(`${y}년 ${m}월 ▾`, () => { picking = picking?.key === s.key ? null : { key: s.key, year: y }; render(); }, 'month-title');
+  title.setAttribute('aria-label', '연·월 고르기');
+  nav.append(prev, title, next);
+  if (ym !== thisMonth) nav.append(button('이번 달', () => show(thisMonth), 'btn small'));
+  el.append(nav);
+  if (picking?.key === s.key) el.append(monthPicker(ym, thisMonth, show));
+
   const ids = [s.child?.id, s.preg?.id].filter(Boolean);
-  const limit = limits.get(s.key) || PAGE, w = watchRecords(ids, { limit });
+  const w = watchRecords(ids, { since: new Date(y, m - 1, 1), until: new Date(y, m, 1) });
   const notice = loadNotice(w);
   if (notice) return el.append(notice);
-  if (!w.list.length) return el.append(h('div', 'empty', '🗓'), h('p', 'empty-text', '아직 기록이 없어요.'));
+  if (!w.list.length) return el.append(h('div', 'empty', '🗓'), h('p', 'empty-text', '이 달에는 기록이 없어요.'));
+
+  // 종류 필터: 이 달에 있는 종류만, 개수와 함께
+  const counts = new Map();
+  for (const r of w.list) counts.set(r.type, (counts.get(r.type) || 0) + 1);
+  const type = counts.has(filters.get(s.key)) ? filters.get(s.key) : 'all';
+  const chips = h('div', 'chip-row');
+  const chip = (value, label) => {
+    const b = button(label, () => { filters.set(s.key, value); render(); }, `chip small${type === value ? ' on' : ''}`);
+    b.setAttribute('aria-pressed', type === value);
+    return b;
+  };
+  chips.append(chip('all', `전체 ${w.list.length}`));
+  for (const [t, n] of counts) chips.append(chip(t, `${typeOf({ type: t }).label} ${n}`));
+  el.append(chips);
+
   let day = null, box;
-  for (const r of w.list) {
+  for (const r of type === 'all' ? w.list : w.list.filter(x => x.type === type)) {
     if (dateStr(r.at) !== day) {
       day = dateStr(r.at);
       box = h('div', 'tl-day');
@@ -23,17 +62,34 @@ export function timelineTab(s, el) {
     }
     box.append(recordRow(r, { pregTag: !!s.child && r.subjectType === 'pregnancy' }));
   }
-  if (w.more) el.append(button('더 보기', () => { limits.set(s.key, limit + PAGE); render(); }, 'btn wide'));
+}
+
+// 연·월 고르기: ‹ 2026년 › + 1~12월 (이번 달 뒤는 못 고름)
+function monthPicker(ym, thisMonth, show) {
+  const box = h('div', 'mp'), head = h('div', 'mp-head'), grid = h('div', 'mp-grid');
+  const year = picking.year;
+  const prev = button('‹', () => { picking.year--; render(); }, 'icon-btn'), next = button('›', () => { picking.year++; render(); }, 'icon-btn');
+  prev.setAttribute('aria-label', '이전 해');
+  next.setAttribute('aria-label', '다음 해');
+  next.disabled = year >= +thisMonth.slice(0, 4);
+  head.append(prev, h('strong', null, `${year}년`), next);
+  for (let i = 1; i <= 12; i++) {
+    const v = `${year}-${pad(i)}`, b = button(`${i}월`, () => show(v), `mp-month${v === ym ? ' on' : ''}${v === thisMonth ? ' now' : ''}`);
+    b.disabled = v > thisMonth;
+    grid.append(b);
+  }
+  box.append(head, grid);
+  return box;
 }
 
 // 기록 한 줄: 시각 · 이모지 · 종류 · 내용 · 기록한 사람(⏳ = 아직 안 올라감). 누르면 고치기
 export function recordRow(r, { pregTag = false } = {}) {
-  const t = TYPES[r.type] || { emoji: '📝', label: r.type, text: () => '' };
+  const t = typeOf(r);
   const row = button('', () => t.edit?.(r), 'tl-row');
   const label = h('span', 'tl-label', t.label);
   if (pregTag) label.append(h('span', 'tag', '🤰 임신 중'));
   const body = h('span', 'tl-body');
   body.append(label, h('span', 'tl-text', t.text(r)), h('span', 'tl-who', `${r.pending ? '⏳ ' : ''}${memberLabel(r.createdBy)}`));
-  row.append(h('span', 'tl-time', t.dateOnly ? '' : fmtTime(r.at)), h('span', 'tl-emoji', typeof t.emoji === 'function' ? t.emoji(r) : t.emoji), body);
+  row.append(h('span', 'tl-time', t.dateOnly ? '' : fmtTime(r.at)), h('span', 'tl-emoji', emojiOf(t, r)), body);
   return row;
 }

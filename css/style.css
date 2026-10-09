@@ -281,6 +281,21 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .c-head { min-height: 0; border-top: 0; color: var(--muted); font-size: .85em; cursor: default; }
 
 /* ---------- 타임라인 ---------- */
+.month-nav { display: flex; align-items: center; gap: 4px; }
+.month-nav .btn { margin-left: auto; }
+.month-title { min-height: 44px; padding: 4px 10px; border: 0; border-radius: 10px; background: none; font-size: 1.1em; font-weight: 700; cursor: pointer; }
+.month-title:active { background: var(--surface-2); }
+.icon-btn:disabled { opacity: .3; }
+.mp { padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.mp-head { display: flex; align-items: center; justify-content: space-between; }
+.mp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+.mp-month { min-height: 44px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); cursor: pointer; }
+.mp-month.now { border-color: var(--accent); }
+.mp-month.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.mp-month:disabled { opacity: .35; }
+.chip-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.chip-row::-webkit-scrollbar { display: none; }
+.chip.small { min-height: 36px; padding: 4px 12px; font-size: .9em; }
 .day-head { margin: 10px 2px 0; font-size: .95em; color: var(--muted); }
 .tl-day { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
 .tl-row {

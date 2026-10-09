@@ -188,8 +188,8 @@ test('JSON 백업: id·연결·기록자 그대로, 시각은 ISO 글자 + 위�
 const ids = age => pickTips(age).map(t => t.id);
 test('안내: 임신 주수·생후 일수·개월에 맞는 것만', () => {
   assert.deepEqual(ids({ weeks: 8 }), ['mom-onestop']);
-  assert.deepEqual(ids({ weeks: 24 }), ['iron', 'gdm-test']);
-  assert.deepEqual(ids({ weeks: 25 }), ['gdm-test']);
+  assert.deepEqual(ids({ weeks: 24 }), ['iron']);
+  assert.deepEqual(ids({ weeks: 25 }), []);
   assert.deepEqual(ids({ weeks: 36 }), ['before-birth']);
   assert.deepEqual(ids({ days: 1, months: 0 }), ['birth-report', 'parent-allowance', 'vaccine']);
   assert.deepEqual(ids({ days: 20, months: 0 }), ['birth-report', 'parent-allowance', 'infant-check-1', 'vaccine']);

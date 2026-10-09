@@ -32,13 +32,16 @@ function toRecord(d) {
   return { ...x, id: d.id, at: x.at.toDate(), data, pending: d.metadata.hasPendingWrites };
 }
 
-// subjectId가 ids 중 하나인 기록, 최근 것부터. limit 없으면 전부.
+// subjectId가 ids 중 하나인 기록, 최근 것부터. limit = 최대 개수, since = 이 시각 이후만 (없으면 전부)
 // 그리는 동안 부르면 화면에 보이는 동안 구독 유지 → { list, loaded, more(더 있을 수 있음) }
-export function watchRecords(ids, limit) {
-  const key = `rec:${state.familyId}:${ids.join(',')}:${limit || ''}`;
+// 인덱스: subjectId + at(내림차순) 하나로 모두 (firestore.indexes.json)
+export function watchRecords(ids, { limit, since } = {}) {
+  const key = `rec:${state.familyId}:${ids.join(',')}:${limit || ''}:${since ? +since : ''}`;
   return keep(key, () => {
     const w = { list: [], loaded: false, more: false };
-    const q = F.query(famCol('records'), F.where('subjectId', 'in', ids), F.orderBy('at', 'desc'), ...(limit ? [F.limit(limit)] : []));
+    const q = F.query(famCol('records'), F.where('subjectId', 'in', ids),
+      ...(since ? [F.where('at', '>=', F.Timestamp.fromDate(since))] : []),
+      F.orderBy('at', 'desc'), ...(limit ? [F.limit(limit)] : []));
     const unsub = F.onSnapshot(q, { includeMetadataChanges: true }, snap => {
       w.list = snap.docs.map(toRecord);
       w.loaded = true;
@@ -56,6 +59,6 @@ export function watchRecords(ids, limit) {
   });
 }
 
-// 기록 종류: 이모지·이름·한 줄 요약. edit(기록)은 각 탭 파일이 채움 (타임라인에서 눌러 고치기)
+// 기록 종류: emoji(글자 또는 기록 → 글자)·label·text(기록 → 한 줄 요약)·edit(기록 → 고치기 창). 각 탭 파일이 등록
 export const TYPES = {};
 export function defineType(type, def) { TYPES[type] = def; }

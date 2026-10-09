@@ -14,9 +14,11 @@ export function button(label, onClick, cls = 'btn') {
 }
 
 let toastTimer;
-export function toast(text, ms = 2200) {
+// actions = [{ label, onClick }] → 토스트 안의 버튼 (예: 고치기 · 되돌리기)
+export function toast(text, ms = 2200, actions = []) {
   const t = $('toast');
-  t.textContent = text;
+  t.replaceChildren(h('span', null, text), ...actions.map(a => button(a.label, () => { t.classList.remove('show'); a.onClick(); }, 'toast-btn')));
+  t.classList.toggle('has-actions', actions.length > 0);
   // 설정 같은 창(dialog)이 열려 있어도 그 위에 보이게: 맨 위 층(popover)에 다시 올림
   if (t.showPopover) { if (t.matches(':popover-open')) t.hidePopover(); t.showPopover(); }
   t.classList.add('show');
@@ -37,33 +39,40 @@ export function fmtDay(s) {
 const pad = n => String(n).padStart(2, '0');
 export const fmtTime = (d, sec = false) => `${pad(d.getHours())}:${pad(d.getMinutes())}${sec ? `:${pad(d.getSeconds())}` : ''}`;
 // <input type="datetime-local" step="1"> 값 ↔ Date (기기 현지 시각)
-export const toLocalInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${fmtTime(d, true)}`;
+export const toLocalInput = (d, sec = true) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${fmtTime(d, sec)}`;
 export const fromLocalInput = s => (s ? new Date(s) : null);
 
-// 이모지 고르기 줄. 지금 값이 목록에 없으면 맨 앞에 붙임. get() = 고른 값
-export function emojiPicker(choices, value, onPick) {
-  const wrap = h('div', 'emoji-row');
-  let cur = value || choices[0];
-  const mark = () => wrap.querySelectorAll('.emoji-btn').forEach(b => b.classList.toggle('on', b.dataset.e === cur));
-  for (const e of choices.includes(cur) ? choices : [cur, ...choices]) {
-    const b = button(e, () => { cur = e; mark(); if (onPick) onPick(e); }, 'emoji-btn');
-    b.dataset.e = e;
-    b.setAttribute('aria-label', e);
+// 하나 고르기 줄: options = [{ value, label }]. get() = 고른 값
+export function picker(options, value, onPick, { row = 'choice-row', btn = 'choice-btn' } = {}) {
+  const wrap = h('div', row);
+  let cur = value ?? options[0].value;
+  const mark = () => wrap.querySelectorAll('button').forEach(b => {
+    b.classList.toggle('on', b.dataset.v === String(cur));
+    b.setAttribute('aria-pressed', b.dataset.v === String(cur));
+  });
+  for (const o of options) {
+    const b = button(o.label, () => { cur = o.value; mark(); if (onPick) onPick(o.value); }, btn);
+    b.dataset.v = o.value;
     wrap.append(b);
   }
   mark();
   return { el: wrap, get: () => cur };
 }
+// 이모지 고르기 줄. 지금 값이 목록에 없으면 맨 앞에 붙임
+export function emojiPicker(choices, value, onPick) {
+  const cur = value || choices[0];
+  return picker((choices.includes(cur) ? choices : [cur, ...choices]).map(e => ({ value: e, label: e })), cur, onPick, { row: 'emoji-row', btn: 'emoji-btn' });
+}
 
-// 입력 창: fields = [{ key, label, type: 'text'|'date'|'datetime-local'|'number'|'textarea'|'emoji', value, required,
-//   placeholder, max, min, step, inputMode, choices, hint, half(두 칸을 한 줄에) }]
+// 입력 창: fields = [{ key, label, type: 'text'|'date'|'datetime-local'|'number'|'textarea'|'emoji'|'choice', value, required,
+//   placeholder, max, min, step, inputMode, choices(이모지), options(choice: [{ value, label }]), hint, half(두 칸을 한 줄에) }]
 // 저장 → { key: 값 } / 취소·닫기 → null / extra 버튼 → 그 버튼의 value
 export function openForm({ title, fields, submit = '저장', extra = [], note }) {
   const dlg = $('formDlg'), form = $('formEl');
   const get = {};
   const rows = fields.map(f => {
-    if (f.type === 'emoji') {
-      const p = emojiPicker(f.choices, f.value);
+    if (f.type === 'emoji' || f.type === 'choice') {
+      const p = f.type === 'emoji' ? emojiPicker(f.choices, f.value) : picker(f.options, f.value);
       get[f.key] = p.get;
       const row = h('div', 'field');
       row.append(h('span', 'field-label', f.label), p.el);

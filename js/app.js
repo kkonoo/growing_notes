@@ -73,6 +73,7 @@ function renderApp() {
 }
 function draw() {
   const main = $('main'), ready = !!state.user && !state.error && familyReady();
+  delete document.body.dataset.quickbar; // 육아 탭이 다시 켬
   $('settingsBtn').hidden = !ready;
   renderSync();
   renderChips(ready);
@@ -101,6 +102,8 @@ $('homeBtn').addEventListener('click', () => go({ name: 'home' }));
 $('settingsBtn').addEventListener('click', openSettings);
 addEventListener('online', render);
 addEventListener('offline', render);
+// 앱으로 돌아오면 다시 그림 (밤새 켜 둔 화면의 '오늘'이 어제로 남지 않게)
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') render(); });
 render();
 
 try {

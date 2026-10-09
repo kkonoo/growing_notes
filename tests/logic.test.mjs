@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { pregnancyAge, pregnancyLine, childAge, childStage, childLine } from '../js/stage.js';
-import { fmtDur, fmtClock, contractionRows, contractionSummary } from '../js/stats.js';
+import { fmtDur, fmtClock, fmtMins, fmtAgo, contractionRows, contractionSummary, babyDay, startOfDay } from '../js/stats.js';
 
 test('임신 주수: 예정일 280일 전 = 0주 0일', () => {
   assert.deepEqual(pregnancyAge('2027-07-16', '2026-10-09'), { weeks: 0, days: 0, dday: 280 });
@@ -77,4 +77,40 @@ test('진통 요약: 최근 1시간 안에 시작한 것만, 진행 중은 지�
   assert.equal(sum.avgInterval, 30 * 60e3);
   assert.equal(sum.avgDuration, 45e3);
   assert.deepEqual(contractionSummary([], t(0)), { count: 0, avgInterval: null, avgDuration: null });
+});
+
+test('분 단위 글자', () => {
+  assert.equal(fmtMins(59e3), '0분');
+  assert.equal(fmtMins(40 * 60e3), '40분');
+  assert.equal(fmtMins(130 * 60e3), '2시간 10분');
+  assert.equal(fmtMins(120 * 60e3), '2시간');
+  assert.equal(fmtAgo(30e3), '방금');
+  assert.equal(fmtAgo(130 * 60e3), '2시간 10분 전');
+});
+
+test('육아 하루 정리: 그날 기록만, 밤새 잔 잠은 이 날에 걸친 만큼, 자는 중이면 지금까지', () => {
+  const at = (d, h, m = 0) => new Date(2026, 9, d, h, m); // 기기 현지 시각
+  const rec = (type, a, data = {}) => ({ type, at: a, data });
+  const records = [
+    rec('feeding', at(9, 3, 10), { method: 'formula', ml: 120 }),
+    rec('feeding', at(9, 6), { method: 'breast', side: 'L' }),
+    rec('feeding', at(8, 23), { method: 'formula', ml: 90 }),      // 전날
+    rec('diaper', at(9, 4), { pee: true, poo: false }),
+    rec('diaper', at(9, 7), { pee: true, poo: true }),
+    rec('sleep', at(8, 22), { endAt: at(9, 2) }),                  // 전날 밤 → 이 날 2시간
+    rec('sleep', at(9, 13), { endAt: at(9, 14, 30) }),             // 1시간 30분
+    rec('sleep', at(9, 23), { endAt: null }),                      // 자는 중
+  ];
+  const day = babyDay(records, startOfDay(at(9, 12)), +at(9, 23, 40));
+  assert.equal(day.feeds.length, 2);
+  assert.equal(day.ml, 120);
+  assert.equal(day.pee, 2);
+  assert.equal(day.poo, 1);
+  assert.equal(day.sleeps.length, 3);
+  assert.equal(day.sleepMs, (120 + 90 + 40) * 60e3);
+  assert.deepEqual(day.sleeps.map(x => x.ongoing), [false, false, true]);
+
+  const prev = babyDay(records, startOfDay(at(9, 12), -1), +at(9, 23, 40));
+  assert.equal(prev.ml, 90);
+  assert.equal(prev.sleepMs, 120 * 60e3, '전날 22시~24시');
 });

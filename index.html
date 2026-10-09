@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>성장노트</title>
+<meta name="apple-mobile-web-app-title" content="성장노트">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/app-192.png">
+<link rel="apple-touch-icon" href="icons/app-maskable-192.png">
+<meta name="theme-color" id="themeColor" content="#F5F4F0">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="top">
+  <header class="topbar">
+    <button class="brand" id="homeBtn" type="button">🌱 성장노트</button>
+    <span class="sync" id="syncState" role="status" hidden></span>
+    <button class="icon-btn" id="settingsBtn" type="button" aria-label="설정" hidden>⚙️</button>
+  </header>
+  <!-- 아이 고르기: 🏠 + 아이·임신 칩 -->
+  <nav class="chips" id="chips" aria-label="아이 고르기" hidden></nav>
+</div>
+
+<main id="main"></main>
+
+<dialog id="settings" class="sheet">
+  <div class="sheet-head">
+    <h2>⚙️ 설정</h2>
+    <button class="icon-btn" id="closeSettings" type="button" aria-label="닫기">✕</button>
+  </div>
+
+  <section>
+    <h3>계정</h3>
+    <div class="row">
+      <span class="hint grow" id="accountInfo"></span>
+      <button class="btn" id="logoutBtn" type="button">로그아웃</button>
+    </div>
+  </section>
+
+  <section>
+    <h3>나 <span class="hint">기록한 사람으로 표시돼요</span></h3>
+    <label class="field"><span class="field-label">이름</span><input id="myName" maxlength="10" placeholder="예: 엄마" enterkeyhint="done"></label>
+    <div id="myEmoji"></div>
+  </section>
+
+  <section>
+    <h3>가족</h3>
+    <div id="memberList"></div>
+    <div class="row">
+      <button class="btn primary" id="inviteBtn" type="button">🔗 배우자 초대하기</button>
+      <button class="btn" id="joinBtn" type="button">💌 초대 코드 입력</button>
+    </div>
+    <div class="invite" id="inviteBox" hidden></div>
+  </section>
+
+  <section>
+    <h3>아이·임신</h3>
+    <div id="subjectList"></div>
+  </section>
+
+  <section>
+    <h3>단계</h3>
+    <div class="row">
+      <label for="eduAge">교육 단계 시작</label>
+      <span class="spacer"></span>
+      만 <input type="number" id="eduAge" min="1" max="10" inputmode="numeric" class="num"> 세부터
+    </div>
+    <p class="hint">출생 전은 임신, 이 나이 생일 전까지는 육아, 그 뒤는 교육 단계로 보여요. 가족 모두에게 같이 적용돼요.</p>
+  </section>
+
+  <section>
+    <h3>화면</h3>
+    <div class="row">
+      <label for="themeSelect">테마</label>
+      <span class="spacer"></span>
+      <select id="themeSelect">
+        <option value="">시스템 설정 따름</option>
+        <option value="light">라이트</option>
+        <option value="dark">다크</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="fontRange">글씨 크기</label>
+      <input type="range" min="14" max="20" id="fontRange" class="grow">
+      <span class="val" id="fontVal"></span>
+    </div>
+  </section>
+</dialog>
+
+<!-- 입력 창 (ui.js의 openForm이 내용을 채움) -->
+<dialog id="formDlg" class="sheet"><form id="formEl"></form></dialog>
+
+<div class="toast" id="toast" role="status" popover="manual"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+rules_version = '2';
+// 성장노트 보안 규칙. 데이터 단위 = family. families/{fid}.members 에 있는 사람만 그 아래를 읽고 씀.
+// 배포: firebase deploy --only firestore --project <프로젝트 ID>   (README 참고)
+// 테스트: npm run test:rules  (Emulator)
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+    function fam(fid) { return /databases/$(database)/documents/families/$(fid); }
+    function inv(code) { return /databases/$(database)/documents/invites/$(code); }
+    function isMember(fid) { return signedIn() && me() in get(fam(fid)).data.members; }
+    // 쓰기가 끝난 뒤 기준 (같은 요청에서 family를 만들거나 합류하면서 내 프로필도 쓸 때)
+    function isMemberAfter(fid) { return signedIn() && me() in getAfter(fam(fid)).data.members; }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function isDate(v) { return v is string && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'); }
+
+    // 내가 지금 쓰는 family 위치. 나만 읽고 씀 (남의 familyId를 적어도 그 family 규칙에서 막힘)
+    match /users/{uid} {
+      allow read, write: if signedIn() && uid == me();
+    }
+
+    match /families/{fid} {
+      allow read: if signedIn() && me() in resource.data.members;
+      // 첫 로그인: 내 uid 이름으로, 나 혼자인 family만 (남의 uid로 미리 만들어 두기 방지)
+      allow create: if signedIn() && fid == me() && request.resource.data.members == [me()];
+      // 기존 구성원: 설정 바꾸기, 구성원 빼기. 추가는 아래 초대 수락으로만. 1명 이상 유지
+      allow update: if signedIn() && me() in resource.data.members
+        && changed().hasOnly(['members', 'settings'])
+        && resource.data.members.hasAll(request.resource.data.members)
+        && request.resource.data.members.size() >= 1;
+      // 초대 수락: 나를 맨 뒤에 추가 + 같은 요청에서 이 family의 유효한 초대를 내가 사용 처리
+      allow update: if signedIn() && !(me() in resource.data.members)
+        && changed().hasOnly(['members', 'joinedVia'])
+        && request.resource.data.members == resource.data.members.concat([me()])
+        && validJoin(fid, request.resource.data.joinedVia);
+
+      // 구성원 프로필 (기록자 표시 이름·이모지). 각자 자기 것만 수정
+      match /members/{uid} {
+        allow read: if isMember(fid);
+        allow write: if uid == me() && isMemberAfter(fid);
+      }
+      match /pregnancies/{id} {
+        allow read, delete: if isMember(fid);
+        allow create, update: if isMember(fid) && validPregnancy(request.resource.data);
+      }
+      match /children/{id} {
+        allow read, delete: if isMember(fid);
+        allow create, update: if isMember(fid) && validChild(request.resource.data);
+      }
+      match /records/{id} {
+        allow read, delete: if isMember(fid);
+        allow create: if isMember(fid) && validRecord(request.resource.data)
+          && request.resource.data.createdBy == me() && request.resource.data.updatedBy == me();
+        // 배우자가 시각을 고쳐도 처음 기록한 사람(createdBy)은 그대로
+        allow update: if isMember(fid) && validRecord(request.resource.data)
+          && request.resource.data.createdBy == resource.data.createdBy
+          && request.resource.data.updatedBy == me();
+      }
+    }
+
+    function validPregnancy(d) {
+      return isDate(d.dueDate) && d.status in ['active', 'born', 'ended'];
+    }
+    function validChild(d) {
+      return d.name is string && d.name.size() > 0 && isDate(d.birthDate);
+    }
+    function validRecord(d) {
+      return d.subjectType in ['pregnancy', 'child'] && d.subjectId is string
+        && d.type is string && d.at is timestamp && d.data is map;
+    }
+    // 초대 수락 확인: 이 family의 초대, 아직 안 씀, 만료 전, 이 요청에서 내가 사용 처리
+    function validJoin(fid, code) {
+      let before = get(inv(code)).data;
+      return before.familyId == fid && before.usedBy == null
+        && request.time < before.expiresAt
+        && getAfter(inv(code)).data.usedBy == me();
+    }
+
+    // 초대 코드 = 문서 id (10자리, 헷갈리는 0·O·1·I·L 뺀 문자). 24시간, 한 번만
+    match /invites/{code} {
+      allow get: if signedIn(); // 코드를 아는 사람만. 목록 조회는 안 됨
+      allow list: if false;
+      allow create: if code.matches('^[A-HJKMNP-Z2-9]{10}$')
+        && isMember(request.resource.data.familyId)
+        && request.resource.data.createdBy == me()
+        && request.resource.data.usedBy == null
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(25, 'h'); // 24시간 + 기기 시계 오차 여유
+      // 수락: 한 번만, 만료 전, 같은 요청에서 그 family에 내가 들어가야 함
+      allow update: if signedIn() && resource.data.usedBy == null
+        && request.time < resource.data.expiresAt
+        && changed().hasOnly(['usedBy', 'usedAt'])
+        && request.resource.data.usedBy == me()
+        && me() in getAfter(fam(resource.data.familyId)).data.members;
+      allow delete: if isMember(resource.data.familyId); // 초대 취소
+    }
+  }
+}

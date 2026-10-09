@@ -1,0 +1,16 @@
+# 테스트 도구
+node_modules/
+.firebase/
+*-debug.log
+firebase-debug.*.log
+test-results/
+
+# 앱에서 내보낸 기록 파일 (실제 기록이 public repo에 올라가지 않게)
+growing-*.csv
+growing-*.json
+
+# 로컬 개발 설정
+.claude/
+
+# Claude 작업 지침 (로컬 전용)
+CLAUDE.md

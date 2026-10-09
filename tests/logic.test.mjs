@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { pregnancyAge, pregnancyLine, childAge, childStage, childLine } from '../js/stage.js';
 import { fmtDur, fmtClock, fmtMins, fmtAgo, contractionRows, contractionSummary, babyDay, startOfDay } from '../js/stats.js';
 import { toCSV, toBackup, withDates, localDateTime, isoLocal, CSV_COLUMNS } from '../js/export.js';
+import { pickTips, TIPS } from '../js/tips.js';
 import { spawnSync } from 'node:child_process';
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -181,4 +182,26 @@ test('JSON 백업: id·연결·기록자 그대로, 시각은 ISO 글자 + 위�
   assert.deepEqual(JSON.parse(JSON.stringify(b)), b, 'JSON으로 그대로 저장 가능');
   assert.match(isoLocal(at(1, 2)), /^2026-10-01T02:00:00[+-]\d{2}:\d{2}$/);
   assert.equal(localDateTime(at(9, 3, 4, 5)), '2026-10-09 03:04:05');
+});
+
+// ---------- 지금 챙길 것 ----------
+const ids = age => pickTips(age).map(t => t.id);
+test('안내: 임신 주수·생후 일수·개월에 맞는 것만', () => {
+  assert.deepEqual(ids({ weeks: 8 }), ['mom-onestop']);
+  assert.deepEqual(ids({ weeks: 24 }), ['iron', 'gdm-test']);
+  assert.deepEqual(ids({ weeks: 25 }), ['gdm-test']);
+  assert.deepEqual(ids({ weeks: 36 }), ['before-birth']);
+  assert.deepEqual(ids({ days: 1, months: 0 }), ['birth-report', 'parent-allowance', 'vaccine']);
+  assert.deepEqual(ids({ days: 20, months: 0 }), ['birth-report', 'parent-allowance', 'infant-check-1', 'vaccine']);
+  assert.deepEqual(ids({ days: 61, months: 2 }), ['vaccine']);
+  assert.deepEqual(ids({ days: 150, months: 4 }), ['infant-check-2', 'vaccine']);
+  assert.deepEqual(ids({ days: 2200, months: 71 }), ['infant-check-8', 'vaccine']);
+  assert.deepEqual(ids({ days: 4800, months: 156 }), [], '만 13세부터는 없음');
+});
+test('안내 데이터: 모두 출처·링크 주소가 있고, 금액(원) 문구가 없어요', () => {
+  for (const t of TIPS) {
+    assert.ok(t.src && t.title && t.body, t.id);
+    for (const l of t.links) assert.match(l.url, /^https:\/\//, t.id);
+    assert.doesNotMatch(t.body, /\d+\s*(만\s*)?원/, `${t.id}: 금액은 넣지 않기`);
+  }
 });

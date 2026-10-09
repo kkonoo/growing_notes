@@ -23,6 +23,8 @@ test('첫째 출생 후 기록 몇 개 → 둘째 임신 등록 → 홈에 두 �
   await fillForm(A.page, { name: '첫째', birthDate: birth }, '등록');
   await A.page.locator('.quickbar').waitFor();
   assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '🍼 육아');
+  // 생후 101일: 지금 챙길 것 = 예방접종 확인 (건강검진 2차는 4개월부터)
+  assert.deepEqual(await A.page.locator('.tip-title').allInnerTexts(), ['💉 예방접종 일정·내역 확인']);
 
   // 분유: 누르면 바로 저장 → 토스트의 고치기로 양 넣기
   await quick(A.page, /분유/).click();

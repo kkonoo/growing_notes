@@ -2,6 +2,9 @@
 // 기록 종류: feeding { method: breast|formula|pumped, side?: L|R|both, ml?, minutes?, memo? }
 //           sleep { endAt(자는 중이면 null), memo? } — at = 잠든 시각 / diaper { pee, poo, memo? }
 import { myUid } from './family.js';
+import { render, today as todayStr } from './state.js';
+import { childAge } from './stage.js';
+import { pickTips, tipsBlock } from './tips.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, TYPES } from './records.js';
 import { babyDay, startOfDay, fmtMins } from './stats.js';
 import { sinceEl } from './live.js';
@@ -191,5 +194,7 @@ export function babyTab(s, el) {
     list.append(box);
   } else list.append(h('p', 'hint', '오늘은 아직 기록이 없어요.'));
 
-  el.append(now, tiles, list, renderPattern(mine, today), quickBar(child, sleeping));
+  const { dayCount, months } = childAge(child.birthDate, todayStr());
+  const tips = tipsBlock(pickTips({ days: dayCount, months }), render);
+  el.append(now, tiles, ...(tips ? [tips] : []), list, renderPattern(mine, today), quickBar(child, sleeping));
 }

@@ -7,6 +7,7 @@ import { memberLabel } from './family.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType } from './records.js';
 import { contractionRows, contractionSummary, fmtDur } from './stats.js';
 import { sinceEl, keepAwake } from './live.js';
+import { pickTips, tipsBlock } from './tips.js';
 import { h, button, toast, openForm, fmtDate, fmtDay, fmtTime, toLocalInput, fromLocalInput } from './ui.js';
 
 const P = 'pregnancy';
@@ -116,6 +117,10 @@ export function pregnancyTab(s, el) {
   const p = s.preg, w = watchRecords([p.id]);
   if (state.view.panel === 'timer' && p.status === 'active') return timerPanel(p, el, w);
   el.append(hero(s));
+  if (p.status === 'active') {
+    const tips = tipsBlock(pickTips({ weeks: pregnancyAge(p.dueDate, today()).weeks }), render);
+    if (tips) el.append(tips);
+  }
   const notice = loadNotice(w);
   if (notice) return el.append(notice);
   if (p.status === 'active') el.append(timerCard(w.list));

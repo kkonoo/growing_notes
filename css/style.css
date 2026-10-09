@@ -249,6 +249,19 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .rec-date { font-weight: 700; }
 .rec-who, .tl-who { color: var(--muted); font-size: .85em; }
 
+/* ---------- 지금 챙길 것 ---------- */
+.tip-title {
+  display: block; width: 100%; min-height: 44px; padding: 10px 0;
+  border: 0; border-top: 1px solid var(--line); background: none;
+  text-align: left; font-weight: 600; cursor: pointer;
+}
+.tips .block-head + .tip-title { border-top: 0; }
+.tip-title::after { content: ' ▾'; color: var(--muted); }
+.tip-title.open::after { content: ' ▴'; }
+.tip-body p { margin: 0 0 8px; }
+.tip-links { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.tip-links a { text-decoration: none; color: inherit; display: inline-flex; align-items: center; }
+
 /* ---------- 진통 타이머 ---------- */
 .panel-head { display: flex; align-items: center; gap: 12px; }
 .panel-head h2 { font-size: 1.15em; }

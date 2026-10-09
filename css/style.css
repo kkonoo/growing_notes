@@ -429,6 +429,8 @@ dialog h3 .hint { font-weight: 400; margin-left: 6px; }
 .hint.center { text-align: center; }
 .notice { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--baby-soft); }
 .notice p { margin: 0 0 8px; }
+.notice p:last-child { margin: 0; }
+.notice a.btn { display: inline-flex; align-items: center; text-decoration: none; color: inherit; }
 .hint code { font-size: .95em; padding: 1px 4px; border-radius: 6px; background: var(--surface-2); overflow-wrap: anywhere; }
 .val { min-width: 3em; text-align: right; color: var(--muted); }
 .field { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }

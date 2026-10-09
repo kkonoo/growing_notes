@@ -1,7 +1,7 @@
 // 타임라인 탭: 이 아이(또는 임신)의 기록을 날짜별로, 최근 것부터. 임신에서 이어진 아이면 임신 중 기록도 같이
 import { render } from './state.js';
 import { dateStr } from './stage.js';
-import { watchRecords, TYPES } from './records.js';
+import { watchRecords, loadNotice, TYPES } from './records.js';
 import { memberLabel } from './family.js';
 import { h, button, fmtDay, fmtTime } from './ui.js';
 
@@ -11,7 +11,8 @@ const limits = new Map(); // 아이별 "더 보기"로 늘린 개수
 export function timelineTab(s, el) {
   const ids = [s.child?.id, s.preg?.id].filter(Boolean);
   const limit = limits.get(s.key) || PAGE, w = watchRecords(ids, { limit });
-  if (!w.loaded) return el.append(h('p', 'hint center', '기록을 불러오는 중이에요…'));
+  const notice = loadNotice(w);
+  if (notice) return el.append(notice);
   if (!w.list.length) return el.append(h('div', 'empty', '🗓'), h('p', 'empty-text', '아직 기록이 없어요.'));
   let day = null, box;
   for (const r of w.list) {

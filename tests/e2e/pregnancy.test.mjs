@@ -2,7 +2,8 @@
 // A(엄마)가 임신 등록, B(아빠)는 초대로 합류. 가짜 계정·가짜 데이터만
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { startServer, launch, person, login, clearEmulators, fillForm, dayFromToday, makeInvite, until } from './helpers.mjs';
+import { readFile } from 'node:fs/promises';
+import { startServer, launch, person, login, clearEmulators, fillForm, dayFromToday, makeInvite, until, setRules } from './helpers.mjs';
 
 let server, browser, A, B;
 before(async () => { await clearEmulators(); server = await startServer(); browser = await launch(); });
@@ -98,6 +99,39 @@ test('오프라인에서 기록 → 다시 연결하면 배우자에게도', asy
 
   await A.context.setOffline(false);
   await B.page.locator('.q-text', { hasText: '비행기 모드 질문' }).waitFor({ timeout: 30000 });
+});
+
+test('기록을 못 불러오면(색인 준비 중 등) 진통 버튼을 숨기고, 다시 되면 자동으로 이어져요', async () => {
+  // 실제로 겪은 일: 색인이 준비되기 전에 타이머를 열면 목록 구독이 실패한 채 "진통 시작"만 보여서 누를 때마다 진통이 쌓임
+  const rules = await readFile(new URL('../../firestore.rules', import.meta.url), 'utf8');
+  const noList = rules.replace(/(match \/records\/\{id\} \{\s*)allow read, delete/, '$1allow get, delete');
+  assert.notEqual(noList, rules);
+  await A.page.getByRole('button', { name: /진통 타이머 열기/ }).click();
+  await A.page.locator('.timer-btn').waitFor();
+  await setRules(noList);
+  try {
+    await A.page.reload();
+    await A.page.locator('.notice', { hasText: '불러오지 못했어요' }).waitFor();
+    assert.equal(await A.page.locator('.timer-btn').count(), 0, '상태를 모를 땐 버튼 없음');
+  } finally {
+    await setRules(rules);
+  }
+  await A.page.locator('.timer-btn', { hasText: '진통 시작' }).waitFor({ timeout: 20000 }); // 5초 뒤 다시 구독
+});
+
+test('진행 중으로 남은 진통이 여러 개면 한 번에 지울 수 있어요', async () => {
+  await A.page.evaluate(async () => { // 예전 버그로 쌓인 상태 만들기 (가짜 기록)
+    const { addRecord } = await import('/js/records.js'), { state } = await import('/js/state.js');
+    const p = state.pregnancies.find(x => x.status === 'active');
+    for (let i = 3; i > 0; i--) addRecord('pregnancy', p.id, 'contraction', new Date(Date.now() - i * 1000), { endAt: null });
+  });
+  const clear = A.page.getByRole('button', { name: '진행 중 3개 지우기' });
+  await clear.click();
+  await A.page.locator('.timer-btn', { hasText: '진통 시작' }).waitFor();
+  assert.equal(await clear.count(), 0);
+  assert.equal(await A.page.locator('.c-row', { hasText: '진행 중' }).count(), 0);
+  assert.equal(await A.page.locator('.c-row:not(.c-head)').count(), 2, '끝난 진통 2개는 그대로');
+  await A.page.getByRole('button', { name: '‹ 임신 탭' }).click();
 });
 
 test('출산 처리 → 임신 중 기록이 아이 타임라인에 그대로', async () => {

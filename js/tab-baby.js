@@ -2,7 +2,7 @@
 // 기록 종류: feeding { method: breast|formula|pumped, side?: L|R|both, ml?, minutes?, memo? }
 //           sleep { endAt(자는 중이면 null), memo? } — at = 잠든 시각 / diaper { pee, poo, memo? }
 import { myUid } from './family.js';
-import { addRecord, updateRecord, deleteRecord, watchRecords, defineType, TYPES } from './records.js';
+import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, TYPES } from './records.js';
 import { babyDay, startOfDay, fmtMins } from './stats.js';
 import { sinceEl } from './live.js';
 import { recordRow } from './timeline.js';
@@ -154,9 +154,10 @@ export function babyTab(s, el) {
   const child = s.child, today = startOfDay(new Date());
   // 최근 8일 (7일 패턴 + 전날 밤부터 이어진 잠)
   const w = watchRecords([child.id], { since: startOfDay(today, -7) });
-  document.body.dataset.quickbar = ''; // 아래 버튼 줄만큼 화면 아래 여백 (app.js가 다른 화면에서 지움)
   recent = w.list;
-  if (!w.loaded) return el.append(h('p', 'hint center', '기록을 불러오는 중이에요…'));
+  const notice = loadNotice(w);
+  if (notice) return el.append(notice); // 빠른 기록 버튼도 숨김 (자는 중인지 모르면 잠이 두 번 시작될 수 있어서)
+  document.body.dataset.quickbar = ''; // 아래 버튼 줄만큼 화면 아래 여백 (app.js가 다른 화면에서 지움)
 
   const mine = w.list.filter(r => r.subjectType === C);
   const lastFeed = mine.find(r => r.type === 'feeding'), lastSleep = mine.find(r => r.type === 'sleep');

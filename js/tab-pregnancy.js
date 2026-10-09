@@ -4,7 +4,7 @@ import { state, go, render, today } from './state.js';
 import { pregnancyAge, ddayText, dateStr } from './stage.js';
 import { birth, endPregnancy, reopenPregnancy, setHidden } from './profiles.js';
 import { memberLabel } from './family.js';
-import { addRecord, updateRecord, deleteRecord, watchRecords, defineType } from './records.js';
+import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType } from './records.js';
 import { contractionRows, contractionSummary, fmtDur } from './stats.js';
 import { sinceEl, keepAwake } from './live.js';
 import { h, button, toast, openForm, fmtDate, fmtDay, fmtTime, toLocalInput, fromLocalInput } from './ui.js';
@@ -116,7 +116,8 @@ export function pregnancyTab(s, el) {
   const p = s.preg, w = watchRecords([p.id]);
   if (state.view.panel === 'timer' && p.status === 'active') return timerPanel(p, el, w);
   el.append(hero(s));
-  if (!w.loaded) return el.append(h('p', 'hint center', '기록을 불러오는 중이에요…'));
+  const notice = loadNotice(w);
+  if (notice) return el.append(notice);
   if (p.status === 'active') el.append(timerCard(w.list));
   el.append(questionBlock(p, w.list.filter(r => r.type === 'question')), checkupBlock(p, w.list.filter(r => r.type === 'checkup')));
   const acts = h('div', 'actions');
@@ -198,9 +199,13 @@ function checkupBlock(p, list) {
 // 진통 타이머 화면: 큰 버튼 하나(시작 ↔ 끝), 최근 1시간 요약, 목록. 화면 꺼짐 방지
 function timerPanel(p, el, w) {
   keepAwake();
-  const rows = contractions(w.list), running = rows.findLast(r => !r.end);
   const top = h('div', 'panel-head');
   top.append(button('‹ 임신 탭', () => go({ ...state.view, panel: undefined }), 'btn small'), h('h2', null, '⏱ 진통 타이머'));
+  // 진통 중인지 모르는 채로 버튼을 보여 주면 누를 때마다 새 진통이 생김 → 불러온 뒤에만 버튼
+  const notice = loadNotice(w);
+  if (notice) return el.append(top, notice);
+  const rows = contractions(w.list), running = rows.findLast(r => !r.end);
+  const ongoing = rows.filter(r => !r.end);
 
   const big = button('', () => {
     if (Date.now() - lastTap < 800) return; // 실수로 두 번 빨리 누르면 시작하자마자 끝나지 않게
@@ -229,6 +234,16 @@ function timerPanel(p, el, w) {
     row.append(h('span', null, fmtTime(r.start, true)), h('span', null, r.end ? fmtDur(r.duration) : '진행 중'), h('span', null, r.interval != null ? fmtDur(r.interval) : '–'));
     list.append(row);
   }
-  el.append(top, big, stats, ...(rows.length ? [list] : []),
+  // 진행 중이 여러 개 = 버튼을 여러 번 눌러 생긴 것 → 한 번에 정리
+  const extra = [];
+  if (ongoing.length > 1) {
+    const box = h('div', 'notice');
+    box.append(h('p', null, `진행 중으로 남은 진통이 ${ongoing.length}개예요. 실수로 여러 번 눌러 생긴 거라면 한 번에 지울 수 있어요.`),
+      button(`진행 중 ${ongoing.length}개 지우기`, () => {
+        if (confirm(`진행 중인 진통 기록 ${ongoing.length}개를 지울까요? 끝난 진통 기록은 그대로예요.`)) ongoing.forEach(r => deleteRecord(r.rec.id));
+      }, 'btn small danger'));
+    extra.push(box);
+  }
+  el.append(top, ...extra, big, stats, ...(rows.length ? [list] : []),
     h('p', 'hint', '진통이 시작되면 "진통 시작", 멎으면 "진통 끝"을 눌러요. 간격은 앞 진통이 시작된 때부터 이번 진통이 시작된 때까지예요. 이 화면은 꺼지지 않게 유지돼요.'));
 }

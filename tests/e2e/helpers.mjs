@@ -94,3 +94,9 @@ export async function until(fn, ms = 15000) {
   for (const end = Date.now() + ms; Date.now() < end; await new Promise(r => setTimeout(r, 200))) if (await fn()) return;
   throw new Error('시간 안에 조건이 안 맞음');
 }
+
+// Emulator의 보안 규칙 바꾸기 (실패 상황 재현용)
+export async function setRules(content) {
+  const r = await fetch(`http://localhost:8080/emulator/v1/projects/${PROJECT}:securityRules`, { method: 'PUT', body: JSON.stringify({ rules: { files: [{ content }] } }) });
+  if (!r.ok) throw new Error(await r.text());
+}

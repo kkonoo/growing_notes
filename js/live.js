@@ -9,6 +9,11 @@ export function keep(key, start) {
   if (!live.has(key)) live.set(key, start());
   return live.get(key);
 }
+// 지금 것을 정리하고 잊음 → 다음 그리기에서 keep이 새로 시작
+export function drop(key) {
+  live.get(key)?.stop?.();
+  live.delete(key);
+}
 export function beginRender() { touched = new Set(); }
 export function endRender() {
   for (const [key, v] of live) if (!touched.has(key)) { v.stop?.(); live.delete(key); }

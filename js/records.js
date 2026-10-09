@@ -4,7 +4,8 @@
 import { F, write } from './db.js';
 import { state, render } from './state.js';
 import { famCol, myUid } from './family.js';
-import { keep } from './live.js';
+import { keep, drop } from './live.js';
+import { h } from './ui.js';
 
 const recRef = id => F.doc(famCol('records'), id);
 
@@ -33,7 +34,8 @@ function toRecord(d) {
 }
 
 // subjectId가 ids 중 하나인 기록, 최근 것부터. limit = 최대 개수, since = 이 시각 이후만 (없으면 전부)
-// 그리는 동안 부르면 화면에 보이는 동안 구독 유지 → { list, loaded, more(더 있을 수 있음) }
+// 그리는 동안 부르면 화면에 보이는 동안 구독 유지 → { list, loaded, more(더 있을 수 있음), error }
+// 구독이 실패하면(색인을 만드는 중, 권한 등) Firestore는 다시 시도하지 않으므로 5초 뒤 새로 구독
 // 인덱스: subjectId + at(내림차순) 하나로 모두 (firestore.indexes.json)
 export function watchRecords(ids, { limit, since } = {}) {
   const key = `rec:${state.familyId}:${ids.join(',')}:${limit || ''}:${since ? +since : ''}`;
@@ -52,11 +54,23 @@ export function watchRecords(ids, { limit, since } = {}) {
       console.error('기록을 불러오지 못했어요', e);
       w.loaded = true;
       w.error = e;
+      retry = setTimeout(() => { drop(key); render(); }, 5000);
       render();
     });
-    w.stop = () => { unsub(); delete state.pending[key]; };
+    let retry;
+    w.stop = () => { unsub(); clearTimeout(retry); delete state.pending[key]; };
     return w;
   });
+}
+
+// 아직 못 불러왔거나 실패했을 때 보여 줄 안내 (문제 없으면 null).
+// 이때는 기록 버튼을 숨김: 지금 상태(진통 중·자는 중)를 모르는 채 누르면 같은 기록이 여러 개 생기므로
+export function loadNotice(w) {
+  if (!w.loaded) return h('p', 'hint center', '기록을 불러오는 중이에요…');
+  if (!w.error) return null;
+  return h('p', 'notice', w.error.code === 'failed-precondition'
+    ? '기록 색인을 준비하는 중이에요 (처음 설정 후 몇 분). 준비되면 자동으로 다시 불러와요.'
+    : `기록을 불러오지 못했어요 (${w.error.code || w.error.message}). 잠시 뒤 자동으로 다시 시도해요.`);
 }
 
 // 기록 종류: emoji(글자 또는 기록 → 글자)·label·text(기록 → 한 줄 요약)·edit(기록 → 고치기 창). 각 탭 파일이 등록

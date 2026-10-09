@@ -63,6 +63,21 @@
   </section>
 
   <section>
+    <h3>내보내기</h3>
+    <div class="row">
+      <label for="exportScope">대상</label>
+      <span class="spacer"></span>
+      <select id="exportScope"></select>
+    </div>
+    <div class="row">
+      <button class="btn" id="csvBtn" type="button">📄 CSV 받기</button>
+      <button class="btn" id="jsonBtn" type="button">💾 JSON 백업 받기</button>
+    </div>
+    <p class="hint">CSV는 한 줄에 기록 하나예요 (UTF-8, 시각은 이 기기 기준). R에서는 <code>read.csv("파일.csv", fileEncoding = "UTF-8")</code>로 읽어요.
+      JSON은 나중에 복원할 수 있는 형식의 백업이에요. 받은 파일에는 실제 기록이 들어 있으니 공개된 곳에 올리지 마세요.</p>
+  </section>
+
+  <section>
     <h3>단계</h3>
     <div class="row">
       <label for="eduAge">교육 단계 시작</label>

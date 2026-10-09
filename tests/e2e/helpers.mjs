@@ -28,7 +28,9 @@ export function startServer() {
   return new Promise(ok => server.listen(PORT, () => ok(server)));
 }
 
-export const launch = () => chromium.launch();
+// UTF-8 로케일: 로케일이 없는 리눅스에서는 Chromium이 한글 파일 이름을 'download'로 바꿔서 (실제 폰·PC는 UTF-8)
+export const UTF8 = { ...process.env, LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' };
+export const launch = () => chromium.launch({ env: UTF8 });
 
 // 한 사람 = 브라우저 컨텍스트 하나 (기기 하나와 같음: 저장소가 따로)
 export async function person(browser) {

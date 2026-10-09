@@ -22,8 +22,9 @@ https://kkonoo.github.io/growing_notes/
   누르면 바로 지금 시각으로 저장 → 토스트의 **고치기**(시각·양·메모)·**되돌리기**. 지금 상태(마지막 수유 몇 분 전, 잠든 지·깬 지),
   오늘 요약, 오늘 기록(기록한 사람 표시), 최근 7일 패턴(24시간 띠 + 같은 값의 표)
 - **타임라인 탭**: 날짜별 기록과 기록한 사람. 출산한 아이는 임신 중 기록도 `🤰 임신 중` 표시와 함께 보여요
+- **내보내기** (설정 › 내보내기): 전체 또는 아이별로 CSV·JSON 받기 (아래 「내보내기 형식」)
 
-다음 단계: 내보내기(CSV·JSON)
+아직 없는 것: 사진, 예방접종 일정, 성장곡선, 교육 탭 내용, JSON 백업 복원(형식은 복원할 수 있게 만들어 둠)
 
 ## Firebase 설정 (처음 한 번)
 
@@ -79,6 +80,55 @@ npx firebase emulators:start --only auth,firestore --project demo-growing
 ```
 → http://localhost:8767/?emulator (Google 로그인 창 대신 Emulator의 가짜 계정 창이 떠요)
 
+## 내보내기 형식
+
+설정 › 내보내기에서 **대상**(전체 / 아이별 / 출산 전 임신)을 고르고 받아요.
+아이별은 그 아이의 기록 + 이어진 임신 기록이에요. 파일 이름은 `growing-대상-날짜.csv|json`이에요.
+
+### CSV (분석용)
+
+- 한 줄 = 기록 하나, 시각 순. **UTF-8, BOM 없음**. 열 이름은 영어(R에서 이름이 안 바뀌게)
+- R: `x <- read.csv("growing-전체-2026-10-10.csv", fileEncoding = "UTF-8")`
+  - 시각: `as.POSIXct(x$datetime)` (이 기기의 현지 시각, 한국이면 KST)
+  - 빈 칸은 숫자·참거짓 열에서 `NA`, 참거짓은 `TRUE`/`FALSE`
+- Excel에서 바로 열면 한글이 깨질 수 있어요 (BOM이 없어서). Excel은 데이터 › 텍스트/CSV 가져오기에서 UTF-8을 고르면 돼요.
+
+| 열 | 뜻 |
+|---|---|
+| `datetime` | 기록 시각 `YYYY-MM-DD HH:MM:SS` (검진은 날짜만 있어서 12:00:00) |
+| `subject`, `subject_type` | 아이 이름(출산한 아이의 임신 기록도 그 아이 이름, 출산 전이면 태명), `pregnancy`/`child` |
+| `type` | `checkup`(검진) `question`(질문) `contraction`(진통) `feeding`(수유) `sleep`(수면) `diaper`(기저귀) |
+| `method`, `side`, `ml`, `minutes` | 수유: `breast`/`formula`/`pumped`, `L`/`R`/`both`, 양, 시간(분) |
+| `end_time`, `duration_min` | 수면·진통의 끝 시각과 걸린 시간(분, 소수 둘째 자리). 진행 중이면 빈 칸 |
+| `interval_min` | 진통 간격(분): 앞 진통 시작 → 이번 시작 |
+| `pee`, `poo` | 기저귀 소변·대변 |
+| `weight_kg`, `bp_sys`, `bp_dia` | 검진 체중·혈압 |
+| `text`, `answer`, `done` | 질문, 들은 답, 물어봤는지 |
+| `memo`, `recorded_by` | 메모, 기록한 사람(설정 › 나의 이름) |
+
+### JSON (백업용, 나중에 복원)
+
+```json
+{
+  "app": "growing_notes", "format": 1, "exportedAt": "2026-10-10T09:00:00+09:00", "timezone": "Asia/Seoul",
+  "familyId": "…", "scope": { "kind": "all" },
+  "settings": { "eduStartAge": 3 },
+  "members": [{ "uid": "…", "name": "엄마", "emoji": "👩" }],
+  "pregnancies": [{ "id": "…", "dueDate": "2026-10-05", "status": "born", "childId": "…", … }],
+  "children": [{ "id": "…", "name": "…", "birthDate": "…", "pregnancyId": "…", … }],
+  "records": [{ "id": "…", "subjectType": "child", "subjectId": "…", "type": "feeding", "at": "2026-10-09T03:12:00+09:00",
+                "data": { "method": "formula", "ml": 120 }, "createdBy": "uid", "updatedBy": "uid", … }],
+  "timeFields": { "pregnancies": ["createdAt"], "children": ["createdAt"], "records": ["at", "createdAt", "data.endAt", "updatedAt"] }
+}
+```
+
+- Firestore 문서를 그대로 담아요: **문서 id**, 아이↔임신 연결(`pregnancyId`·`childId`), 기록자 uid
+- 시각은 ISO 8601 글자로 바꾸고 그 위치를 `timeFields`에 적어 둬요 → 복원할 때 그 위치만 Timestamp로 되돌리면 돼요
+- 복원은 같은 id로 덮어쓰기(중복 없음)로 만들 예정이에요. 형식이 바뀌면 `format` 숫자를 올려요
+- `scope`: `{ "kind": "all" }` / `{ "kind": "child", "childId" }` / `{ "kind": "pregnancy", "pregnancyId" }`
+
+받은 파일에는 실제 기록이 들어 있어요. 이 repo처럼 공개된 곳에 올리지 마세요.
+
 ## 테스트
 
 Node.js 22 이상, Java 21 이상(Firestore Emulator용)이 필요해요.
@@ -94,9 +144,11 @@ npm run test:e2e    # 브라우저 시나리오 (처음 한 번: npx playwright 
 - **브라우저 시나리오** ([tests/e2e/](tests/e2e/)): 첫째(교육)+둘째 임신 → 홈 카드 두 단계, 출산 처리, 다른 계정에 안 보임,
   배우자 초대 → 같은 데이터, 쓴 코드 재사용 거부, 오프라인 등록 → 다시 연결하면 배우자 화면에 나타남,
   질문·검진·진통 타이머, 배우자 기록의 기록자 구분, 출산 후 임신 중 기록이 아이 타임라인에 그대로,
-  첫째 출생 후 기록 → 둘째 임신 → 홈 카드 두 단계, 빠른 기록·되돌리기·시각 고치기, 비행기 모드 빠른 기록, 7일 패턴
+  첫째 출생 후 기록 → 둘째 임신 → 홈 카드 두 단계, 빠른 기록·되돌리기·시각 고치기, 비행기 모드 빠른 기록, 7일 패턴,
+  전체·아이별 CSV와 JSON 받기 (받은 CSV를 R `read.csv`로 읽기 포함)
 - **계산** ([tests/logic.test.mjs](tests/logic.test.mjs)): 주수·생후 일수·단계, 진통 지속시간·간격·최근 1시간 요약,
-  하루 육아 정리(밤새 잔 잠은 날짜별로 나눔, 자는 중이면 지금까지)
+  하루 육아 정리(밤새 잔 잠은 날짜별로 나눔, 자는 중이면 지금까지), CSV(따옴표·줄바꿈·TRUE/FALSE)·JSON 백업 변환
+- R(`Rscript`)이 설치돼 있으면 CSV를 실제 `read.csv`로 읽어 보는 테스트도 돌아가요 (없으면 건너뜀)
 
 테스트는 전부 가짜 계정·가짜 데이터(Emulator)만 써요.
 
@@ -141,6 +193,7 @@ js/records.js    기록 추가·고치기·지우기, 화면에 보이는 동안
 js/live.js       화면이 바뀌면 구독·1초 타이머·화면 꺼짐 방지를 정리
 js/stats.js      진통 간격·지속시간, 하루 육아 정리 같은 계산 (판정 없음)
 js/pattern.js    육아 탭의 최근 7일 패턴 (그래프 + 표)
+js/export.js     CSV · JSON 백업 만들기 (순수 함수)
 js/settings.js   설정 창
 js/state.js      앱 상태, 다시 그리기
 js/stage.js      주수·나이·단계 계산

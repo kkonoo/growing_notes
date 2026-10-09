@@ -26,6 +26,17 @@ export function toast(text, ms = 2200, actions = []) {
   toastTimer = setTimeout(() => t.classList.remove('show'), ms);
 }
 
+// 글자를 파일로 받기 (CSV·JSON 내보내기)
+export function download(name, text, type) {
+  const a = h('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
 export const fmtDate = s => `${+s.slice(0, 4)}년 ${+s.slice(5, 7)}월 ${+s.slice(8, 10)}일`;
 export const fmtMD = s => `${+s.slice(5, 7)}월 ${+s.slice(8, 10)}일`;
 const WD = ['일', '월', '화', '수', '목', '금', '토'];

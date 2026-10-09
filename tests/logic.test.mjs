@@ -3,6 +3,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { pregnancyAge, pregnancyLine, childAge, childStage, childLine } from '../js/stage.js';
 import { fmtDur, fmtClock, fmtMins, fmtAgo, contractionRows, contractionSummary, babyDay, startOfDay } from '../js/stats.js';
+import { toCSV, toBackup, withDates, localDateTime, isoLocal, CSV_COLUMNS } from '../js/export.js';
+import { spawnSync } from 'node:child_process';
+import { writeFileSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
 test('임신 주수: 예정일 280일 전 = 0주 0일', () => {
   assert.deepEqual(pregnancyAge('2027-07-16', '2026-10-09'), { weeks: 0, days: 0, dday: 280 });
@@ -113,4 +118,67 @@ test('육아 하루 정리: 그날 기록만, 밤새 잔 잠은 이 날에 걸�
   const prev = babyDay(records, startOfDay(at(9, 12), -1), +at(9, 23, 40));
   assert.equal(prev.ml, 90);
   assert.equal(prev.sleepMs, 120 * 60e3, '전날 22시~24시');
+});
+
+// ---------- 내보내기 ----------
+const ts = d => ({ toDate: () => d }); // Firestore Timestamp 흉내
+const at = (d, h, m = 0, sec = 0) => new Date(2026, 9, d, h, m, sec);
+const sample = [
+  { id: 'r3', subjectType: 'child', subjectId: 'c1', type: 'feeding', at: ts(at(9, 3, 12)), data: { method: 'formula', ml: 120, memo: '밤중, "조금" 남김' }, createdBy: 'u1' },
+  { id: 'r1', subjectType: 'pregnancy', subjectId: 'p1', type: 'contraction', at: ts(at(1, 2, 0)), data: { endAt: ts(at(1, 2, 0, 45)) }, createdBy: 'u2' },
+  { id: 'r2', subjectType: 'pregnancy', subjectId: 'p1', type: 'contraction', at: ts(at(1, 2, 6)), data: { endAt: null }, createdBy: 'u2' },
+  { id: 'r4', subjectType: 'child', subjectId: 'c1', type: 'diaper', at: ts(at(9, 4)), data: { pee: true, poo: false }, createdBy: 'u2' },
+  { id: 'r5', subjectType: 'pregnancy', subjectId: 'p1', type: 'question', at: ts(at(1, 1)), data: { text: '여러 줄\n질문', done: false, answer: '' }, createdBy: 'u1' },
+  { id: 'r6', subjectType: 'child', subjectId: 'c1', type: 'sleep', at: ts(at(9, 1)), data: { endAt: ts(at(9, 2, 30)) }, createdBy: 'u1' },
+];
+const names = { subjectName: id => ({ c1: '첫째', p1: '첫째' })[id], memberName: uid => ({ u1: '엄마', u2: '아빠' })[uid] };
+
+test('CSV: 머리줄, 시각 순, 값·빈칸·TRUE/FALSE, 쉼표·따옴표·줄바꿈 감싸기, BOM 없음', () => {
+  const csv = toCSV(sample.map(withDates), names);
+  assert.ok(!csv.startsWith('\uFEFF'));
+  const lines = csv.trimEnd().split('\n');
+  assert.equal(lines[0], CSV_COLUMNS.join(','));
+  assert.match(lines[1], /^2026-10-01 01:00:00,첫째,pregnancy,question,/);
+  assert.match(lines[1], /"여러 줄$/, '줄바꿈 있는 칸은 따옴표로');
+  assert.equal(lines[3], '2026-10-01 02:00:00,첫째,pregnancy,contraction,,,,,2026-10-01 02:00:45,0.75,,,,,,,,,,,아빠');
+  assert.equal(lines[4], '2026-10-01 02:06:00,첫째,pregnancy,contraction,,,,,,,6,,,,,,,,,,아빠', '진행 중 진통: 끝 없음, 간격 6분');
+  assert.equal(lines[5], '2026-10-09 01:00:00,첫째,child,sleep,,,,,2026-10-09 02:30:00,90,,,,,,,,,,,엄마');
+  assert.equal(lines[6], '2026-10-09 03:12:00,첫째,child,feeding,formula,,120,,,,,,,,,,,,,"밤중, ""조금"" 남김",엄마');
+  assert.equal(lines[7], '2026-10-09 04:00:00,첫째,child,diaper,,,,,,,,TRUE,FALSE,,,,,,,,아빠');
+});
+
+test('CSV를 R read.csv로 그대로 읽기 (Rscript가 있을 때)', t => {
+  if (spawnSync('Rscript', ['--version']).error) return t.skip('Rscript 없음');
+  const file = path.join(mkdtempSync(path.join(tmpdir(), 'growing-')), 'test.csv');
+  writeFileSync(file, toCSV(sample.map(withDates), names), 'utf8');
+  const r = spawnSync('Rscript', ['-e', `x <- read.csv("${file}", fileEncoding = "UTF-8");
+    cat(nrow(x), ncol(x), class(x$ml), class(x$pee), class(x$duration_min), class(x$done), sep = "|"); cat("\n");
+    cat(x$subject[1], x$memo[x$type == "feeding"], x$ml[x$type == "feeding"], is.na(x$ml[1]), x$text[1] == "여러 줄\\n질문", sep = "|"); cat("\n");
+    cat(format(as.POSIXct(x$datetime[1])), sep = "")`], { encoding: 'utf8', env: { ...process.env, LANG: 'C.UTF-8' } });
+  assert.equal(r.status, 0, r.stderr);
+  const [shape, values, time] = r.stdout.trim().split('\n');
+  assert.equal(shape, `6|${CSV_COLUMNS.length}|integer|logical|numeric|logical`);
+  assert.equal(values, '첫째|밤중, "조금" 남김|120|TRUE|TRUE', '줄바꿈 있는 칸도 한 칸으로 읽힘');
+  assert.equal(time, '2026-10-01 01:00:00');
+});
+
+test('JSON 백업: id·연결·기록자 그대로, 시각은 ISO 글자 + 위치(timeFields)', () => {
+  const b = toBackup({
+    familyId: 'f1', scope: { kind: 'all' }, settings: { eduStartAge: 3 }, members: [{ uid: 'u1', name: '엄마', emoji: '👩' }],
+    pregnancies: [{ id: 'p1', dueDate: '2026-10-05', status: 'born', childId: 'c1', createdAt: ts(at(1, 0)) }],
+    children: [{ id: 'c1', name: '첫째', birthDate: '2026-10-03', pregnancyId: 'p1' }],
+    records: sample, now: at(10, 9),
+  });
+  assert.equal(b.app, 'growing_notes');
+  assert.equal(b.format, 1);
+  assert.equal(b.exportedAt, isoLocal(at(10, 9)));
+  assert.deepEqual(b.records.map(r => r.id), ['r5', 'r1', 'r2', 'r6', 'r3', 'r4'], '시각 순');
+  assert.deepEqual(b.timeFields, { pregnancies: ['createdAt'], children: [], records: ['at', 'data.endAt'] });
+  assert.equal(b.records[1].at, isoLocal(at(1, 2)));
+  assert.equal(b.records[2].data.endAt, null, '진행 중은 null 그대로');
+  assert.equal(b.children[0].pregnancyId, 'p1');
+  assert.equal(b.records[0].createdBy, 'u1');
+  assert.deepEqual(JSON.parse(JSON.stringify(b)), b, 'JSON으로 그대로 저장 가능');
+  assert.match(isoLocal(at(1, 2)), /^2026-10-01T02:00:00[+-]\d{2}:\d{2}$/);
+  assert.equal(localDateTime(at(9, 3, 4, 5)), '2026-10-09 03:04:05');
 });

@@ -1,11 +1,14 @@
-// 설정 창: 계정, 나(기록자 표시), 가족(구성원·초대), 아이·임신 목록, 단계 경계 나이, 화면
+// 설정 창: 계정, 나(기록자 표시), 가족(구성원·초대), 아이·임신 목록, 내보내기, 단계 경계 나이, 화면
 import { state, prefs, savePrefs, render, go, eduStartAge, nameOf, emojiOf, findSubject } from './state.js';
 import {
   logout, me, myUid, saveMe, saveSettings, createInvite, cancelInvite, checkInvite, joinFamily,
-  formatCode, cleanCode, inviteLink,
+  formatCode, cleanCode, inviteLink, famCol,
 } from './family.js';
 import { setHidden, editSubject } from './profiles.js';
-import { $, h, button, toast, openForm, emojiPicker, fmtDate } from './ui.js';
+import { F } from './db.js';
+import { dateStr } from './stage.js';
+import { toCSV, toBackup, withDates } from './export.js';
+import { $, h, button, toast, openForm, emojiPicker, fmtDate, download } from './ui.js';
 
 const MY_EMOJI = ['🙂', '👩', '👨', '👵', '👴', '🧑', '🐻', '🐰'];
 
@@ -40,6 +43,13 @@ export function renderSettings() {
     rows.push(row);
   }
   $('subjectList').replaceChildren(...(rows.length ? rows : [h('p', 'hint', '아직 없어요. 홈에서 등록할 수 있어요.')]));
+
+  // 내보내기 대상: 전체 + 아이별(이어진 임신 기록 포함) + 출산 전 임신
+  const sel = $('exportScope'), cur = sel.value;
+  const options = [['all', '전체'], ...kids.map(c => [`c:${c.id}`, `${c.emoji || '👶'} ${c.name}`]),
+    ...state.pregnancies.filter(p => p.status !== 'born').map(p => [`p:${p.id}`, `${p.emoji || '🤰'} ${p.nickname || '뱃속 아기'} (임신)`])];
+  sel.replaceChildren(...options.map(([value, label]) => Object.assign(h('option', null, label), { value })));
+  if (options.some(([v]) => v === cur)) sel.value = cur;
 }
 function subjectRow(s, sub) {
   const row = h('div', 'list-row');
@@ -60,6 +70,57 @@ $('eduAge').addEventListener('change', e => {
   if (n >= 1 && n <= 10) saveSettings({ eduStartAge: n });
   else { e.target.value = eduStartAge(); toast('1부터 10 사이로 적어 주세요.'); }
 });
+
+// ---------- 내보내기 ----------
+// 대상 → 읽을 기록의 subjectId(전체면 null), 담을 아이·임신, 파일 이름, JSON의 scope
+function exportScope(key) {
+  const [kind, id] = key.split(':');
+  if (kind === 'c') {
+    const c = state.children.find(x => x.id === id), p = state.pregnancies.find(x => x.id === c.pregnancyId);
+    return { ids: [c.id, ...(p ? [p.id] : [])], children: [c], pregnancies: p ? [p] : [], label: c.name, scope: { kind: 'child', childId: c.id } };
+  }
+  if (kind === 'p') {
+    const p = state.pregnancies.find(x => x.id === id);
+    return { ids: [p.id], children: [], pregnancies: [p], label: p.nickname || '임신', scope: { kind: 'pregnancy', pregnancyId: p.id } };
+  }
+  return { ids: null, children: state.children, pregnancies: state.pregnancies, label: '전체', scope: { kind: 'all' } };
+}
+// 기록의 아이 이름: 아이 기록은 아이 이름, 임신 기록은 출산했으면 그 아이 이름 아니면 태명
+function subjectName(id) {
+  const c = state.children.find(x => x.id === id);
+  if (c) return c.name;
+  const p = state.pregnancies.find(x => x.id === id);
+  if (!p) return '';
+  return state.children.find(x => x.id === p.childId)?.name || p.nickname || '뱃속 아기';
+}
+async function exportData(kind) {
+  const btns = [$('csvBtn'), $('jsonBtn')];
+  btns.forEach(b => { b.disabled = true; });
+  try {
+    const sc = exportScope($('exportScope').value);
+    const col = famCol('records');
+    const snap = await F.getDocs(sc.ids ? F.query(col, F.where('subjectId', 'in', sc.ids)) : col);
+    if (snap.metadata.fromCache) toast('인터넷에 연결되지 않아 이 기기에 저장된 기록만 담았어요.', 4000);
+    const records = snap.docs.map(d => ({ id: d.id, ...d.data({ serverTimestamps: 'estimate' }) }));
+    const name = `growing-${sc.label.replace(/[\\/:*?"<>|\s]+/g, '_')}-${dateStr()}`;
+    if (kind === 'csv') {
+      const memberName = uid => state.members[uid]?.name || '';
+      download(`${name}.csv`, toCSV(records.map(withDates), { subjectName, memberName }), 'text/csv;charset=utf-8');
+    } else {
+      const members = Object.entries(state.members).map(([uid, m]) => ({ uid, name: m.name, emoji: m.emoji }));
+      const backup = toBackup({ familyId: state.familyId, scope: sc.scope, settings: state.family?.settings || {}, members, pregnancies: sc.pregnancies, children: sc.children, records });
+      download(`${name}.json`, JSON.stringify(backup, null, 2), 'application/json');
+    }
+    toast(`${records.length}개 기록을 내보냈어요.`);
+  } catch (e) {
+    console.error(e);
+    toast(`내보내지 못했어요 (${e.code || e.message})`, 4000);
+  } finally {
+    btns.forEach(b => { b.disabled = false; });
+  }
+}
+$('csvBtn').addEventListener('click', () => exportData('csv'));
+$('jsonBtn').addEventListener('click', () => exportData('json'));
 
 // ---------- 초대 ----------
 $('inviteBtn').addEventListener('click', async () => {

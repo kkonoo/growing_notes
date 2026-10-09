@@ -249,6 +249,18 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .rec-date { font-weight: 700; }
 .rec-who, .tl-who { color: var(--muted); font-size: .85em; }
 
+/* ---------- 교육 탭 ---------- */
+.head-btns { display: flex; gap: 6px; }
+.chip-row.wrap { flex-wrap: wrap; overflow: visible; }
+.again { margin-top: 4px; }
+.again .hint { display: block; margin-bottom: 6px; }
+.act-row { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--line); }
+.block-head + .act-row, .block-head + .hint + .act-row { border-top: 0; }
+.act-name {
+  flex: 1; display: flex; flex-direction: column; align-items: flex-start;
+  min-height: 52px; padding: 6px 0; border: 0; background: none; text-align: left; font-weight: 600; cursor: pointer;
+}
+
 /* ---------- 지금 챙길 것 ---------- */
 .tip-title {
   display: block; width: 100%; min-height: 44px; padding: 10px 0;

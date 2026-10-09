@@ -53,14 +53,19 @@ export function timelineTab(s, el) {
   for (const [t, n] of counts) chips.append(chip(t, `${typeOf({ type: t }).label} ${n}`));
   el.append(chips);
 
+  dayGroups(el, type === 'all' ? w.list : w.list.filter(x => x.type === type), r => !!s.child && r.subjectType === 'pregnancy');
+}
+
+// 기록을 날짜 제목 아래로 묶어서 el에 (list는 최근 것부터). pregTag(기록) → '임신 중' 표시 여부
+export function dayGroups(el, list, pregTag = () => false) {
   let day = null, box;
-  for (const r of type === 'all' ? w.list : w.list.filter(x => x.type === type)) {
+  for (const r of list) {
     if (dateStr(r.at) !== day) {
       day = dateStr(r.at);
       box = h('div', 'tl-day');
       el.append(h('h3', 'day-head', fmtDay(day)), box);
     }
-    box.append(recordRow(r, { pregTag: !!s.child && r.subjectType === 'pregnancy' }));
+    box.append(recordRow(r, { pregTag: pregTag(r) }));
   }
 }
 

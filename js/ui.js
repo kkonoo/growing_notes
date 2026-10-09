@@ -76,7 +76,7 @@ export function emojiPicker(choices, value, onPick) {
 }
 
 // 입력 창: fields = [{ key, label, type: 'text'|'date'|'datetime-local'|'number'|'textarea'|'emoji'|'choice', value, required,
-//   placeholder, max, min, step, inputMode, choices(이모지), options(choice: [{ value, label }]), hint, half(두 칸을 한 줄에) }]
+//   placeholder, max, min, step, inputMode, choices(이모지), options(choice: [{ value, label }]), suggest(자동 완성 목록), hint, half(두 칸을 한 줄에) }]
 // 저장 → { key: 값 } / 취소·닫기 → null / extra 버튼 → 그 버튼의 value
 export function openForm({ title, fields, submit = '저장', extra = [], note }) {
   const dlg = $('formDlg'), form = $('formEl');
@@ -98,6 +98,13 @@ export function openForm({ title, fields, submit = '저장', extra = [], note })
     i.required = !!f.required;
     get[f.key] = () => i.value.trim();
     row.append(h('span', 'field-label', f.label), i);
+    if (f.suggest?.length) { // 예전에 쓴 값 자동 완성 (예: 책 제목)
+      const list = h('datalist');
+      list.id = `suggest-${f.key}`;
+      list.append(...f.suggest.map(v => Object.assign(h('option'), { value: v })));
+      i.setAttribute('list', list.id);
+      row.append(list);
+    }
     if (f.hint) row.append(h('span', 'hint', f.hint));
     return row;
   });

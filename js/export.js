@@ -28,6 +28,7 @@ export const CSV_COLUMNS = [
   'weight_kg', 'bp_sys', 'bp_dia',                   // 검진
   'text', 'answer', 'done',                          // 질문
   'memo', 'recorded_by',
+  'title', 'kind', 'liked', 'activity', 'place',     // 교육: 책 제목, 메모 종류·읽은 방법, 좋아함, 활동, 기관
 ];
 // 빈 값 = 빈 칸 (R에서 숫자·논리 열은 NA), 참·거짓 = TRUE/FALSE, 쉼표·따옴표·줄바꿈이 있으면 따옴표로 감쌈
 function cell(v) {
@@ -58,6 +59,8 @@ export function toCSV(records, { subjectName, memberName }) {
       interval_min: interval.get(r.id) != null ? minutes(interval.get(r.id)) : null,
       pee: d.pee, poo: d.poo, weight_kg: d.weightKg, bp_sys: d.bpSys, bp_dia: d.bpDia,
       text: d.text, answer: d.answer, done: d.done, memo: d.memo, recorded_by: memberName(r.createdBy),
+      title: d.title, kind: r.type === 'book' ? d.with : d.kind, liked: d.liked,
+      activity: r.type === 'activity' ? d.name : null, place: d.school,
     };
     lines.push(CSV_COLUMNS.map(c => cell(row[c])).join(','));
   }

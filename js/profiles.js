@@ -23,6 +23,8 @@ export function keyLine(s) {
 // ---------- 등록 · 고치기 ----------
 const pregRef = id => F.doc(famCol('pregnancies'), id);
 const childRef = id => F.doc(famCol('children'), id);
+// 아이 정보 일부 바꾸기 (교육 탭의 활동·기관 목록 등)
+export const saveChild = (id, fields) => write(F.updateDoc(childRef(id), fields));
 const created = () => ({ createdAt: F.serverTimestamp(), createdBy: myUid() });
 
 function pregnancyFields(p) {

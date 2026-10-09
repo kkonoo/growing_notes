@@ -141,11 +141,29 @@ test('CSV: 머리줄, 시각 순, 값·빈칸·TRUE/FALSE, 쉼표·따옴표·�
   assert.equal(lines[0], CSV_COLUMNS.join(','));
   assert.match(lines[1], /^2026-10-01 01:00:00,첫째,pregnancy,question,/);
   assert.match(lines[1], /"여러 줄$/, '줄바꿈 있는 칸은 따옴표로');
-  assert.equal(lines[3], '2026-10-01 02:00:00,첫째,pregnancy,contraction,,,,,2026-10-01 02:00:45,0.75,,,,,,,,,,,아빠');
-  assert.equal(lines[4], '2026-10-01 02:06:00,첫째,pregnancy,contraction,,,,,,,6,,,,,,,,,,아빠', '진행 중 진통: 끝 없음, 간격 6분');
-  assert.equal(lines[5], '2026-10-09 01:00:00,첫째,child,sleep,,,,,2026-10-09 02:30:00,90,,,,,,,,,,,엄마');
-  assert.equal(lines[6], '2026-10-09 03:12:00,첫째,child,feeding,formula,,120,,,,,,,,,,,,,"밤중, ""조금"" 남김",엄마');
-  assert.equal(lines[7], '2026-10-09 04:00:00,첫째,child,diaper,,,,,,,,TRUE,FALSE,,,,,,,,아빠');
+  assert.equal(lines[3], '2026-10-01 02:00:00,첫째,pregnancy,contraction,,,,,2026-10-01 02:00:45,0.75,,,,,,,,,,,아빠,,,,,');
+  assert.equal(lines[4], '2026-10-01 02:06:00,첫째,pregnancy,contraction,,,,,,,6,,,,,,,,,,아빠,,,,,', '진행 중 진통: 끝 없음, 간격 6분');
+  assert.equal(lines[5], '2026-10-09 01:00:00,첫째,child,sleep,,,,,2026-10-09 02:30:00,90,,,,,,,,,,,엄마,,,,,');
+  assert.equal(lines[6], '2026-10-09 03:12:00,첫째,child,feeding,formula,,120,,,,,,,,,,,,,"밤중, ""조금"" 남김",엄마,,,,,');
+  assert.equal(lines[7], '2026-10-09 04:00:00,첫째,child,diaper,,,,,,,,TRUE,FALSE,,,,,,,,아빠,,,,,');
+});
+
+test('CSV: 교육 기록은 끝의 title·kind·liked·activity·place 열에', () => {
+  const edu = [
+    { id: 'e1', subjectType: 'child', subjectId: 'c1', type: 'book', at: at(9, 12), data: { title: '구름빵', with: 'together', liked: true, memo: '또 읽자' }, createdBy: 'u1' },
+    { id: 'e2', subjectType: 'child', subjectId: 'c1', type: 'activity', at: at(9, 13), data: { activityId: 'a1', name: '피아노', emoji: '🎹', memo: '바이엘 2권' }, createdBy: 'u2' },
+    { id: 'e3', subjectType: 'child', subjectId: 'c1', type: 'note', at: at(9, 14), data: { kind: 'word', text: '구름이 솜사탕 같아' }, createdBy: 'u1' },
+    { id: 'e4', subjectType: 'child', subjectId: 'c1', type: 'consult', at: at(9, 15), data: { schoolId: 's1', school: '햇살유치원', text: '친구와 잘 지냄' }, createdBy: 'u1' },
+  ];
+  const lines = toCSV(edu, names).trimEnd().split('\n');
+  const tail = l => l.split(',').slice(-6).join(',');
+  assert.equal(tail(lines[1]), '엄마,구름빵,together,TRUE,,');
+  assert.match(lines[1], /,또 읽자,엄마,/);
+  assert.equal(tail(lines[2]), '아빠,,,,피아노,');
+  assert.match(lines[2], /,바이엘 2권,아빠,/);
+  assert.equal(tail(lines[3]), '엄마,,word,,,');
+  assert.match(lines[3], /,구름이 솜사탕 같아,/);
+  assert.equal(tail(lines[4]), '엄마,,,,,햇살유치원');
 });
 
 test('CSV를 R read.csv로 그대로 읽기 (Rscript가 있을 때)', t => {

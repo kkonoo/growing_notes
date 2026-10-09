@@ -26,7 +26,7 @@ test('첫째(교육) + 둘째 임신 → 홈에 두 카드가 각자 다른 단�
   await fillForm(A.page, { name: '첫째', birthDate: '2022-05-01' }, '등록');
   await A.page.locator('.subject h1', { hasText: '첫째' }).waitFor();
   assert.equal(await selectedTab(A.page), '📚 교육', '아이 화면은 지금 단계 탭부터');
-  assert.match(await A.page.locator('.tab-body').innerText(), /준비 중/);
+  await A.page.locator('.tab-body > .chip-row', { hasText: '📚 독서' }).waitFor(); // 교육 탭: 독서·활동·메모·기관
 
   await home(A.page);
   await A.page.getByRole('button', { name: '🤰 임신 등록' }).click();

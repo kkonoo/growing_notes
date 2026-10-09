@@ -1,11 +1,10 @@
 // 육아 탭: 수유·수면·기저귀 빠른 기록(누르면 바로 지금 시각으로 저장), 지금 상태, 오늘 요약, 오늘 기록, 최근 7일 패턴
 // 기록 종류: feeding { method: breast|formula|pumped, side?: L|R|both, ml?, minutes?, memo? }
 //           sleep { endAt(자는 중이면 null), memo? } — at = 잠든 시각 / diaper { pee, poo, memo? }
-import { myUid } from './family.js';
 import { render, today as todayStr } from './state.js';
 import { childAge } from './stage.js';
 import { pickTips, tipsBlock } from './tips.js';
-import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, TYPES } from './records.js';
+import { updateRecord, deleteRecord, watchRecords, loadNotice, defineType, tapOnce, quickAdd as addNow } from './records.js';
 import { babyDay, startOfDay, fmtMins } from './stats.js';
 import { sinceEl } from './live.js';
 import { recordRow } from './timeline.js';
@@ -97,23 +96,8 @@ async function editDiaper(r) {
   updateRecord(r.id, { at: keepIfSameMinute(v.at, r.at), data: { pee: v.kind !== 'poo', poo: v.kind !== 'pee', ...(v.memo ? { memo: v.memo } : {}) } });
 }
 
-// ---------- 빠른 기록 ----------
-// 누르면 확인 없이 바로 저장 → 토스트에서 고치기·되돌리기. 같은 버튼을 0.8초 안에 또 누르면 무시 (밤중 실수 방지)
-const lastTap = {};
-function tapOnce(key, fn) {
-  if (Date.now() - (lastTap[key] || 0) < 800) return;
-  lastTap[key] = Date.now();
-  navigator.vibrate?.(20);
-  fn();
-}
-function quickAdd(child, type, data, label) {
-  const at = new Date(), id = addRecord(C, child.id, type, at, data);
-  const r = { id, type, subjectType: C, subjectId: child.id, at, data, createdBy: myUid() };
-  toast(`${label} ${fmtTime(at)} 기록했어요`, 5000, [
-    { label: '고치기', onClick: () => TYPES[type].edit(r) },
-    { label: '되돌리기', onClick: () => { deleteRecord(id); toast('되돌렸어요'); } },
-  ]);
-}
+// ---------- 빠른 기록 (records.js) ----------
+const quickAdd = (child, type, data, label) => addNow(C, child.id, type, data, label);
 function wakeUp(sleep) {
   const end = new Date();
   updateRecord(sleep.id, { 'data.endAt': end });

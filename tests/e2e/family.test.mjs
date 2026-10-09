@@ -32,7 +32,7 @@ test('첫째(교육) + 둘째 임신 → 홈에 두 카드가 각자 다른 단�
   await A.page.getByRole('button', { name: '🤰 임신 등록' }).click();
   await fillForm(A.page, { nickname: '둘째', dueDate: dayFromToday(109) }, '등록');
   await A.page.locator('.subject h1', { hasText: '둘째' }).waitFor();
-  assert.equal(await A.page.locator('.tab').count(), 0, '임신 중엔 임신 탭 하나라서 탭 줄 없음');
+  assert.deepEqual(await A.page.locator('.tab').allInnerTexts(), ['🤰 임신', '🗓 타임라인'], '임신 중엔 임신·타임라인 탭');
   assert.match(await A.page.locator('.hero-big').innerText(), /24주 3일/);
 
   await home(A.page);
@@ -51,7 +51,7 @@ test('둘째 출산 처리 → 아이 프로필로 이어지고 홈 카드가 �
   await A.page.locator('.subject-line', { hasText: '생후 1일' }).waitFor();
   assert.equal(await selectedTab(A.page), '🍼 육아');
   const tabs = await A.page.locator('.tab').allInnerTexts();
-  assert.deepEqual(tabs, ['🤰 임신', '🍼 육아', '📚 교육'], '임신에서 이어진 아이는 임신 탭도');
+  assert.deepEqual(tabs, ['🤰 임신', '🍼 육아', '📚 교육', '🗓 타임라인'], '임신에서 이어진 아이는 임신 탭도');
 
   await A.page.getByRole('tab', { name: '🤰 임신' }).click();
   await A.page.locator('.hero', { hasText: '👶 둘째' }).waitFor();

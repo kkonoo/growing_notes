@@ -79,3 +79,16 @@ export async function cardTexts(page, n) {
   if (n) await page.locator('.card').nth(n - 1).waitFor();
   return page.locator('.card').allTextContents();
 }
+
+// 설정에서 초대 코드 만들기 → 'XXXXX-XXXXX'
+export async function makeInvite(page) {
+  await page.getByRole('button', { name: '설정' }).click();
+  await page.getByRole('button', { name: '🔗 배우자 초대하기' }).click();
+  const code = (await page.locator('.invite-code').innerText()).trim();
+  await page.getByRole('button', { name: '닫기' }).click();
+  return code;
+}
+export async function until(fn, ms = 15000) {
+  for (const end = Date.now() + ms; Date.now() < end; await new Promise(r => setTimeout(r, 200))) if (await fn()) return;
+  throw new Error('시간 안에 조건이 안 맞음');
+}

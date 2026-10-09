@@ -6,6 +6,7 @@ import { renderHome } from './home.js';
 import { renderSubject } from './subject.js';
 import { openSettings, renderSettings, startJoin, applyTheme, applyFont } from './settings.js';
 import { $, h, button, toast } from './ui.js';
+import { beginRender, endRender } from './live.js';
 
 // ---------- 초대 링크(#join=코드): 로그인·가족 공간을 불러온 뒤 합류 확인 ----------
 const JKEY = 'growing.join';
@@ -65,7 +66,12 @@ function renderChips(show) {
   nav.querySelector('.on')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
+// 그리기 + 이번 화면에서 안 쓰게 된 구독·타이머 정리 (live.js)
 function renderApp() {
+  beginRender();
+  try { draw(); } finally { endRender(); }
+}
+function draw() {
   const main = $('main'), ready = !!state.user && !state.error && familyReady();
   $('settingsBtn').hidden = !ready;
   renderSync();
@@ -118,6 +124,7 @@ if (matchMedia('(max-width: 900px)').matches) {
   addEventListener('popstate', () => {
     const dlg = document.querySelector('dialog[open]');
     if (dlg) dlg.close();
+    else if (state.view.panel) go({ ...state.view, panel: undefined }); // 진통 타이머 → 임신 탭
     else if (state.view.name !== 'home') go({ name: 'home' });
     else {
       toast('한 번 더 뒤로 가면 종료돼요', 2000);

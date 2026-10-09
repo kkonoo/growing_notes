@@ -26,6 +26,19 @@ export function toast(text, ms = 2200) {
 
 export const fmtDate = s => `${+s.slice(0, 4)}년 ${+s.slice(5, 7)}월 ${+s.slice(8, 10)}일`;
 export const fmtMD = s => `${+s.slice(5, 7)}월 ${+s.slice(8, 10)}일`;
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+// 'YYYY-MM-DD' → '10월 9일 (금)', 올해가 아니면 연도도
+export function fmtDay(s) {
+  const d = new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+  const year = d.getFullYear() === new Date().getFullYear() ? '' : `${d.getFullYear()}년 `;
+  return `${year}${d.getMonth() + 1}월 ${d.getDate()}일 (${WD[d.getDay()]})`;
+}
+// 시각 글자 (24시간): 밤중에 오전·오후를 헷갈리지 않게
+const pad = n => String(n).padStart(2, '0');
+export const fmtTime = (d, sec = false) => `${pad(d.getHours())}:${pad(d.getMinutes())}${sec ? `:${pad(d.getSeconds())}` : ''}`;
+// <input type="datetime-local" step="1"> 값 ↔ Date (기기 현지 시각)
+export const toLocalInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${fmtTime(d, true)}`;
+export const fromLocalInput = s => (s ? new Date(s) : null);
 
 // 이모지 고르기 줄. 지금 값이 목록에 없으면 맨 앞에 붙임. get() = 고른 값
 export function emojiPicker(choices, value, onPick) {
@@ -42,7 +55,8 @@ export function emojiPicker(choices, value, onPick) {
   return { el: wrap, get: () => cur };
 }
 
-// 입력 창: fields = [{ key, label, type: 'text'|'date'|'number'|'emoji', value, required, placeholder, max, min, choices, hint }]
+// 입력 창: fields = [{ key, label, type: 'text'|'date'|'datetime-local'|'number'|'textarea'|'emoji', value, required,
+//   placeholder, max, min, step, inputMode, choices, hint, half(두 칸을 한 줄에) }]
 // 저장 → { key: 값 } / 취소·닫기 → null / extra 버튼 → 그 버튼의 value
 export function openForm({ title, fields, submit = '저장', extra = [], note }) {
   const dlg = $('formDlg'), form = $('formEl');
@@ -56,8 +70,8 @@ export function openForm({ title, fields, submit = '저장', extra = [], note })
       return row;
     }
     const row = h('label', 'field');
-    const i = h('input');
-    i.type = f.type || 'text';
+    const i = h(f.type === 'textarea' ? 'textarea' : 'input');
+    if (f.type === 'textarea') i.rows = 3; else i.type = f.type || 'text';
     i.name = f.key;
     i.value = f.value ?? '';
     for (const k of ['placeholder', 'max', 'min', 'step', 'maxLength', 'inputMode']) if (f[k] != null) i[k] = f[k];
@@ -67,6 +81,15 @@ export function openForm({ title, fields, submit = '저장', extra = [], note })
     if (f.hint) row.append(h('span', 'hint', f.hint));
     return row;
   });
+  // half 두 개가 이어지면 한 줄로
+  const laid = [];
+  for (let k = 0; k < rows.length; k++) {
+    if (fields[k].half && fields[k + 1]?.half) {
+      const pair = h('div', 'field-pair');
+      pair.append(rows[k], rows[++k]);
+      laid.push(pair);
+    } else laid.push(rows[k]);
+  }
   const btns = h('div', 'form-btns');
   const cancel = button('취소', () => dlg.close());
   btns.append(cancel);
@@ -74,7 +97,7 @@ export function openForm({ title, fields, submit = '저장', extra = [], note })
   const ok = h('button', 'btn primary', submit);
   ok.type = 'submit';
   btns.append(ok);
-  form.replaceChildren(h('h2', null, title), ...(note ? [h('p', 'hint', note)] : []), ...rows, btns);
+  form.replaceChildren(h('h2', null, title), ...(note ? [h('p', 'hint', note)] : []), ...laid, btns);
 
   let done;
   const result = new Promise(res => { done = v => { done = () => {}; res(v); }; });

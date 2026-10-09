@@ -68,10 +68,20 @@ export function watchRecords(ids, { since, until } = {}) {
 export function loadNotice(w) {
   if (!w.loaded) return h('p', 'hint center', '기록을 불러오는 중이에요…');
   if (!w.error) return null;
-  return h('p', 'notice', w.error.code === 'failed-precondition'
-    ? '기록 색인을 준비하는 중이에요 (처음 설정 후 몇 분). 준비되면 자동으로 다시 불러와요.'
-    : `기록을 불러오지 못했어요 (${w.error.code || w.error.message}). 잠시 뒤 자동으로 다시 시도해요.`);
+  const box = h('div', 'notice'), msg = w.error.message || '';
+  if (w.error.code !== 'failed-precondition') {
+    box.append(h('p', null, `기록을 불러오지 못했어요 (${w.error.code || msg}). 잠시 뒤 자동으로 다시 시도해요.`));
+    return box;
+  }
+  // 색인이 없거나(설정이 다르거나) 만드는 중. Firestore 오류 문구에 그 색인을 만드는·상태를 보는 콘솔 주소가 들어 있음
+  const url = indexLink(msg), building = /currently building/i.test(msg);
+  box.append(h('p', null, building
+    ? '기록 색인을 만드는 중이에요. 다 되면 자동으로 다시 불러와요.'
+    : '기록 색인이 아직 없거나 설정이 달라요. 아래 버튼을 누르면 Firebase 콘솔에 필요한 색인이 채워진 화면이 열려요. 거기서 만들기를 누르고 몇 분 기다리면 자동으로 다시 불러와요.'));
+  if (url) box.append(Object.assign(h('a', 'btn small', building ? '색인 상태 보기 ↗' : '색인 만들기 열기 ↗'), { href: url, target: '_blank', rel: 'noopener' }));
+  return box;
 }
+export const indexLink = msg => msg.match(/https:\/\/console\.firebase\.google\.com\/\S+/)?.[0] || null;
 
 // 기록 종류: emoji(글자 또는 기록 → 글자)·label·text(기록 → 한 줄 요약)·edit(기록 → 고치기 창). 각 탭 파일이 등록
 export const TYPES = {};

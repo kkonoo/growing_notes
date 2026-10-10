@@ -543,3 +543,4 @@ textarea { resize: vertical; }
 .ar-month .hint { font-weight: 400; font-size: .8em; }
 .ar-detail { padding: 4px 0 12px; }
 .ar-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); }
+.ar-sub { margin: 12px 0 2px; font-size: .95em; }

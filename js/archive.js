@@ -1,9 +1,9 @@
 // 🗂 지난 단계 보관함: 타임라인 맨 위 버튼으로 들어오는 단계별 정리 화면. 새로 기록하는 버튼은 없고, 줄을 누르면 고치기는 돼요 (오타 등)
 //   🤰 임신: 예정일·출생일, 물어볼 것 전체, 검진 기록 전체
 //   🍼 육아: 해별 → 달별 수유·수면·기저귀 횟수 — 서버에서 개수만 셈 (몇 년 치 기록을 다 읽지 않게). 달을 누르면 그 달 기록만 읽어서 날짜별 표
-//   📚 교육 (영유아): 다닌 기관 · 활동(다녀온 횟수) · 읽은 책(책별 횟수) · 상담 메모
+//   📚 교육 (영유아): 다닌 기관 + 해별 독서·활동·상담 횟수 → 해를 누르면 그해 기록만 읽어서 활동·읽은 책(책별 횟수)·상담 메모
 import { state, go, render, today, eduStartAge, teenStartAge } from './state.js';
-import { STAGES, pastStages, monthSpans, dateStr } from './stage.js';
+import { STAGES, pastStages, monthSpans, childAge, dateStr } from './stage.js';
 import { watchRecords, loadNotice, countRecords } from './records.js';
 import { questionBlock, checkupBlock } from './tab-pregnancy.js';
 import { schoolRow } from './tab-edu.js';
@@ -46,80 +46,87 @@ function pregnancyArchive(s, el) {
   if (c.length) el.append(h('p', 'hint center', `⏱ 진통 기록 ${c.length}개는 타임라인 ${fmtDay(dateStr(c.at(-1).at))}에 있어요.`));
 }
 
-// ---------- 🍼 육아 ----------
-const BABY = ['feeding', 'sleep', 'diaper'];
-const counts = new Map(); // `${아이 id}:${from}:${to}` → { feeding, sleep, diaper } | 'loading' | 'error'
-const openYear = new Map(), openMonth = new Map(); // 아이 id → 펼친 해 'YYYY' · 펼친 달 'YYYY-MM'
-const countKey = (id, m) => `${id}:${m.from}:${m.to}`;
+// ---------- 해 → 달 개수 표: 서버에서 개수만 셈 (몇 년 치 기록을 다 읽지 않게) ----------
+const counts = new Map(); // `${아이 id}:${종류들}:${from}:${to}` → { 종류: 개수 } | 'loading' | 'error'
+const opened = new Map(); // `${아이 id}:${단계}:year|month` → 펼친 해 'YYYY' · 달 'YYYY-MM'
+const countKey = (id, types, x) => `${id}:${types}:${x.from}:${x.to}`;
+const toggle = (k, v) => () => { opened.set(k, opened.get(k) === v ? null : v); render(); };
 
 // spans = [{ from, to }] 기간마다 종류별 개수
-async function fetchCounts(id, spans) {
-  for (const m of spans) counts.set(countKey(id, m), 'loading');
+async function fetchCounts(id, types, spans) {
+  for (const x of spans) counts.set(countKey(id, types, x), 'loading');
   for (let i = 0; i < spans.length; i += 6) { // 한 번에 6개씩
-    await Promise.all(spans.slice(i, i + 6).map(async m => {
+    await Promise.all(spans.slice(i, i + 6).map(async x => {
       try {
-        const [feeding, sleep, diaper] = await Promise.all(BABY.map(t => countRecords(id, t, localDate(m.from), localDate(m.to))));
-        counts.set(countKey(id, m), { feeding, sleep, diaper });
+        const ns = await Promise.all(types.map(t => countRecords(id, t, localDate(x.from), localDate(x.to))));
+        counts.set(countKey(id, types, x), Object.fromEntries(types.map((t, k) => [t, ns[k]])));
       } catch (e) {
         console.warn('기록 수를 못 셌어요', e);
-        counts.set(countKey(id, m), 'error');
+        counts.set(countKey(id, types, x), 'error');
       }
     }));
     render();
   }
 }
 
-// 해별로 먼저 (해마다 개수 3번만 셈) → 해를 누르면 그해 달별 → 달을 누르면 날짜별 표
-function babyArchive(child, el, p) {
-  el.append(periodLine(p));
-  const months = monthSpans(p.from, p.to).map((m, i) => ({ ...m, age: i })); // age = 그달에 맞는 개월 (태어난 달 0개월)
-  const years = [];
-  for (const m of months) {
-    const y = years.at(-1);
-    if (y?.year === m.ym.slice(0, 4)) { y.months.push(m); y.to = m.to; } else years.push({ year: m.ym.slice(0, 4), from: m.from, to: m.to, months: [m] });
+// 기간 → 해별 [{ year, from, to, months: [{ ym, from, to, age }] }]. age = 그달에 맞는 개월 (태어난 달 0개월)
+function yearsOf(birthDate, from, to) {
+  const by = +birthDate.slice(0, 4), bm = +birthDate.slice(5, 7), years = [];
+  for (const m of monthSpans(from, to)) {
+    const x = { ...m, age: (+m.ym.slice(0, 4) - by) * 12 + (+m.ym.slice(5) - bm) }, y = years.at(-1);
+    if (y?.year === m.ym.slice(0, 4)) { y.months.push(x); y.to = x.to; } else years.push({ year: m.ym.slice(0, 4), from: x.from, to: x.to, months: [x] });
   }
-  const yOpen = openYear.get(child.id), shown = [...years, ...(years.find(y => y.year === yOpen)?.months || [])];
-  const missing = shown.filter(x => !counts.has(countKey(child.id, x)));
-  if (missing.length) fetchCounts(child.id, missing);
+  return years;
+}
 
-  const row = (x, label, sub, on, onClick, cls) => {
-    const c = counts.get(countKey(child.id, x));
-    const val = (k, unit) => (typeof c === 'object' ? `${c[k]}${unit}` : c === 'error' ? '–' : '…');
-    const b = button('', onClick, `ar-row ${cls}${on ? ' on' : ''}`);
-    b.setAttribute('aria-expanded', on);
-    const name = h('span', 'ar-month', `${on ? '▾' : '▸'} ${label}`);
-    name.append(h('span', 'hint', ` ${sub}`));
-    b.append(name, h('span', null, val('feeding', '회')), h('span', null, val('sleep', '번')), h('span', null, val('diaper', '회')));
-    return b;
-  };
-  const sec = section('📊 기록 수'), table = h('div', 'ar-table');
-  const head = h('div', 'ar-row ar-head');
-  head.append(...['기간', '수유', '수면', '기저귀'].map(t => h('span', null, t)));
+// cols = [{ type, label, unit }], rows = [{ x: { from, to }, label, sub, cls, open, toggle, detail?() }] — 보이는 줄만 셈
+function countSection(child, cols, rows, hint) {
+  const types = cols.map(c => c.type), get = x => counts.get(countKey(child.id, types, x));
+  const missing = rows.filter(r => get(r.x) === undefined).map(r => r.x);
+  if (missing.length) fetchCounts(child.id, types, missing);
+  const sec = section('📊 기록 수'), table = h('div', 'ar-table'), head = h('div', 'ar-row ar-head');
+  head.append(h('span', null, '기간'), ...cols.map(c => h('span', null, c.label)));
   table.append(head);
-  for (const y of years) {
-    const ages = `${y.months[0].age}~${y.months.at(-1).age}개월`;
-    table.append(row(y, `${y.year}년`, ages, yOpen === y.year, () => { openYear.set(child.id, yOpen === y.year ? null : y.year); render(); }, 'ar-year'));
-    if (yOpen !== y.year) continue;
-    for (const m of y.months) {
-      const on = openMonth.get(child.id) === m.ym;
-      table.append(row(m, `${+m.ym.slice(5)}월`, `${m.age}개월`, on, () => { openMonth.set(child.id, on ? null : m.ym); render(); }, 'ar-mon'));
-      if (on) table.append(monthDetail(child, m));
-    }
+  for (const r of rows) {
+    const c = get(r.x), b = button('', r.toggle, `ar-row ${r.cls}${r.open ? ' on' : ''}`);
+    b.setAttribute('aria-expanded', r.open);
+    const name = h('span', 'ar-month', `${r.open ? '▾' : '▸'} ${r.label}`);
+    name.append(h('span', 'hint', ` ${r.sub}`));
+    b.append(name, ...cols.map(col => h('span', null, typeof c === 'object' ? `${c[col.type]}${col.unit}` : c === 'error' ? '–' : '…')));
+    table.append(b);
+    if (r.open && r.detail) table.append(r.detail());
   }
   sec.append(table);
-  if (shown.some(x => counts.get(countKey(child.id, x)) === 'error')) {
+  if (rows.some(r => get(r.x) === 'error')) {
     sec.append(h('p', 'hint', '인터넷에 연결되면 기록 수를 셀 수 있어요.'), button('다시 세기', () => {
-      for (const x of shown) if (counts.get(countKey(child.id, x)) === 'error') counts.delete(countKey(child.id, x));
+      for (const r of rows) if (get(r.x) === 'error') counts.delete(countKey(child.id, types, r.x));
       render();
     }, 'btn small'));
-  } else sec.append(h('p', 'hint', '해를 누르면 달별로, 달을 누르면 그날그날 수유·수면 시간·기저귀를 볼 수 있어요.'));
-  el.append(sec);
+  } else sec.append(h('p', 'hint', hint));
+  return sec;
+}
+
+// ---------- 🍼 육아: 해별 (해마다 3번만 셈) → 해를 누르면 그해 달별 → 달을 누르면 날짜별 표 ----------
+const BABY = [{ type: 'feeding', label: '수유', unit: '회' }, { type: 'sleep', label: '수면', unit: '번' }, { type: 'diaper', label: '기저귀', unit: '회' }];
+function babyArchive(child, el, p) {
+  el.append(periodLine(p));
+  const yk = `${child.id}:baby:year`, mk = `${child.id}:baby:month`, rows = [];
+  for (const y of yearsOf(child.birthDate, p.from, p.to)) {
+    const open = opened.get(yk) === y.year;
+    rows.push({ x: y, label: `${y.year}년`, sub: `${y.months[0].age}~${y.months.at(-1).age}개월`, cls: 'ar-year', open, toggle: toggle(yk, y.year) });
+    if (open) {
+      for (const m of y.months) {
+        rows.push({ x: m, label: `${+m.ym.slice(5)}월`, sub: `${m.age}개월`, cls: 'ar-mon', open: opened.get(mk) === m.ym, toggle: toggle(mk, m.ym), detail: () => monthDetail(child, m) });
+      }
+    }
+  }
+  el.append(countSection(child, BABY, rows, '해를 누르면 달별로, 달을 누르면 그날그날 수유·수면 시간·기저귀를 볼 수 있어요.'));
 }
 
 // 그 달 기록만 읽어서 날짜별 표 (최근 7일 패턴의 표와 같은 계산)
 function monthDetail(child, m) {
   const box = h('div', 'ar-detail');
-  const w = watchRecords([child.id], { since: localDate(m.from), until: localDate(m.to), types: BABY });
+  const w = watchRecords([child.id], { since: localDate(m.from), until: localDate(m.to), types: BABY.map(c => c.type) });
   const notice = loadNotice(w);
   if (notice) { box.append(notice); return box; }
   const days = [];
@@ -138,7 +145,8 @@ function monthDetail(child, m) {
   return box;
 }
 
-// ---------- 📚 교육 (영유아) ----------
+// ---------- 📚 교육 (영유아): 다닌 기관 + 해별 (해마다 3번만 셈) → 해를 누르면 그해 활동·읽은 책·상담 메모 ----------
+const EDU = [{ type: 'book', label: '독서', unit: '번' }, { type: 'activity', label: '활동', unit: '회' }, { type: 'consult', label: '상담', unit: '개' }];
 function eduArchive(child, el, p) {
   el.append(periodLine(p));
   const schools = (child.schools || []).filter(x => !x.from || x.from < p.to.slice(0, 7)).sort((a, b) => (a.from || '').localeCompare(b.from || ''));
@@ -147,46 +155,47 @@ function eduArchive(child, el, p) {
   sb.append(...schools.map(x => schoolRow(child, x)));
   el.append(sb);
 
-  const w = watchRecords([child.id], { since: localDate(p.from), until: localDate(p.to), types: ['book', 'activity', 'consult'] });
-  const notice = loadNotice(w);
-  if (notice) return el.append(notice);
-  const of = t => w.list.filter(r => r.type === t); // 최근 것부터
+  const yk = `${child.id}:edu:year`;
+  const rows = yearsOf(child.birthDate, p.from, p.to).map(y => {
+    const a = childAge(child.birthDate, y.from).years, b = childAge(child.birthDate, lastDay(y.to)).years;
+    return { x: y, label: `${y.year}년`, sub: a === b ? `만 ${a}세` : `만 ${a}~${b}세`, cls: 'ar-year', open: opened.get(yk) === y.year, toggle: toggle(yk, y.year), detail: () => eduYear(child, y) };
+  });
+  el.append(countSection(child, EDU, rows, '해를 누르면 그해 활동·읽은 책·상담 메모를 볼 수 있어요.'));
+}
 
-  // 활동: 기록에 남은 이름으로 (목록에서 지운 활동도)
-  const acts = new Map();
+// 그해 기록만 읽어서: 활동(다녀온 횟수) · 읽은 책(책별 횟수, 많이 읽은 책부터) · 상담 메모
+function eduYear(child, y) {
+  const box = h('div', 'ar-detail');
+  const w = watchRecords([child.id], { since: localDate(y.from), until: localDate(y.to), types: EDU.map(c => c.type) });
+  const notice = loadNotice(w);
+  if (notice) { box.append(notice); return box; }
+  if (!w.list.length) { box.append(h('p', 'hint', '이해에는 기록이 없어요.')); return box; }
+  const of = t => w.list.filter(r => r.type === t); // 최근 것부터
+  const line = (left, right) => { const row = h('div', 'ar-line'); row.append(h('span', null, left), h('span', 'hint', right)); return row; };
+
+  const acts = new Map(); // 기록에 남은 이름으로 (목록에서 지운 활동도)
   for (const r of of('activity')) {
-    const a = acts.get(r.data.activityId) || { name: r.data.name, emoji: r.data.emoji || '🎹', n: 0, last: r.at, first: r.at };
-    a.n++; a.first = r.at;
+    const a = acts.get(r.data.activityId) || { name: r.data.name, emoji: r.data.emoji || '🎹', n: 0 };
+    a.n++;
     acts.set(r.data.activityId, a);
   }
-  const ab = section('🎹 활동');
-  if (!acts.size) ab.append(h('p', 'hint', '다녀온 활동 기록이 없어요.'));
-  for (const a of acts.values()) {
-    const row = h('div', 'ar-line');
-    const ymOf = d => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
-    row.append(h('span', null, `${a.emoji} ${a.name}`), h('span', 'hint', `${a.n}회 · ${ymOf(a.first)}~${ymOf(a.last)}`));
-    ab.append(row);
-  }
-  el.append(ab);
+  if (acts.size) box.append(h('h3', 'ar-sub', '🎹 활동'), ...[...acts.values()].map(a => line(`${a.emoji} ${a.name}`, `${a.n}회`)));
 
-  // 읽은 책: 책별 횟수, 많이 읽은 책부터
   const books = of('book'), byTitle = new Map();
   for (const r of books) {
     const b = byTitle.get(r.data.title) || { title: r.data.title, n: 0, liked: false };
     b.n++; b.liked ||= !!r.data.liked;
     byTitle.set(r.data.title, b);
   }
-  const bb = section('📚 읽은 책');
-  bb.append(h('p', 'block-line', books.length ? `모두 ${books.length}번 (${byTitle.size}권)` : '독서 기록이 없어요.'));
-  for (const b of [...byTitle.values()].sort((x, y) => y.n - x.n || x.title.localeCompare(y.title))) {
-    const row = h('div', 'ar-line');
-    row.append(h('span', null, `📖 ${b.title}`), h('span', 'hint', `${b.n}번${b.liked ? ' · ❤️' : ''}`));
-    bb.append(row);
+  if (books.length) {
+    box.append(h('h3', 'ar-sub', `📚 읽은 책 · ${books.length}번 (${byTitle.size}권)`),
+      ...[...byTitle.values()].sort((a, b) => b.n - a.n || a.title.localeCompare(b.title)).map(b => line(`📖 ${b.title}`, `${b.n}번${b.liked ? ' · ❤️' : ''}`)));
   }
-  el.append(bb);
 
   const consults = of('consult');
-  el.append(section('💬 상담 메모'));
-  if (consults.length) dayGroups(el, consults);
-  else el.append(h('p', 'hint center', '상담 메모가 없어요.'));
+  if (consults.length) {
+    box.append(h('h3', 'ar-sub', '💬 상담 메모'));
+    dayGroups(box, consults);
+  }
+  return box;
 }

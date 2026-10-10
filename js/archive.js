@@ -1,9 +1,9 @@
 // 🗂 지난 단계 보관함: 타임라인 맨 위 버튼으로 들어오는 단계별 정리 화면. 새로 기록하는 버튼은 없고, 줄을 누르면 고치기는 돼요 (오타 등)
 //   🤰 임신: 예정일·출생일, 물어볼 것 전체, 검진 기록 전체
-//   🍼 육아: 달별 수유·수면·기저귀 횟수 — 서버에서 개수만 셈 (몇 년 치 기록을 다 읽지 않게). 달을 누르면 그 달 기록만 읽어서 날짜별 표
+//   🍼 육아: 해별 → 달별 수유·수면·기저귀 횟수 — 서버에서 개수만 셈 (몇 년 치 기록을 다 읽지 않게). 달을 누르면 그 달 기록만 읽어서 날짜별 표
 //   📚 교육 (영유아): 다닌 기관 · 활동(다녀온 횟수) · 읽은 책(책별 횟수) · 상담 메모
 import { state, go, render, today, eduStartAge, teenStartAge } from './state.js';
-import { STAGES, pastStages, monthSpans, childAge, dateStr } from './stage.js';
+import { STAGES, pastStages, monthSpans, dateStr } from './stage.js';
 import { watchRecords, loadNotice, countRecords } from './records.js';
 import { questionBlock, checkupBlock } from './tab-pregnancy.js';
 import { schoolRow } from './tab-edu.js';
@@ -49,13 +49,14 @@ function pregnancyArchive(s, el) {
 // ---------- 🍼 육아 ----------
 const BABY = ['feeding', 'sleep', 'diaper'];
 const counts = new Map(); // `${아이 id}:${from}:${to}` → { feeding, sleep, diaper } | 'loading' | 'error'
-const opened = new Map(); // 아이 id → 펼친 달 'YYYY-MM'
+const openYear = new Map(), openMonth = new Map(); // 아이 id → 펼친 해 'YYYY' · 펼친 달 'YYYY-MM'
 const countKey = (id, m) => `${id}:${m.from}:${m.to}`;
 
-async function fetchCounts(id, months) {
-  for (const m of months) counts.set(countKey(id, m), 'loading');
-  for (let i = 0; i < months.length; i += 6) { // 한 번에 6달씩
-    await Promise.all(months.slice(i, i + 6).map(async m => {
+// spans = [{ from, to }] 기간마다 종류별 개수
+async function fetchCounts(id, spans) {
+  for (const m of spans) counts.set(countKey(id, m), 'loading');
+  for (let i = 0; i < spans.length; i += 6) { // 한 번에 6개씩
+    await Promise.all(spans.slice(i, i + 6).map(async m => {
       try {
         const [feeding, sleep, diaper] = await Promise.all(BABY.map(t => countRecords(id, t, localDate(m.from), localDate(m.to))));
         counts.set(countKey(id, m), { feeding, sleep, diaper });
@@ -68,34 +69,50 @@ async function fetchCounts(id, months) {
   }
 }
 
+// 해별로 먼저 (해마다 개수 3번만 셈) → 해를 누르면 그해 달별 → 달을 누르면 날짜별 표
 function babyArchive(child, el, p) {
   el.append(periodLine(p));
-  const months = monthSpans(p.from, p.to);
-  const missing = months.filter(m => !counts.has(countKey(child.id, m)));
+  const months = monthSpans(p.from, p.to).map((m, i) => ({ ...m, age: i })); // age = 그달에 맞는 개월 (태어난 달 0개월)
+  const years = [];
+  for (const m of months) {
+    const y = years.at(-1);
+    if (y?.year === m.ym.slice(0, 4)) { y.months.push(m); y.to = m.to; } else years.push({ year: m.ym.slice(0, 4), from: m.from, to: m.to, months: [m] });
+  }
+  const yOpen = openYear.get(child.id), shown = [...years, ...(years.find(y => y.year === yOpen)?.months || [])];
+  const missing = shown.filter(x => !counts.has(countKey(child.id, x)));
   if (missing.length) fetchCounts(child.id, missing);
 
-  const sec = section('📊 달별 기록 수'), table = h('div', 'ar-table');
-  const head = h('div', 'ar-row ar-head');
-  head.append(...['달', '수유', '수면', '기저귀'].map(t => h('span', null, t)));
-  table.append(head);
-  for (const m of months) {
-    const c = counts.get(countKey(child.id, m)), on = opened.get(child.id) === m.ym;
+  const row = (x, label, sub, on, onClick, cls) => {
+    const c = counts.get(countKey(child.id, x));
     const val = (k, unit) => (typeof c === 'object' ? `${c[k]}${unit}` : c === 'error' ? '–' : '…');
-    const row = button('', () => { opened.set(child.id, on ? null : m.ym); render(); }, `ar-row${on ? ' on' : ''}`);
-    row.setAttribute('aria-expanded', on);
-    const month = h('span', 'ar-month', `${m.ym.slice(0, 4)}.${m.ym.slice(5)}`);
-    month.append(h('span', 'hint', ` ${childAge(child.birthDate, m.from).months}개월`));
-    row.append(month, h('span', null, val('feeding', '회')), h('span', null, val('sleep', '번')), h('span', null, val('diaper', '회')));
-    table.append(row);
-    if (on) table.append(monthDetail(child, m));
+    const b = button('', onClick, `ar-row ${cls}${on ? ' on' : ''}`);
+    b.setAttribute('aria-expanded', on);
+    const name = h('span', 'ar-month', `${on ? '▾' : '▸'} ${label}`);
+    name.append(h('span', 'hint', ` ${sub}`));
+    b.append(name, h('span', null, val('feeding', '회')), h('span', null, val('sleep', '번')), h('span', null, val('diaper', '회')));
+    return b;
+  };
+  const sec = section('📊 기록 수'), table = h('div', 'ar-table');
+  const head = h('div', 'ar-row ar-head');
+  head.append(...['기간', '수유', '수면', '기저귀'].map(t => h('span', null, t)));
+  table.append(head);
+  for (const y of years) {
+    const ages = `${y.months[0].age}~${y.months.at(-1).age}개월`;
+    table.append(row(y, `${y.year}년`, ages, yOpen === y.year, () => { openYear.set(child.id, yOpen === y.year ? null : y.year); render(); }, 'ar-year'));
+    if (yOpen !== y.year) continue;
+    for (const m of y.months) {
+      const on = openMonth.get(child.id) === m.ym;
+      table.append(row(m, `${+m.ym.slice(5)}월`, `${m.age}개월`, on, () => { openMonth.set(child.id, on ? null : m.ym); render(); }, 'ar-mon'));
+      if (on) table.append(monthDetail(child, m));
+    }
   }
   sec.append(table);
-  if (months.some(m => counts.get(countKey(child.id, m)) === 'error')) {
+  if (shown.some(x => counts.get(countKey(child.id, x)) === 'error')) {
     sec.append(h('p', 'hint', '인터넷에 연결되면 기록 수를 셀 수 있어요.'), button('다시 세기', () => {
-      for (const m of months) if (counts.get(countKey(child.id, m)) === 'error') counts.delete(countKey(child.id, m));
+      for (const x of shown) if (counts.get(countKey(child.id, x)) === 'error') counts.delete(countKey(child.id, x));
       render();
     }, 'btn small'));
-  } else sec.append(h('p', 'hint', '달을 누르면 그날그날 수유·수면 시간·기저귀를 볼 수 있어요.'));
+  } else sec.append(h('p', 'hint', '해를 누르면 달별로, 달을 누르면 그날그날 수유·수면 시간·기저귀를 볼 수 있어요.'));
   el.append(sec);
 }
 

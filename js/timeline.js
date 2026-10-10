@@ -29,7 +29,7 @@ export function monthNav(key, el) {
   prev.setAttribute('aria-label', '이전 달');
   next.setAttribute('aria-label', '다음 달');
   next.disabled = ym >= thisMonth;
-  const title = button(`${y}년 ${m}월 ▾`, () => { picking = picking?.key === key ? null : { key, year: y }; render(); }, 'month-title');
+  const title = button(`${y}년 ${m}월`, () => { picking = picking?.key === key ? null : { key, year: y }; render(); }, 'month-title');
   title.setAttribute('aria-label', '연·월 고르기');
   nav.append(prev, title, next);
   if (ym !== thisMonth) nav.append(button('이번 달', () => show(thisMonth), 'btn small'));

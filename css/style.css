@@ -529,14 +529,17 @@ textarea { resize: vertical; }
 .past-label { color: var(--muted); font-size: .9em; font-weight: 600; margin-right: 2px; }
 .ar-table { display: flex; flex-direction: column; }
 .ar-row {
-  display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 6px; align-items: center;
+  display: grid; grid-template-columns: minmax(0, 2.6fr) repeat(3, minmax(0, 1fr)); gap: 6px; align-items: center; /* 줄마다 칸 너비가 같게 */
   width: 100%; min-height: 44px; padding: 6px 2px;
   border: 0; border-top: 1px solid var(--line); background: none;
   text-align: left; cursor: pointer; font-variant-numeric: tabular-nums;
 }
 .ar-head { min-height: 32px; border-top: 0; cursor: default; color: var(--muted); font-size: .85em; font-weight: 600; }
 .ar-row.on { font-weight: 700; }
+.ar-year { font-weight: 600; }
+.ar-mon { background: var(--surface-2); }
+.ar-mon .ar-month { padding-left: 14px; }
 .ar-month { white-space: nowrap; }
-.ar-month .hint { font-weight: 400; }
+.ar-month .hint { font-weight: 400; font-size: .8em; }
 .ar-detail { padding: 4px 0 12px; }
 .ar-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); }

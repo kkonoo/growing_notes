@@ -10,7 +10,7 @@ after(async () => { await browser?.close(); server?.close(); });
 const rows = () => A.page.locator('.tl-row');
 const title = () => A.page.locator('.month-title').innerText();
 const ym = n => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + n); return { y: d.getFullYear(), m: d.getMonth() + 1 }; };
-const label = n => `${ym(n).y}년 ${ym(n).m}월 ▾`;
+const label = n => `${ym(n).y}년 ${ym(n).m}월`;
 
 test('준비: 아이 + 이번 달 3개, 지난달 2개(말일 23:59:59 포함), 3달 전 1개', async () => {
   A = await person(browser);

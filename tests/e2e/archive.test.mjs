@@ -75,7 +75,7 @@ test('임신 → 출산: 타임라인에 🗂 지난 단계 · 🤰 임신 → �
   assert.equal(await A.page.locator('.panel-head').count(), 0);
 });
 
-test('교육 (영유아) 아이: 🍼 육아 보관함 = 달별 기록 수, 달을 누르면 날짜별 표', async () => {
+test('교육 (영유아) 아이: 🍼 육아 보관함 = 해별 기록 수 → 해를 누르면 달별 → 달을 누르면 날짜별 표', async () => {
   const birth = yearsAgo(4, 20);
   await addChild('호호', birth);
   await seed('호호', [
@@ -84,6 +84,7 @@ test('교육 (영유아) 아이: 🍼 육아 보관함 = 달별 기록 수, 달�
     { type: 'diaper', days: 40, hour: 10, data: { pee: true, poo: true } },
     { type: 'sleep', days: 40, hour: 14, endHour: 16, data: {} },
     { type: 'feeding', days: 200, hour: 8, data: { method: 'breast', side: 'L' } },
+    { type: 'feeding', days: 900, hour: 8, data: { method: 'breast', side: 'R' } },
     { type: 'feeding', days: 365 * 3 + 30, hour: 8, data: { method: 'formula', ml: 50 } }, // 만 3세 뒤 = 육아 단계 밖
   ]);
   await openTimeline();
@@ -91,25 +92,39 @@ test('교육 (영유아) 아이: 🍼 육아 보관함 = 달별 기록 수, 달�
   await A.page.locator('.past-row').getByRole('button', { name: '🍼 육아' }).click();
   await A.page.locator('.panel-head', { hasText: '🗂 🍼 육아' }).waitFor();
 
-  const months = monthSpans(birth, birthdayAt(birth, 3));
-  const rows = A.page.locator('.ar-row:not(.ar-head)');
-  await until(async () => (await rows.count()) === months.length);
+  // 해별: 그해에 들어간 육아 단계 기록 수
+  const [y, m, d] = birth.split('-').map(Number), at = days => new Date(Date.UTC(y, m - 1, d + days));
+  const spans = monthSpans(birth, birthdayAt(birth, 3)), years = [...new Set(spans.map(x => x.ym.slice(0, 4)))];
+  const inYear = (list, yr) => list.filter(n => at(n).getUTCFullYear() === +yr).length;
+  const yearRows = A.page.locator('.ar-year');
+  await until(async () => (await yearRows.count()) === years.length);
   await until(async () => !(await A.page.locator('.ar-table').innerText()).includes('…'), 30000); // 서버에서 다 셀 때까지
-  const [y, m, d] = birth.split('-').map(Number);
-  const ymOf = dt => `${dt.getUTCFullYear()}.${String(dt.getUTCMonth() + 1).padStart(2, '0')}`;
-  const m40 = ymOf(new Date(Date.UTC(y, m - 1, d + 40))), m200 = ymOf(new Date(Date.UTC(y, m - 1, d + 200)));
-  const row40 = rows.filter({ hasText: m40 });
-  assert.match(await row40.innerText(), /2회\s+1번\s+1회$/);
-  assert.match(await rows.filter({ hasText: m200 }).innerText(), /1회\s+0번\s+0회$/);
-  assert.match(await rows.last().innerText(), /0회\s+0번\s+0회$/, '육아 단계 밖 기록은 안 셈');
+  for (const yr of years) {
+    const text = await yearRows.filter({ hasText: `${yr}년` }).innerText();
+    assert.match(text, new RegExp(`${inYear([40, 40, 200, 900], yr)}회\\s+${inYear([40], yr)}번\\s+${inYear([40], yr)}회$`), `${yr}년: ${text}`);
+  }
+  assert.match(await yearRows.first().innerText(), /^▸ \d{4}년 0~\d+개월/);
+  assert.equal(await A.page.locator('.ar-mon').count(), 0, '처음엔 해만');
+
+  // 해를 누르면 그해 달별, 달을 누르면 날짜별 표
+  const t40 = at(40), y40 = String(t40.getUTCFullYear()), mon40 = t40.getUTCMonth() + 1;
+  await yearRows.filter({ hasText: `${y40}년` }).click();
+  const monRows = A.page.locator('.ar-mon');
+  await until(async () => (await monRows.count()) === spans.filter(x => x.ym.startsWith(y40)).length);
+  const row40 = monRows.filter({ hasText: new RegExp(`^▸ ${mon40}월 `) });
+  await until(async () => /2회\s+1번\s+1회$/.test(await row40.innerText()));
+  const age40 = (t40.getUTCFullYear() - y) * 12 + (mon40 - m);
+  assert.match(await row40.innerText(), new RegExp(`^▸ ${mon40}월 ${age40}개월`), '태어난 달 0개월부터 한 달에 1씩');
 
   await row40.click();
   await A.page.locator('.ar-detail .pt-table').waitFor();
   assert.match(await A.page.locator('.ar-detail .block-line').innerText(), /^하루 평균 수유 [\d.]+회 · 수면 .+ · 기저귀 [\d.]+회$/);
   const day = A.page.locator('.ar-detail tr', { hasText: '220ml' });
   assert.match(await day.innerText(), /2회 \(220ml\)\s+2시간\s+1회 \(1\)/);
-  await row40.click(); // 다시 누르면 접힘
+  await monRows.filter({ hasText: new RegExp(`^▾ ${mon40}월 `) }).click(); // 다시 누르면 접힘
   await A.page.locator('.ar-detail').waitFor({ state: 'detached' });
+  await yearRows.filter({ hasText: `${y40}년` }).click();
+  await A.page.locator('.ar-mon').first().waitFor({ state: 'detached' });
 });
 
 test('교육 (사춘기) 아이: 🍼 육아 · 📚 교육 (영유아) — 영유아 보관함에 기관·활동·책·상담', async () => {

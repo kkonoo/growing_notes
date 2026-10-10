@@ -205,7 +205,7 @@ test('CSV: 교육 기록은 끝의 title·kind·liked·activity·place 열에', 
   assert.equal(tail(lines[4]), '엄마,,,,,햇살유치원,,');
 });
 
-test('CSV: 사춘기 기록 (시험·성적, 대화, 진로·관심사)', () => {
+test('CSV: 사춘기 기록 (시험·성적, 대화, 관심사·진로)', () => {
   const teen = [
     { id: 't1', subjectType: 'child', subjectId: 'c1', type: 'grade', at: at(9, 12), data: { exam: '1학기 중간고사', course: '수학', score: '92', memo: '서술형 실수' }, createdBy: 'u1' },
     { id: 't2', subjectType: 'child', subjectId: 'c1', type: 'talk', at: at(9, 13), data: { who: 'child', text: '친구 문제로 고민' }, createdBy: 'u2' },

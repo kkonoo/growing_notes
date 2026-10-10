@@ -1,4 +1,4 @@
-// 교육 탭: 교육 (영유아) 단계(📚 독서 · 🎹 활동 · 🏫 기관 + 💬 상담), 교육 (사춘기) 단계(🏫 학교 + 📝 성적 · 💬 대화 · 🎯 진로·관심사). 가짜 계정·가짜 데이터만
+// 교육 탭: 교육 (영유아) 단계(📚 독서 · 🎹 활동 · 🏫 기관 + 💬 상담), 교육 (사춘기) 단계(🏫 학교 + 📝 성적 · 💬 대화 · 💡 관심사·진로). 가짜 계정·가짜 데이터만
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startServer, launch, person, login, clearEmulators, fillForm, dayFromToday, until } from './helpers.mjs';
@@ -75,6 +75,24 @@ test('기관 + 상담 메모', async () => {
   await rows().filter({ hasText: '햇살유치원 · 친구와 잘 지냄, 편식 조금' }).waitFor();
 });
 
+test('기관 추가 창을 연 사이 다른 저장(배우자 등)이 들어와도 목록에서 안 사라져요', async () => {
+  await A.page.getByRole('button', { name: '＋ 기관 추가' }).click();
+  await form().locator('input[name="name"]').waitFor();
+  const n = await A.page.evaluate(async () => { // 창이 열린 동안 다른 곳에서 기관 하나 추가
+    const { state } = await import('/js/state.js');
+    const { saveChild } = await import('/js/profiles.js');
+    const c = state.children.find(x => x.name === '호호');
+    await saveChild(c.id, { schools: [...(c.schools || []), { id: 'other', kind: 'etc', name: '수영장', cls: '', teacher: '', from: '', to: '' }] });
+    for (let i = 0; i < 50 && !state.children.find(x => x.name === '호호').schools.some(x => x.name === '수영장'); i++) await new Promise(r => setTimeout(r, 100));
+    return state.children.find(x => x.name === '호호').schools.length;
+  });
+  assert.equal(n, 2);
+  await fillForm(A.page, { name: '미술학원' }, '저장');
+  await A.page.locator('.rec-row', { hasText: '미술학원' }).waitFor();
+  const names = await A.page.locator('.block', { hasText: '🏫 기관' }).locator('.rec-row .rec-date').allInnerTexts();
+  for (const want of ['햇살유치원', '수영장', '미술학원']) assert.ok(names.some(t => t.includes(want)), `${want} in ${names}`);
+});
+
 test('타임라인에도 교육 기록이 보여요', async () => {
   await A.page.getByRole('tab', { name: '🗓 타임라인' }).click();
   await A.page.locator('.month-nav').waitFor();
@@ -92,7 +110,7 @@ const yearsAgo = (y, extraDays) => { // 한국 시간 기준 y년 + extraDays일
 const chips = () => A.page.locator('.tab-body > .chip-row .chip').allInnerTexts();
 const badge = () => A.page.locator('.subject-title .badge').innerText();
 
-test('만 12세 아이는 교육 (사춘기): 학교 · 대화 · 진로·관심사', async () => {
+test('만 12세 아이는 교육 (사춘기): 학교 · 대화 · 관심사·진로', async () => {
   await A.page.getByRole('button', { name: '🏠 홈' }).click();
   await A.page.getByRole('button', { name: '👶 아이 등록' }).click();
   await fillForm(A.page, { name: '지호', birthDate: yearsAgo(12, 30) }, '등록');
@@ -100,7 +118,7 @@ test('만 12세 아이는 교육 (사춘기): 학교 · 대화 · 진로·관심
   await A.page.locator('.tab-body > .chip-row').waitFor();
   assert.equal(await badge(), '📚 교육 (사춘기)');
   assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '📚 교육');
-  assert.deepEqual(await chips(), ['🏫 학교', '💬 대화', '🎯 진로·관심사']);
+  assert.deepEqual(await chips(), ['🏫 학교', '💬 대화', '💡 관심사·진로']);
 });
 
 test('학교 추가 (기본 종류 = 학교)', async () => {
@@ -127,7 +145,7 @@ test('시험·성적: "저장하고 다음 과목"으로 같은 시험 이어서
   await A.page.locator('.rec-row', { hasText: '국어 95' }).waitFor();
 });
 
-test('대화 메모 · 진로·관심사', async () => {
+test('대화 메모 · 관심사·진로', async () => {
   await section('💬 대화');
   await A.page.getByRole('button', { name: '＋ 대화 메모' }).click();
   await form().getByRole('button', { name: '선생님과' }).click();
@@ -135,7 +153,7 @@ test('대화 메모 · 진로·관심사', async () => {
   await form().getByRole('button', { name: '저장' }).click();
   await rows().filter({ hasText: '선생님과 · 수업 태도 좋음, 발표 늘어남' }).waitFor();
 
-  await section('🎯 진로·관심사');
+  await section('💡 관심사·진로');
   await A.page.getByRole('button', { name: '🎯 꿈', exact: true }).waitFor(); // 칸이 다 그려질 때까지
   const btns = A.page.locator('.tab-body > .actions button');
   assert.deepEqual(await btns.allInnerTexts(), ['💡 관심사', '🎯 꿈', '🏅 활동']);
@@ -159,7 +177,7 @@ test('설정에서 사춘기 시작 나이를 바꾸면 단계가 바뀌어요',
   assert.deepEqual(await chips(), ['📚 독서', '🎹 활동', '🏫 기관']);
   await setTeenAge(12);
   await until(async () => (await badge()) === '📚 교육 (사춘기)');
-  assert.equal(await A.page.locator('.chip-row .chip.on').innerText(), '🎯 진로·관심사', '보던 칸 그대로');
+  assert.equal(await A.page.locator('.chip-row .chip.on').innerText(), '💡 관심사·진로', '보던 칸 그대로');
 });
 
 test('사춘기 노트 탭: 일기 · 처음 해 본 것 (한 말 없이)', async () => {
@@ -173,5 +191,5 @@ test('사춘기 기록도 타임라인에', async () => {
   await A.page.locator('.month-nav').waitFor();
   await until(async () => (await A.page.locator('.chip-row .chip').count()) > 1);
   const chips = await A.page.locator('.chip-row .chip').allInnerTexts();
-  for (const want of ['전체 4', '성적 2', '대화 1', '진로·관심사 1']) assert.ok(chips.includes(want), `${want} in ${chips}`);
+  for (const want of ['전체 4', '성적 2', '대화 1', '관심사·진로 1']) assert.ok(chips.includes(want), `${want} in ${chips}`);
 });

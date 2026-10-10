@@ -1,6 +1,6 @@
 // 교육 탭: 교육 (영유아) · 교육 (사춘기) 단계에 따라 칸이 달라요 (경계 나이는 설정 › 단계). 위에는 나이에 맞는 안내(지금 챙길 것)
 //   영유아(edu): 📚 독서 · 🎹 활동 · 🏫 기관(+ 💬 상담 메모)
-//   사춘기(teen): 🏫 학교(+ 📝 시험·성적) · 💬 대화 메모 · 🎯 진로·관심사
+//   사춘기(teen): 🏫 학교(+ 📝 시험·성적) · 💬 대화 메모 · 💡 관심사·진로
 // 지난 영유아 기록은 타임라인 › 🗂 지난 단계 (archive.js)
 // 한 말·처음 해 본 것·일기는 📝 일기 탭(diary.js)
 // 기록 종류 (records, subjectType 'child'): 날짜만 중요해서 시각은 안 보여 줌
@@ -8,7 +8,7 @@
 //   grade { exam, course, score, memo? } · talk { who: child|teacher|other, text } · interest { kind: like|dream|club, text }
 // 아이 정보(children 문서): activities [{ id, name, emoji, active }] · schools [{ id, kind, name, cls, teacher, from, to }]
 // 일정·교육비는 캘린더x플래너·살림노트에서. 사진은 아직 안 함
-import { render, today, stageOf } from './state.js';
+import { state, render, today, stageOf } from './state.js';
 import { childAge, dateStr } from './stage.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, tapOnce, quickAdd } from './records.js';
 import { saveChild } from './profiles.js';
@@ -24,6 +24,8 @@ const noon = s => new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10), 
 const atOf = (s, orig) => (orig && dateStr(orig) === s ? orig : s === today() ? new Date() : noon(s));
 const dateField = r => ({ key: 'date', label: '날짜', type: 'date', value: r ? dateStr(r.at) : today(), max: today(), required: true });
 const ask = (r, what) => confirm(`이 ${what}을 지울까요?`) && deleteRecord(r.id);
+// 목록을 고쳐 저장할 때는 지금 아이 정보로: 창을 그린 뒤 다른 저장(바로 전에 추가한 것 등)이 먼저 들어왔을 수 있어서
+const latest = child => state.children.find(c => c.id === child.id) || child;
 
 // ---------- 📚 독서 ----------
 const WITH = [{ value: 'together', label: '같이 읽음' }, { value: 'alone', label: '혼자 읽음' }];
@@ -70,7 +72,7 @@ async function activityForm(child, a) {
     extra: a ? DEL : [],
   });
   if (!v) return;
-  const list = child.activities || [];
+  const list = latest(child).activities || [];
   if (v === 'delete') {
     if (confirm(`'${a.name}' 활동을 목록에서 지울까요? 지금까지의 기록은 그대로 남아요.`)) saveChild(child.id, { activities: list.filter(x => x.id !== a.id) });
     return;
@@ -109,7 +111,7 @@ async function schoolForm(child, sc, kind = 'daycare') {
     extra: sc ? DEL : [],
   });
   if (!v) return;
-  const list = child.schools || [];
+  const list = latest(child).schools || [];
   if (v === 'delete') {
     if (confirm(`'${sc.name}'을(를) 목록에서 지울까요? 상담 메모는 그대로 남아요.`)) saveChild(child.id, { schools: list.filter(x => x.id !== sc.id) });
     return;
@@ -181,10 +183,10 @@ async function talkForm(child, r) {
   else addRecord(C, child.id, 'talk', atOf(v.date), data);
 }
 
-// ---------- 사춘기: 🎯 진로·관심사 ----------
+// ---------- 사춘기: 💡 관심사·진로 ----------
 const INTERESTS = [{ value: 'like', label: '💡 관심사' }, { value: 'dream', label: '🎯 꿈' }, { value: 'club', label: '🏅 활동' }]; // 꿈 = 꿈·진로, 활동 = 동아리·활동
 const INTEREST_EMOJI = { like: '💡', dream: '🎯', club: '🏅' };
-const interestName = r => INTERESTS.find(x => x.value === r.data.kind)?.label.split(' ')[1] || '진로·관심사';
+const interestName = r => INTERESTS.find(x => x.value === r.data.kind)?.label.split(' ')[1] || '관심사·진로';
 async function interestForm(child, kind, r) {
   const v = await openForm({
     title: r ? '고치기' : INTERESTS.find(x => x.value === kind).label,
@@ -209,7 +211,7 @@ defineType('activity', { emoji: r => r.data.emoji || '🎹', label: '활동', da
 defineType('consult', { emoji: '💬', label: '상담', dateOnly: true, text: r => [r.data.school, r.data.text].filter(Boolean).join(' · '), edit: r => consultForm(current, r) });
 defineType('grade', { emoji: '📝', label: '성적', dateOnly: true, text: gradeText, edit: r => gradeForm(current, r) });
 defineType('talk', { emoji: '💬', label: '대화', dateOnly: true, text: talkText, edit: r => talkForm(current, r) });
-defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', label: '진로·관심사', rowLabel: interestName, dateOnly: true, text: r => r.data.text, edit: r => interestForm(current, r.data.kind, r) });
+defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', label: '관심사·진로', rowLabel: interestName, dateOnly: true, text: r => r.data.text, edit: r => interestForm(current, r.data.kind, r) });
 
 // ---------- 그리기 ----------
 // 단계별 칸과 그 칸에서 읽는 기록 종류
@@ -217,7 +219,7 @@ const MODES = {
   edu: { types: ['book', 'activity', 'consult'],
     sections: [{ value: 'book', label: '📚 독서' }, { value: 'activity', label: '🎹 활동' }, { value: 'school', label: '🏫 기관' }] },
   teen: { types: ['grade', 'talk', 'interest'],
-    sections: [{ value: 'school', label: '🏫 학교' }, { value: 'talk', label: '💬 대화' }, { value: 'interest', label: '🎯 진로·관심사' }] },
+    sections: [{ value: 'school', label: '🏫 학교' }, { value: 'talk', label: '💬 대화' }, { value: 'interest', label: '💡 관심사·진로' }] },
 };
 const sections = new Map(); // 아이·단계별로 보고 있는 칸
 let showStopped = false;

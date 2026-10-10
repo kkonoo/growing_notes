@@ -34,7 +34,7 @@ https://kkonoo.github.io/growing_notes/
     🎹 활동(피아노·태권도 등 등록 → "다녀왔어요", 진도 메모, 이번 달 횟수),
     🏫 기관(어린이집·유치원·학교, 반, 담임, 기간) + 💬 상담 메모
   - 교육 (사춘기): 🏫 학교(학년·반, 담임, 기간) + 📝 시험·성적(과목마다 하나씩, "저장하고 다음 과목"으로 같은 시험 이어서),
-    💬 대화 메모(아이와 · 선생님과), 🎯 진로·관심사(💡 관심사 · 🎯 꿈(진로) · 🏅 활동(동아리 등))
+    💬 대화 메모(아이와 · 선생님과), 💡 관심사·진로(💡 관심사 · 🎯 꿈(진로) · 🏅 활동(동아리 등))
   - 일정·교육비는 캘린더x플래너·살림노트에서
 - **노트 탭**: 📝 일기 · 🗣 한 말 · ⭐ 처음 해 본 것을 날짜별로, 한 달씩 (교육 (사춘기)엔 한 말 없이). 임신 중(태교일기)에 쓴 글도 출산 뒤 아이 노트 탭에서
   `🤰 임신 중` 표시와 함께 이어져 보여요
@@ -118,7 +118,7 @@ npx firebase emulators:start --only auth,firestore --project demo-growing
 |---|---|
 | `datetime` | 기록 시각 `YYYY-MM-DD HH:MM:SS` (검진은 날짜만 있어서 12:00:00) |
 | `subject`, `subject_type` | 아이 이름(출산한 아이의 임신 기록도 그 아이 이름, 출산 전이면 태명), `pregnancy`/`child` |
-| `type` | `checkup`(검진) `question`(질문) `contraction`(진통) `feeding`(수유) `sleep`(수면) `diaper`(기저귀) `note`(노트)<br>교육: `book`(독서) `activity`(활동) `consult`(상담) `grade`(성적) `talk`(대화) `interest`(진로·관심사) |
+| `type` | `checkup`(검진) `question`(질문) `contraction`(진통) `feeding`(수유) `sleep`(수면) `diaper`(기저귀) `note`(노트)<br>교육: `book`(독서) `activity`(활동) `consult`(상담) `grade`(성적) `talk`(대화) `interest`(관심사·진로) |
 | `method`, `side`, `ml`, `minutes` | 수유: `breast`/`formula`/`pumped`, `L`/`R`/`both`, 양, 시간(분) |
 | `end_time`, `duration_min` | 수면·진통의 끝 시각과 걸린 시간(분, 소수 둘째 자리). 진행 중이면 빈 칸 |
 | `interval_min` | 진통 간격(분): 앞 진통 시작 → 이번 시작 |
@@ -126,7 +126,7 @@ npx firebase emulators:start --only auth,firestore --project demo-growing
 | `weight_kg`, `bp_sys`, `bp_dia` | 검진 체중·혈압 |
 | `text`, `answer`, `done` | 질문, 들은 답, 물어봤는지 |
 | `memo`, `recorded_by` | 메모, 기록한 사람(설정 › 나의 이름) |
-| `title`, `kind`, `liked` | 책 제목·시험 이름, 종류(책 `together`/`alone` · 노트 `note`(일기)/`word`(한 말)/`first`(처음) · 대화 `child`/`teacher`/`other` · 진로·관심사 `like`/`dream`/`club`), 좋아함 |
+| `title`, `kind`, `liked` | 책 제목·시험 이름, 종류(책 `together`/`alone` · 노트 `note`(일기)/`word`(한 말)/`first`(처음) · 대화 `child`/`teacher`/`other` · 관심사·진로 `like`/`dream`/`club`), 좋아함 |
 | `activity`, `place` | 교육: 활동 이름, 상담한 기관 |
 | `course`, `score` | 성적: 과목, 점수·등급 (글자 그대로, 예: `92`, `A`) |
 

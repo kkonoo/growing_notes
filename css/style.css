@@ -203,7 +203,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .tab-bars .tabs { margin: 0; }
 .tabs.sub { padding: 3px; }
 .tabs.sub .tab { min-height: 36px; font-size: .88em; }
-.mode-line { margin: 0; }
+.mode-tag { margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--stage-soft); color: var(--stage); font-size: .55em; font-weight: 700; vertical-align: middle; }
 .exam-head { margin: 10px 0 2px; font-weight: 700; color: var(--muted); font-size: .9em; }
 .tl-text { white-space: pre-line; }
 .tab[aria-selected="true"] { background: var(--surface); color: var(--text); font-weight: 700; box-shadow: var(--shadow); }

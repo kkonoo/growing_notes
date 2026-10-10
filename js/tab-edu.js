@@ -1,4 +1,4 @@
-// 교육 탭: 나이에 따라 두 모드 (경계 나이는 설정 › 단계, 기본 만 12세). 위에는 나이에 맞는 안내(지금 챙길 것)
+// 교육 탭: 나이에 따라 두 모드 (경계 나이는 설정 › 단계, 기본 만 12세. 지금 모드는 아이 이름 옆에). 위에는 나이에 맞는 안내(지금 챙길 것)
 //   영유아: 📚 독서 · 🎹 활동 · 🏫 기관(+ 💬 상담 메모)
 //   사춘기: 🏫 학교(+ 📝 시험·성적) · 💬 대화 메모 · 🎯 진로·관심사
 // 한 말·처음 해 본 것·일기는 📝 일기 탭(diary.js)
@@ -212,9 +212,9 @@ defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', labe
 // ---------- 그리기 ----------
 // 모드별 칸과 그 칸에서 읽는 기록 종류
 const MODES = {
-  early: { label: '영유아 모드', types: ['book', 'activity', 'consult'],
+  early: { types: ['book', 'activity', 'consult'],
     sections: [{ value: 'book', label: '📚 독서' }, { value: 'activity', label: '🎹 활동' }, { value: 'school', label: '🏫 기관' }] },
-  teen: { label: '사춘기 모드', types: ['grade', 'talk', 'interest'],
+  teen: { types: ['grade', 'talk', 'interest'],
     sections: [{ value: 'school', label: '🏫 학교' }, { value: 'talk', label: '💬 대화' }, { value: 'interest', label: '🎯 진로·관심사' }] },
 };
 const sections = new Map(); // 아이·모드별로 보고 있는 칸
@@ -237,7 +237,6 @@ export function eduTab(s, el) {
 
   const mode = eduMode(child.birthDate, today(), teenStartAge()), M = MODES[mode], key = `${s.key}:${mode}`;
   const sec = M.sections.some(x => x.value === sections.get(key)) ? sections.get(key) : M.sections[0].value;
-  el.append(h('p', 'hint mode-line', mode === 'early' ? `${M.label} · 만 ${teenStartAge()}세부터 사춘기 모드 (설정에서 바꿀 수 있어요)` : `${M.label} · 만 ${teenStartAge()}세부터`));
   el.append(picker(M.sections, sec, v => { sections.set(key, v); render(); }, { row: 'chip-row', btn: 'chip small' }).el);
 
   // 이 모드의 교육 기록만, 작년 1월부터 (더 예전 기록은 타임라인에서 달별로)

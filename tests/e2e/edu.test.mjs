@@ -21,7 +21,7 @@ test('교육 단계 아이는 교육 탭부터, 영유아 모드 칸 3개', asyn
   assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '📚 교육');
   await A.page.locator('.chip-row .chip').first().waitFor();
   assert.deepEqual(await A.page.locator('.tab-body > .chip-row .chip').allInnerTexts(), ['📚 독서', '🎹 활동', '🏫 기관']);
-  assert.match(await A.page.locator('.mode-line').innerText(), /영유아 모드 · 만 12세부터 사춘기 모드/);
+  assert.equal(await A.page.locator('.subject h1 .mode-tag').innerText(), '영유아', '이름 옆에 지금 모드');
 });
 
 test('독서: 책 기록 → "또 읽었어요" 한 번에 → 이번 달 2번 (1권)', async () => {
@@ -90,15 +90,15 @@ const yearsAgo = (y, extraDays) => { // 한국 시간 기준 y년 + extraDays일
   return d.toISOString().slice(0, 10);
 };
 const chips = () => A.page.locator('.tab-body > .chip-row .chip').allInnerTexts();
-const modeLine = () => A.page.locator('.mode-line').innerText();
+const modeTag = () => A.page.locator('.subject h1 .mode-tag').innerText();
 
 test('만 12세 아이는 사춘기 모드: 학교 · 대화 · 진로·관심사', async () => {
   await A.page.getByRole('button', { name: '🏠 홈' }).click();
   await A.page.getByRole('button', { name: '👶 아이 등록' }).click();
   await fillForm(A.page, { name: '지호', birthDate: yearsAgo(12, 30) }, '등록');
   await A.page.locator('.subject h1', { hasText: '지호' }).waitFor();
-  await A.page.locator('.mode-line').waitFor();
-  assert.match(await modeLine(), /사춘기 모드 · 만 12세부터/);
+  await A.page.locator('.tab-body > .chip-row').waitFor();
+  assert.equal(await modeTag(), '사춘기');
   assert.deepEqual(await chips(), ['🏫 학교', '💬 대화', '🎯 진로·관심사']);
 });
 
@@ -150,10 +150,10 @@ test('설정에서 사춘기 모드 나이를 바꾸면 모드가 바뀌어요',
     await A.page.getByRole('button', { name: '닫기' }).click();
   };
   await setTeenAge(13);
-  await until(async () => /영유아 모드 · 만 13세부터/.test(await modeLine()));
+  await until(async () => (await modeTag()) === '영유아');
   assert.deepEqual(await chips(), ['📚 독서', '🎹 활동', '🏫 기관']);
   await setTeenAge(12);
-  await until(async () => /사춘기 모드/.test(await modeLine()));
+  await until(async () => (await modeTag()) === '사춘기');
   assert.equal(await A.page.locator('.chip-row .chip.on').innerText(), '🎯 진로·관심사', '보던 칸 그대로');
 });
 

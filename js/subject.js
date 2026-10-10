@@ -1,5 +1,6 @@
 // 아이 화면: 위에 이름·단계·핵심 한 줄, 아래에 탭 두 줄 (윗줄 = 단계, 아랫줄 = 모아 보기). 처음엔 지금 단계 탭이 열림
-import { state, go, stageOf, nameOf, emojiOf } from './state.js';
+import { state, go, stageOf, nameOf, emojiOf, today, teenStartAge } from './state.js';
+import { eduMode } from './stage.js';
 import { stageBadge, keyLine, editSubject } from './profiles.js';
 import { h, button } from './ui.js';
 import { pregnancyTab } from './tab-pregnancy.js';
@@ -28,7 +29,9 @@ export function renderSubject(main, s) {
   const info = h('div', 'subject-info');
   const line = h('div', 'subject-line');
   line.append(stageBadge(stage), h('span', null, keyLine(s)));
-  info.append(h('h1', null, nameOf(s)), line);
+  const name = h('h1', null, nameOf(s));
+  if (stage === 'edu') name.append(h('span', 'mode-tag', eduMode(s.child.birthDate, today(), teenStartAge()) === 'teen' ? '사춘기' : '영유아')); // 교육 탭 모드
+  info.append(name, line);
   const edit = button('✏️', () => editSubject(s), 'icon-btn');
   edit.setAttribute('aria-label', '정보 고치기');
   head.append(h('span', 'big-emoji', emojiOf(s)), info, edit);

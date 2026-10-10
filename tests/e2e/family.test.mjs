@@ -26,14 +26,14 @@ test('첫째(교육) + 둘째 임신 → 홈에 두 카드가 각자 다른 단�
   await fillForm(A.page, { name: '첫째', birthDate: '2022-05-01' }, '등록');
   await A.page.locator('.subject h1', { hasText: '첫째' }).waitFor();
   assert.equal(await selectedTab(A.page), '📚 교육', '아이 화면은 지금 단계 탭부터');
+  assert.deepEqual(await A.page.locator('.tab').allInnerTexts(), ['📚 교육', '📝 노트', '🗓 타임라인'], '단계 탭은 지금 단계 것만');
   await A.page.locator('.tab-body > .chip-row', { hasText: '📚 독서' }).waitFor(); // 교육 탭(영유아 모드): 독서·활동·기관
 
   await home(A.page);
   await A.page.getByRole('button', { name: '🤰 임신 등록' }).click();
   await fillForm(A.page, { nickname: '둘째', dueDate: dayFromToday(109) }, '등록');
   await A.page.locator('.subject h1', { hasText: '둘째' }).waitFor();
-  assert.deepEqual(await A.page.locator('.tabs:not(.sub) .tab').allInnerTexts(), ['🤰 임신'], '임신 중 윗줄은 임신 탭');
-  assert.deepEqual(await A.page.locator('.tabs.sub .tab').allInnerTexts(), ['📝 일기', '🗓 타임라인'], '아랫줄은 일기·타임라인');
+  assert.deepEqual(await A.page.locator('.tab').allInnerTexts(), ['🤰 임신', '📝 노트', '🗓 타임라인'], '임신 중엔 임신·노트·타임라인 탭');
   assert.match(await A.page.locator('.hero-big').innerText(), /24주 3일/);
 
   await home(A.page);
@@ -52,11 +52,7 @@ test('둘째 출산 처리 → 아이 프로필로 이어지고 홈 카드가 �
   await A.page.locator('.subject-line', { hasText: '생후 1일' }).waitFor();
   assert.equal(await selectedTab(A.page), '🍼 육아');
   const tabs = await A.page.locator('.tab').allInnerTexts();
-  assert.deepEqual(tabs, ['🤰 임신', '🍼 육아', '📚 교육', '📝 일기', '🗓 타임라인'], '임신에서 이어진 아이는 임신 탭도');
-
-  await A.page.getByRole('tab', { name: '🤰 임신' }).click();
-  await A.page.locator('.hero', { hasText: '👶 둘째' }).waitFor();
-  assert.match(await A.page.locator('.hero').innerText(), /출생 · 예정일/);
+  assert.deepEqual(tabs, ['🍼 육아', '📝 노트', '🗓 타임라인'], '출산하면 임신 탭 대신 육아 탭 (임신 중 기록은 노트·타임라인에)');
 
   await home(A.page);
   await A.page.locator('.card', { hasText: '🍼 육아' }).waitFor();
@@ -103,6 +99,9 @@ test('배우자 초대 → 같은 데이터가 보이고 구성원이 둘', asyn
   const members = await B.page.locator('#memberList').innerText();
   assert.match(members, /테스트엄마/);
   assert.match(members, /테스트아빠 \(나\)/);
+  B.prompts.push('🐻‍❄️');
+  await B.page.locator('#myEmoji').getByRole('button', { name: '다른 이모지 직접 입력' }).click(); // 나의 이모지도 ＋
+  await until(async () => (await B.page.locator('#memberList').innerText()).includes('🐻‍❄️ 테스트아빠 (나)'));
   await B.page.getByRole('button', { name: '닫기' }).click();
 });
 
@@ -135,6 +134,14 @@ test('아이 정보 고치기 · 지우기 (기록이 없을 때)', async () => 
   await A.page.getByRole('button', { name: '정보 고치기' }).click();
   await fillForm(A.page, { name: '막내' }, '저장');
   await A.page.locator('.subject h1', { hasText: '막내' }).waitFor();
+
+  await A.page.getByRole('button', { name: '정보 고치기' }).click(); // 대표 이모지 직접 입력 (＋)
+  A.prompts.push('🧑‍🍼 아기');
+  await A.page.locator('#formEl').getByRole('button', { name: '다른 이모지 직접 입력' }).click();
+  assert.equal(await A.page.locator('#formEl .emoji-btn.on').innerText(), '🧑‍🍼', '첫 글자만 (이어진 이모지도 한 글자)');
+  await A.page.locator('#formEl').getByRole('button', { name: '저장', exact: true }).click();
+  await A.page.locator('.subject .big-emoji', { hasText: '🧑‍🍼' }).waitFor();
+  await B.page.locator('.chip', { hasText: '🧑‍🍼 막내' }).waitFor();
   await A.page.getByRole('button', { name: '정보 고치기' }).click();
   await A.page.locator('#formEl').getByRole('button', { name: '지우기' }).click();
   await A.page.locator('.home').waitFor();

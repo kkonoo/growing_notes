@@ -63,15 +63,14 @@ export function timelineTab(s, el) {
 }
 
 // 기록을 날짜 제목 아래로 묶어서 el에 (list는 최근 것부터). pregTag(기록) → '임신 중' 표시 여부
+// 그날 기록이 모두 날짜만 있는 종류(일기·독서 등)면 시각 칸 없이
 export function dayGroups(el, list, pregTag = () => false) {
-  let day = null, box;
-  for (const r of list) {
-    if (dateStr(r.at) !== day) {
-      day = dateStr(r.at);
-      box = h('div', 'tl-day');
-      el.append(h('h3', 'day-head', fmtDay(day)), box);
-    }
-    box.append(recordRow(r, { pregTag: pregTag(r) }));
+  const days = new Map();
+  for (const r of list) days.set(dateStr(r.at), [...(days.get(dateStr(r.at)) || []), r]);
+  for (const [day, rs] of days) {
+    const box = h('div', 'tl-day'), noTime = rs.every(r => typeOf(r).dateOnly);
+    box.append(...rs.map(r => recordRow(r, { pregTag: pregTag(r), noTime })));
+    el.append(h('h3', 'day-head', fmtDay(day)), box);
   }
 }
 
@@ -94,13 +93,15 @@ function monthPicker(ym, thisMonth, show) {
 }
 
 // 기록 한 줄: 시각 · 이모지 · 종류 · 내용 · 기록한 사람(⏳ = 아직 안 올라감). 누르면 고치기
-export function recordRow(r, { pregTag = false } = {}) {
+// noTime = 시각 칸 빼기. 종류 이름은 rowLabel(기록)이 있으면 그것 (예: 노트 → 일기·한 말)
+export function recordRow(r, { pregTag = false, noTime = false } = {}) {
   const t = typeOf(r);
-  const row = button('', () => t.edit?.(r), 'tl-row');
-  const label = h('span', 'tl-label', t.label);
+  const row = button('', () => t.edit?.(r), noTime ? 'tl-row no-time' : 'tl-row');
+  const label = h('span', 'tl-label', t.rowLabel ? t.rowLabel(r) : t.label);
   if (pregTag) label.append(h('span', 'tag', '🤰 임신 중'));
   const body = h('span', 'tl-body');
   body.append(label, h('span', 'tl-text', t.text(r)), h('span', 'tl-who', `${r.pending ? '⏳ ' : ''}${memberLabel(r.createdBy)}`));
-  row.append(h('span', 'tl-time', t.dateOnly ? '' : fmtTime(r.at)), h('span', 'tl-emoji', emojiOf(t, r)), body);
+  if (!noTime) row.append(h('span', 'tl-time', t.dateOnly ? '' : fmtTime(r.at)));
+  row.append(h('span', 'tl-emoji', emojiOf(t, r)), body);
   return row;
 }

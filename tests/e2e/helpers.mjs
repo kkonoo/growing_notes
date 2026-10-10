@@ -42,10 +42,10 @@ export async function person(browser) {
   }));
   await context.route('https://cdn.jsdelivr.net/**', route => route.abort()); // 글꼴은 없어도 됨
   const page = await context.newPage();
-  const dialogs = [];
-  page.on('dialog', d => { dialogs.push(d.message()); d.accept(); }); // confirm·alert는 모두 "확인"
+  const dialogs = [], prompts = []; // prompts = 입력 창(prompt)에 넣을 답, 앞에서부터
+  page.on('dialog', d => { dialogs.push(d.message()); d.accept(d.type() === 'prompt' ? prompts.shift() : undefined); }); // confirm·alert는 모두 "확인"
   page.on('pageerror', e => console.error('[page error]', e.message));
-  return { context, page, dialogs };
+  return { context, page, dialogs, prompts };
 }
 
 // 가짜 Google 계정으로 로그인 (Emulator 전용 함수, js/db.js)

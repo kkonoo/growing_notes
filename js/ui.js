@@ -53,26 +53,35 @@ export const fmtTime = (d, sec = false) => `${pad(d.getHours())}:${pad(d.getMinu
 export const toLocalInput = (d, sec = true) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${fmtTime(d, sec)}`;
 export const fromLocalInput = s => (s ? new Date(s) : null);
 
-// 하나 고르기 줄: options = [{ value, label }]. get() = 고른 값
+// 하나 고르기 줄: options = [{ value, label }]. get() = 고른 값, pick(값) = 고르기, add(option) = 버튼 하나 더 (붙일 곳은 부르는 쪽이)
 export function picker(options, value, onPick, { row = 'choice-row', btn = 'choice-btn' } = {}) {
   const wrap = h('div', row);
   let cur = value ?? options[0].value;
-  const mark = () => wrap.querySelectorAll('button').forEach(b => {
+  const mark = () => wrap.querySelectorAll('button[data-v]').forEach(b => {
     b.classList.toggle('on', b.dataset.v === String(cur));
     b.setAttribute('aria-pressed', b.dataset.v === String(cur));
   });
-  for (const o of options) {
-    const b = button(o.label, () => { cur = o.value; mark(); if (onPick) onPick(o.value); }, btn);
-    b.dataset.v = o.value;
-    wrap.append(b);
-  }
+  const pick = v => { cur = v; mark(); if (onPick) onPick(v); };
+  const add = o => { const b = button(o.label, () => pick(o.value), btn); b.dataset.v = o.value; return b; };
+  wrap.append(...options.map(add));
   mark();
-  return { el: wrap, get: () => cur };
+  return { el: wrap, get: () => cur, pick, add };
 }
-// 이모지 고르기 줄. 지금 값이 목록에 없으면 맨 앞에 붙임
+// 글자의 첫 한 글자 (👨‍👩‍👧, 🇰🇷 같은 이어진 이모지도 한 글자로)
+const firstChar = s => (Intl.Segmenter ? [...new Intl.Segmenter().segment(s)][0]?.segment : Array.from(s)[0]) || '';
+// 이모지 고르기 줄. 지금 값이 목록에 없으면 맨 앞에 붙임. 맨 끝 ＋ = 다른 이모지 직접 입력
 export function emojiPicker(choices, value, onPick) {
   const cur = value || choices[0];
-  return picker((choices.includes(cur) ? choices : [cur, ...choices]).map(e => ({ value: e, label: e })), cur, onPick, { row: 'emoji-row', btn: 'emoji-btn' });
+  const p = picker((choices.includes(cur) ? choices : [cur, ...choices]).map(e => ({ value: e, label: e })), cur, onPick, { row: 'emoji-row', btn: 'emoji-btn' });
+  const plus = button('＋', () => {
+    const e = firstChar((prompt('쓰고 싶은 이모지를 하나 입력해 주세요.') || '').trim());
+    if (!e) return;
+    if (!p.el.querySelector(`button[data-v="${CSS.escape(e)}"]`)) plus.before(p.add({ value: e, label: e }));
+    p.pick(e);
+  }, 'emoji-btn emoji-add');
+  plus.setAttribute('aria-label', '다른 이모지 직접 입력');
+  p.el.append(plus);
+  return p;
 }
 
 // 입력 창: fields = [{ key, label, type: 'text'|'date'|'datetime-local'|'number'|'textarea'|'emoji'|'choice', value, required,

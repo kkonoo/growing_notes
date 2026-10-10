@@ -1,4 +1,4 @@
-// 일기 탭: 임신 중(📝 일기 · ⭐ 처음) → 출산 → 아이(📝 일기 · 🗣 한 말 · ⭐ 처음)까지 한 곳에서, 한 달씩. 가짜 계정·가짜 데이터만
+// 노트 탭: 임신 중(📝 일기 · ⭐ 처음) → 출산 → 아이(📝 일기 · 🗣 한 말 · ⭐ 처음)까지 한 곳에서, 한 달씩. 가짜 계정·가짜 데이터만
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startServer, launch, person, login, clearEmulators, fillForm, dayFromToday, until } from './helpers.mjs';
@@ -18,12 +18,12 @@ async function write(button, text, date) {
   await form().getByRole('button', { name: '저장' }).click();
 }
 
-test('임신 중 일기: 줄바꿈 그대로, 날짜를 지난달로 쓰면 지난달에', async () => {
+test('임신 중 노트: 줄바꿈 그대로, 날짜를 지난달로 쓰면 지난달에', async () => {
   A = await person(browser);
   await login(A.page, 'mom', '테스트엄마');
   await A.page.getByRole('button', { name: '🤰 임신 등록' }).click();
   await fillForm(A.page, { nickname: '콩콩', dueDate: dayFromToday(10) }, '등록');
-  await A.page.getByRole('tab', { name: '📝 일기' }).click();
+  await A.page.getByRole('tab', { name: '📝 노트' }).click();
   await A.page.locator('.month-nav').waitFor();
   assert.deepEqual(await actions(), ['📝 일기', '⭐ 처음 (첫 태동 등)'], '임신 중엔 한 말이 없어요');
   await A.page.getByText('이 달에는 쓴 글이 없어요.').waitFor();
@@ -31,6 +31,7 @@ test('임신 중 일기: 줄바꿈 그대로, 날짜를 지난달로 쓰면 지�
   await write('📝 일기', '오늘 병원 다녀옴\n심장 소리 들음');
   await until(async () => (await rows().count()) === 1);
   assert.match(await rows().first().innerText(), /📝[\s\S]*일기[\s\S]*오늘 병원 다녀옴\n심장 소리 들음/);
+  assert.equal(await A.page.locator('.tab-body .tl-time').count(), 0, '날짜만 있는 글은 시각 칸 없이');
 
   await write('⭐ 처음 (첫 태동 등)', '첫 태동', lastMonthEnd);
   await new Promise(r => setTimeout(r, 500));
@@ -43,12 +44,12 @@ test('임신 중 일기: 줄바꿈 그대로, 날짜를 지난달로 쓰면 지�
   await rows().filter({ hasText: '오늘 병원' }).waitFor();
 });
 
-test('출산 후 아이 일기 탭: 임신 중 글이 "🤰 임신 중"으로 이어져 보이고, 한 말도', async () => {
+test('출산 후 아이 노트 탭: 임신 중 글이 "🤰 임신 중"으로 이어져 보이고, 한 말도', async () => {
   await A.page.getByRole('tab', { name: '🤰 임신' }).click();
   await A.page.getByRole('button', { name: '👶 출산했어요' }).click();
   await fillForm(A.page, { name: '콩이' }, '출산 처리');
   await A.page.locator('.subject h1', { hasText: '콩이' }).waitFor();
-  await A.page.getByRole('tab', { name: '📝 일기' }).click();
+  await A.page.getByRole('tab', { name: '📝 노트' }).click();
   await rows().filter({ hasText: '오늘 병원' }).waitFor();
   assert.deepEqual(await actions(), ['📝 일기', '🗣 한 말', '⭐ 처음 해 본 것']);
   assert.match(await rows().filter({ hasText: '오늘 병원' }).innerText(), /🤰 임신 중/);
@@ -56,7 +57,7 @@ test('출산 후 아이 일기 탭: 임신 중 글이 "🤰 임신 중"으로 �
   await write('🗣 한 말', '맘마');
   await rows().filter({ hasText: '맘마' }).waitFor();
   const word = await rows().filter({ hasText: '맘마' }).innerText();
-  assert.match(word, /🗣/);
+  assert.match(word, /🗣[\s\S]*한 말[\s\S]*맘마/);
   assert.doesNotMatch(word, /임신 중/, '아이 글엔 임신 중 표시 없음');
 });
 
@@ -75,11 +76,11 @@ test('고치기 · 지우기', async () => {
   assert.equal(await rows().count(), 1);
 });
 
-test('타임라인에도 일기가, 달은 화면마다 따로 기억', async () => {
-  await A.page.getByRole('button', { name: '이전 달' }).click(); // 일기 탭은 지난달
+test('타임라인에도 노트가, 달은 화면마다 따로 기억', async () => {
+  await A.page.getByRole('button', { name: '이전 달' }).click(); // 노트 탭은 지난달
   await rows().filter({ hasText: '첫 태동' }).waitFor();
   await A.page.getByRole('tab', { name: '🗓 타임라인' }).click();
   await until(async () => (await A.page.locator('.chip-row .chip').count()) > 1); // 타임라인이 다 그려질 때까지
-  assert.ok((await A.page.locator('.chip-row .chip').allInnerTexts()).includes('일기 1'));
+  assert.ok((await A.page.locator('.chip-row .chip').allInnerTexts()).includes('노트 1'));
   assert.equal(await A.page.getByRole('button', { name: '이번 달' }).count(), 0, '타임라인은 이번 달 그대로');
 });

@@ -136,10 +136,6 @@ export function pregnancyTab(s, el) {
 
 function hero(s) {
   const p = s.preg, box = h('div', 'hero');
-  if (p.status === 'born') {
-    box.append(h('div', 'hero-big', `👶 ${s.child.name}`), h('div', 'hero-sub', `${fmtDate(s.child.birthDate)} 출생 · 예정일 ${fmtDate(p.dueDate)}`));
-    return box;
-  }
   const { weeks, days, dday } = pregnancyAge(p.dueDate, today());
   if (p.status === 'ended') box.append(h('div', 'hero-sub', '종료로 표시된 임신 기록이에요.'));
   else box.append(h('div', 'hero-big', `${weeks}주 ${days}일`));

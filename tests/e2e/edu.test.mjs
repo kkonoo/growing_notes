@@ -135,11 +135,15 @@ test('대화 메모 · 진로·관심사', async () => {
   await rows().filter({ hasText: '선생님과 · 수업 태도 좋음, 발표 늘어남' }).waitFor();
 
   await section('🎯 진로·관심사');
-  await A.page.getByRole('button', { name: '🎯 꿈·진로', exact: true }).click();
+  await A.page.getByRole('button', { name: '🎯 꿈', exact: true }).waitFor(); // 칸이 다 그려질 때까지
+  const btns = A.page.locator('.tab-body > .actions button');
+  assert.deepEqual(await btns.allInnerTexts(), ['💡 관심사', '🎯 꿈', '🏅 활동']);
+  assert.equal(new Set(await btns.evaluateAll(bs => bs.map(b => Math.round(b.getBoundingClientRect().top)))).size, 1, '쓰기 버튼 한 줄');
+  await A.page.getByRole('button', { name: '🎯 꿈', exact: true }).click();
   await form().locator('textarea[name="text"]').fill('수의사');
   await form().getByRole('button', { name: '저장' }).click();
   await rows().filter({ hasText: '수의사' }).waitFor();
-  assert.match(await rows().first().innerText(), /🎯[\s\S]*진로·관심사[\s\S]*수의사/);
+  assert.match(await rows().first().innerText(), /🎯[\s\S]*꿈[\s\S]*수의사/);
 });
 
 test('설정에서 사춘기 모드 나이를 바꾸면 모드가 바뀌어요', async () => {
@@ -155,6 +159,12 @@ test('설정에서 사춘기 모드 나이를 바꾸면 모드가 바뀌어요',
   await setTeenAge(12);
   await until(async () => (await modeTag()) === '사춘기');
   assert.equal(await A.page.locator('.chip-row .chip.on').innerText(), '🎯 진로·관심사', '보던 칸 그대로');
+});
+
+test('사춘기 노트 탭: 일기 · 처음 해 본 것 (한 말 없이)', async () => {
+  await A.page.getByRole('tab', { name: '📝 노트' }).click();
+  await A.page.locator('.month-nav').waitFor();
+  assert.deepEqual(await A.page.locator('.tab-body > .actions button').allInnerTexts(), ['📝 일기', '⭐ 처음 해 본 것']);
 });
 
 test('사춘기 기록도 타임라인에', async () => {

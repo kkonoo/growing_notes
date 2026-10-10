@@ -103,6 +103,6 @@ export function quickAdd(subjectType, subjectId, type, data, label) {
   ]);
 }
 
-// 기록 종류: emoji(글자 또는 기록 → 글자)·label·text(기록 → 한 줄 요약)·edit(기록 → 고치기 창). 각 탭 파일이 등록
+// 기록 종류: emoji(글자 또는 기록 → 글자)·label·rowLabel?(기록 → 줄에 보일 종류 이름)·text(기록 → 한 줄 요약)·edit(기록 → 고치기 창)·dateOnly?(시각 안 보임). 각 탭 파일이 등록
 export const TYPES = {};
 export function defineType(type, def) { TYPES[type] = def; }

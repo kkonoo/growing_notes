@@ -181,8 +181,9 @@ async function talkForm(child, r) {
 }
 
 // ---------- 사춘기: 🎯 진로·관심사 ----------
-const INTERESTS = [{ value: 'like', label: '💡 관심사' }, { value: 'dream', label: '🎯 꿈·진로' }, { value: 'club', label: '🏅 동아리·활동' }];
+const INTERESTS = [{ value: 'like', label: '💡 관심사' }, { value: 'dream', label: '🎯 꿈' }, { value: 'club', label: '🏅 활동' }]; // 꿈 = 꿈·진로, 활동 = 동아리·활동
 const INTEREST_EMOJI = { like: '💡', dream: '🎯', club: '🏅' };
+const interestName = r => INTERESTS.find(x => x.value === r.data.kind)?.label.split(' ')[1] || '진로·관심사';
 async function interestForm(child, kind, r) {
   const v = await openForm({
     title: r ? '고치기' : INTERESTS.find(x => x.value === kind).label,
@@ -207,7 +208,7 @@ defineType('activity', { emoji: r => r.data.emoji || '🎹', label: '활동', da
 defineType('consult', { emoji: '💬', label: '상담', dateOnly: true, text: r => [r.data.school, r.data.text].filter(Boolean).join(' · '), edit: r => consultForm(current, r) });
 defineType('grade', { emoji: '📝', label: '성적', dateOnly: true, text: gradeText, edit: r => gradeForm(current, r) });
 defineType('talk', { emoji: '💬', label: '대화', dateOnly: true, text: talkText, edit: r => talkForm(current, r) });
-defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', label: '진로·관심사', dateOnly: true, text: r => r.data.text, edit: r => interestForm(current, r.data.kind, r) });
+defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', label: '진로·관심사', rowLabel: interestName, dateOnly: true, text: r => r.data.text, edit: r => interestForm(current, r.data.kind, r) });
 
 // ---------- 그리기 ----------
 // 모드별 칸과 그 칸에서 읽는 기록 종류
@@ -330,11 +331,10 @@ export function eduTab(s, el) {
     else el.append(h('p', 'hint center', '아이와 나눈 이야기, 선생님 상담을 날짜별로 남겨요.'));
   }
 
-  if (sec === 'interest') {
-    const b = block('🎯 진로·관심사'), btns = h('div', 'actions');
+  if (sec === 'interest') { // 노트 탭처럼 쓰기 버튼 한 줄
+    const btns = h('div', 'actions');
     for (const k of INTERESTS) btns.append(button(k.label, () => interestForm(child, k.value), 'btn'));
-    b.append(btns);
-    el.append(b);
+    el.append(btns);
     const list = of('interest');
     if (list.length) dayGroups(el, list);
     else el.append(h('p', 'hint center', '요즘 관심 있는 것, 꿈, 동아리를 시기별로 남겨요.'));

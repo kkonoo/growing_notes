@@ -62,9 +62,9 @@ export function findSubject(key) {
   if (p.status === 'born') { const c = state.children.find(x => x.id === p.childId); return c ? childSubject(c) : pregSubject(p); }
   return pregSubject(p);
 }
-// 지금 단계: 'pregnancy' | 'baby' | 'edu' | 'ended'(종료된 임신)
+// 지금 단계: 'pregnancy' | 'baby' | 'edu'(교육 영유아) | 'teen'(교육 사춘기) | 'ended'(종료된 임신)
 export function stageOf(s) {
-  if (s.child) return childStage(s.child.birthDate, today(), eduStartAge());
+  if (s.child) return childStage(s.child.birthDate, today(), eduStartAge(), teenStartAge());
   return s.preg.status === 'ended' ? 'ended' : 'pregnancy';
 }
 export const nameOf = s => (s.child ? s.child.name : s.preg.nickname || '뱃속 아기');

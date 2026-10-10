@@ -8,7 +8,7 @@ const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/db.js', 'js/firebase-config.js', 'js/state.js', 'js/ui.js', 'js/stage.js', 'js/family.js',
   'js/profiles.js', 'js/home.js', 'js/subject.js', 'js/settings.js', 'js/tab-pregnancy.js', 'js/tab-baby.js', 'js/tab-edu.js',
-  'js/live.js', 'js/stats.js', 'js/records.js', 'js/timeline.js', 'js/pattern.js', 'js/export.js', 'js/tips.js', 'js/diary.js',
+  'js/live.js', 'js/stats.js', 'js/records.js', 'js/timeline.js', 'js/pattern.js', 'js/export.js', 'js/tips.js', 'js/diary.js', 'js/archive.js',
   'icons/app-192.png', 'icons/app-512.png', 'icons/app-maskable-192.png', 'icons/app-maskable-512.png',
 ];
 const SDK_FILES = ['firebase-app.js', 'firebase-auth.js', 'firebase-firestore.js'].map(f => SDK + f);

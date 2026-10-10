@@ -68,8 +68,9 @@ $('myName').addEventListener('change', e => {
 });
 $('eduAge').addEventListener('change', e => {
   const n = Math.round(+e.target.value);
-  if (n >= 1 && n <= 10) saveSettings({ eduStartAge: n });
-  else { e.target.value = eduStartAge(); toast('1부터 10 사이로 적어 주세요.'); }
+  const max = Math.min(10, teenStartAge() - 1); // 사춘기 시작보다 앞
+  if (n >= 1 && n <= max) saveSettings({ eduStartAge: n });
+  else { e.target.value = eduStartAge(); toast(`1부터 ${max} 사이로 적어 주세요.`); }
 });
 $('teenAge').addEventListener('change', e => {
   const n = Math.round(+e.target.value);

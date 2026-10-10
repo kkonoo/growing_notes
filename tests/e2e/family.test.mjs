@@ -27,7 +27,8 @@ test('첫째(교육) + 둘째 임신 → 홈에 두 카드가 각자 다른 단�
   await A.page.locator('.subject h1', { hasText: '첫째' }).waitFor();
   assert.equal(await selectedTab(A.page), '📚 교육', '아이 화면은 지금 단계 탭부터');
   assert.deepEqual(await A.page.locator('.tab').allInnerTexts(), ['📚 교육', '📝 노트', '🗓 타임라인'], '단계 탭은 지금 단계 것만');
-  await A.page.locator('.tab-body > .chip-row', { hasText: '📚 독서' }).waitFor(); // 교육 탭(영유아 모드): 독서·활동·기관
+  assert.equal(await A.page.locator('.subject-title').innerText(), '첫째\n📚 교육 (영유아)', '이름 오른쪽에 단계');
+  await A.page.locator('.tab-body > .chip-row', { hasText: '📚 독서' }).waitFor(); // 교육 (영유아): 독서·활동·기관
 
   await home(A.page);
   await A.page.getByRole('button', { name: '🤰 임신 등록' }).click();
@@ -39,7 +40,7 @@ test('첫째(교육) + 둘째 임신 → 홈에 두 카드가 각자 다른 단�
   await home(A.page);
   const cards = await cardTexts(A.page, 2);
   assert.equal(cards.length, 2);
-  assert.equal(cards[0], `👶첫째📚 교육${childLine('2022-05-01', today)}`);
+  assert.equal(cards[0], `👶첫째📚 교육 (영유아)${childLine('2022-05-01', today)}`);
   assert.equal(cards[1], `🤰둘째🤰 임신${pregnancyLine(dayFromToday(109), today)}`);
   assert.match(cards[1], /24주 3일 · D-109/);
 });

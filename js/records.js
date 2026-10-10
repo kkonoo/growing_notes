@@ -83,6 +83,12 @@ export function loadNotice(w) {
   if (url) box.append(Object.assign(h('a', 'btn small', building ? '색인 상태 보기 ↗' : '색인 만들기 열기 ↗'), { href: url, target: '_blank', rel: 'noopener' }));
   return box;
 }
+// 개수만 세기: 서버가 세서 1,000개당 읽기 1번 (몇 년 치 기록을 다 읽지 않게). 인터넷이 없으면 실패
+export async function countRecords(id, type, since, until) {
+  const q = F.query(famCol('records'), F.where('subjectId', '==', id), F.where('type', '==', type),
+    F.where('at', '>=', F.Timestamp.fromDate(since)), F.where('at', '<', F.Timestamp.fromDate(until)), F.orderBy('at', 'desc')); // 위와 같은 색인
+  return (await F.getCountFromServer(q)).data().count;
+}
 export const indexLink = msg => msg.match(/https:\/\/console\.firebase\.google\.com\/\S+/)?.[0] || null;
 
 // ---------- 빠른 기록: 누르면 확인 없이 바로 저장 → 토스트에서 고치기·되돌리기 ----------

@@ -1,7 +1,7 @@
 // 날짜·기록 계산 테스트. 실행: npm run test:logic
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { pregnancyAge, pregnancyLine, childAge, childStage, childLine, eduMode } from '../js/stage.js';
+import { pregnancyAge, pregnancyLine, childAge, childStage, childLine, birthdayAt, pastStages, monthSpans } from '../js/stage.js';
 import { fmtDur, fmtClock, fmtMins, fmtAgo, contractionRows, contractionSummary, babyDay, startOfDay } from '../js/stats.js';
 import { toCSV, toBackup, withDates, localDateTime, isoLocal, CSV_COLUMNS } from '../js/export.js';
 import { pickTips, TIPS } from '../js/tips.js';
@@ -48,10 +48,43 @@ test('단계: 경계 나이 설정을 따름', () => {
   assert.equal(childStage('2026-01-01', '2026-10-09', 0), 'edu');
 });
 
-test('교육 모드: 만 12세 생일 전 영유아, 그 뒤 사춘기 (설정 따름)', () => {
-  assert.equal(eduMode('2014-10-10', '2026-10-09'), 'early');
-  assert.equal(eduMode('2014-10-10', '2026-10-10'), 'teen');
-  assert.equal(eduMode('2014-10-10', '2026-10-10', 13), 'early');
+test('단계: 만 12세 생일부터 교육 (사춘기) (설정 따름)', () => {
+  assert.equal(childStage('2014-10-10', '2026-10-09'), 'edu');
+  assert.equal(childStage('2014-10-10', '2026-10-10'), 'teen');
+  assert.equal(childStage('2014-10-10', '2026-10-10', 3, 13), 'edu');
+  assert.equal(childLine('2014-10-10', '2026-10-10'), '만 12세 0개월');
+});
+
+test('만 n세 생일 (2월 29일생은 평년에 3월 1일)', () => {
+  assert.equal(birthdayAt('2022-05-01', 3), '2025-05-01');
+  assert.equal(birthdayAt('2024-02-29', 1), '2025-03-01');
+  assert.equal(birthdayAt('2024-02-29', 4), '2028-02-29');
+  assert.equal(childStage('2024-02-29', '2025-02-28', 1), 'baby');
+  assert.equal(childStage('2024-02-29', '2025-03-01', 1), 'edu');
+});
+
+test('지난 단계와 기간: 지금 단계 앞의 것만, 임신은 이어진 임신이 있을 때만', () => {
+  assert.deepEqual(pastStages('2026-10-01', '2026-10-10'), []);
+  assert.deepEqual(pastStages('2026-10-01', '2026-10-10', 3, 12, true), [{ stage: 'pregnancy', to: '2026-10-01' }]);
+  assert.deepEqual(pastStages('2022-05-01', '2026-10-10', 3, 12, true), [
+    { stage: 'pregnancy', to: '2022-05-01' },
+    { stage: 'baby', from: '2022-05-01', to: '2025-05-01' },
+  ]);
+  assert.deepEqual(pastStages('2012-03-15', '2026-10-10', 4, 13), [
+    { stage: 'baby', from: '2012-03-15', to: '2016-03-15' },
+    { stage: 'edu', from: '2016-03-15', to: '2025-03-15' },
+  ]);
+});
+
+test('기간을 달로 나누기: 첫 달·끝 달은 기간 안쪽만, 해 넘김', () => {
+  assert.deepEqual(monthSpans('2025-11-20', '2026-02-03'), [
+    { ym: '2025-11', from: '2025-11-20', to: '2025-12-01' },
+    { ym: '2025-12', from: '2025-12-01', to: '2026-01-01' },
+    { ym: '2026-01', from: '2026-01-01', to: '2026-02-01' },
+    { ym: '2026-02', from: '2026-02-01', to: '2026-02-03' },
+  ]);
+  assert.deepEqual(monthSpans('2026-03-01', '2026-04-01'), [{ ym: '2026-03', from: '2026-03-01', to: '2026-04-01' }]);
+  assert.equal(monthSpans('2022-05-01', '2025-05-01').length, 36);
 });
 
 test('시간 글자', () => {

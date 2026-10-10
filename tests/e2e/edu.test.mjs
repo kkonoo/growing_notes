@@ -1,4 +1,4 @@
-// 교육 탭: 영유아 모드(📚 독서 · 🎹 활동 · 🏫 기관 + 💬 상담), 사춘기 모드(🏫 학교 + 📝 성적 · 💬 대화 · 🎯 진로·관심사). 가짜 계정·가짜 데이터만
+// 교육 탭: 교육 (영유아) 단계(📚 독서 · 🎹 활동 · 🏫 기관 + 💬 상담), 교육 (사춘기) 단계(🏫 학교 + 📝 성적 · 💬 대화 · 🎯 진로·관심사). 가짜 계정·가짜 데이터만
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startServer, launch, person, login, clearEmulators, fillForm, dayFromToday, until } from './helpers.mjs';
@@ -12,7 +12,7 @@ const section = name => A.page.locator('.chip-row').getByRole('button', { name, 
 const rows = () => A.page.locator('.tab-body .tl-row');
 const line = () => A.page.locator('.block-line').innerText();
 
-test('교육 단계 아이는 교육 탭부터, 영유아 모드 칸 3개', async () => {
+test('교육 (영유아) 아이는 교육 탭부터, 칸 3개', async () => {
   A = await person(browser);
   await login(A.page, 'mom', '테스트엄마');
   await A.page.getByRole('button', { name: '👶 아이 등록' }).click();
@@ -21,7 +21,7 @@ test('교육 단계 아이는 교육 탭부터, 영유아 모드 칸 3개', asyn
   assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '📚 교육');
   await A.page.locator('.chip-row .chip').first().waitFor();
   assert.deepEqual(await A.page.locator('.tab-body > .chip-row .chip').allInnerTexts(), ['📚 독서', '🎹 활동', '🏫 기관']);
-  assert.equal(await A.page.locator('.subject h1 .mode-tag').innerText(), '영유아', '이름 옆에 지금 모드');
+  assert.equal(await A.page.locator('.subject-title .badge').innerText(), '📚 교육 (영유아)', '이름 옆에 지금 단계');
 });
 
 test('독서: 책 기록 → "또 읽었어요" 한 번에 → 이번 달 2번 (1권)', async () => {
@@ -83,22 +83,23 @@ test('타임라인에도 교육 기록이 보여요', async () => {
   for (const want of ['독서 2', '활동 1', '상담 1']) assert.ok(chips.includes(want), `${want} in ${chips}`);
 });
 
-// ---------- 사춘기 모드 (만 12세부터) ----------
+// ---------- 교육 (사춘기) (만 12세부터) ----------
 const yearsAgo = (y, extraDays) => { // 한국 시간 기준 y년 + extraDays일 전 'YYYY-MM-DD'
   const [Y, M, D] = dayFromToday(0).split('-').map(Number);
   const d = new Date(Date.UTC(Y - y, M - 1, D - extraDays));
   return d.toISOString().slice(0, 10);
 };
 const chips = () => A.page.locator('.tab-body > .chip-row .chip').allInnerTexts();
-const modeTag = () => A.page.locator('.subject h1 .mode-tag').innerText();
+const badge = () => A.page.locator('.subject-title .badge').innerText();
 
-test('만 12세 아이는 사춘기 모드: 학교 · 대화 · 진로·관심사', async () => {
+test('만 12세 아이는 교육 (사춘기): 학교 · 대화 · 진로·관심사', async () => {
   await A.page.getByRole('button', { name: '🏠 홈' }).click();
   await A.page.getByRole('button', { name: '👶 아이 등록' }).click();
   await fillForm(A.page, { name: '지호', birthDate: yearsAgo(12, 30) }, '등록');
   await A.page.locator('.subject h1', { hasText: '지호' }).waitFor();
   await A.page.locator('.tab-body > .chip-row').waitFor();
-  assert.equal(await modeTag(), '사춘기');
+  assert.equal(await badge(), '📚 교육 (사춘기)');
+  assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '📚 교육');
   assert.deepEqual(await chips(), ['🏫 학교', '💬 대화', '🎯 진로·관심사']);
 });
 
@@ -146,7 +147,7 @@ test('대화 메모 · 진로·관심사', async () => {
   assert.match(await rows().first().innerText(), /🎯[\s\S]*꿈[\s\S]*수의사/);
 });
 
-test('설정에서 사춘기 모드 나이를 바꾸면 모드가 바뀌어요', async () => {
+test('설정에서 사춘기 시작 나이를 바꾸면 단계가 바뀌어요', async () => {
   const setTeenAge = async n => {
     await A.page.getByRole('button', { name: '설정' }).click();
     await A.page.locator('#teenAge').fill(String(n));
@@ -154,10 +155,10 @@ test('설정에서 사춘기 모드 나이를 바꾸면 모드가 바뀌어요',
     await A.page.getByRole('button', { name: '닫기' }).click();
   };
   await setTeenAge(13);
-  await until(async () => (await modeTag()) === '영유아');
+  await until(async () => (await badge()) === '📚 교육 (영유아)');
   assert.deepEqual(await chips(), ['📚 독서', '🎹 활동', '🏫 기관']);
   await setTeenAge(12);
-  await until(async () => (await modeTag()) === '사춘기');
+  await until(async () => (await badge()) === '📚 교육 (사춘기)');
   assert.equal(await A.page.locator('.chip-row .chip.on').innerText(), '🎯 진로·관심사', '보던 칸 그대로');
 });
 

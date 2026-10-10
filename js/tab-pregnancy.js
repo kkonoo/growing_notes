@@ -163,7 +163,7 @@ function timerCard(list) {
   return sec;
 }
 
-function questionBlock(p, list) {
+export function questionBlock(p, list) {
   const open = list.filter(r => !r.data.done).sort((a, b) => a.at - b.at), done = list.filter(r => r.data.done);
   const sec = block('❓ 다음 진료 때 물어볼 것', p.status === 'active' ? button('＋ 추가', () => addQuestions(p), 'btn small') : null);
   if (!list.length) sec.append(h('p', 'hint', '진료 때 물어볼 것을 적어 두면 여기에 모여요.'));
@@ -186,7 +186,7 @@ function questionRow(r) {
   return row;
 }
 
-function checkupBlock(p, list) {
+export function checkupBlock(p, list) {
   const sec = block('🩺 검진 기록', p.status === 'active' ? button('＋ 기록', () => addCheckup(p), 'btn small') : null);
   if (!list.length) sec.append(h('p', 'hint', '검진 날짜 · 체중 · 혈압 · 메모를 기록해요.'));
   for (const r of list) {

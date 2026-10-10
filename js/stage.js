@@ -25,18 +25,44 @@ export const DEFAULT_TEEN_AGE = 12;
 export const STAGES = {
   pregnancy: { label: '임신', emoji: '🤰' },
   baby: { label: '육아', emoji: '🍼' },
-  edu: { label: '교육', emoji: '📚' },
+  edu: { label: '교육 (영유아)', emoji: '📚' },
+  teen: { label: '교육 (사춘기)', emoji: '📚' },
 };
+const ORDER = ['pregnancy', 'baby', 'edu', 'teen'];
 
-// 지금 단계. 출생 전 = 임신, 만 eduStartAge세 생일 전 = 육아, 그 뒤 = 교육
-export function childStage(birthDate, today, eduStartAge = DEFAULT_EDU_AGE) {
+// 지금 단계. 출생 전 = 임신, 만 eduStartAge세 생일 전 = 육아, 만 teenStartAge세 생일 전 = 교육(영유아), 그 뒤 = 교육(사춘기)
+export function childStage(birthDate, today, eduStartAge = DEFAULT_EDU_AGE, teenStartAge = DEFAULT_TEEN_AGE) {
   if (dayNum(birthDate) > dayNum(today)) return 'pregnancy';
-  return childAge(birthDate, today).years < eduStartAge ? 'baby' : 'edu';
+  const { years } = childAge(birthDate, today);
+  return years < eduStartAge ? 'baby' : years < teenStartAge ? 'edu' : 'teen';
 }
 
-// 교육 단계 안의 모드: 만 teenStartAge세 생일 전 = 영유아('early'), 그 뒤 = 사춘기('teen')
-export function eduMode(birthDate, today, teenStartAge = DEFAULT_TEEN_AGE) {
-  return childAge(birthDate, today).years < teenStartAge ? 'early' : 'teen';
+// 만 n세 생일 'YYYY-MM-DD' (2월 29일생은 평년엔 3월 1일: childAge와 같은 기준)
+export function birthdayAt(birthDate, n) {
+  const [y, m, d] = birthDate.split('-').map(Number);
+  return new Date(Date.UTC(y + n, m - 1, d)).toISOString().slice(0, 10);
+}
+
+// 지나간 단계와 기간 [{ stage, from, to }] (from부터 to 전날까지, to = 다음 단계 첫날). 임신은 from 없이, 이어진 임신이 있을 때만
+export function pastStages(birthDate, today, eduStartAge = DEFAULT_EDU_AGE, teenStartAge = DEFAULT_TEEN_AGE, hasPregnancy = false) {
+  const now = ORDER.indexOf(childStage(birthDate, today, eduStartAge, teenStartAge));
+  const eduFrom = birthdayAt(birthDate, eduStartAge), teenFrom = birthdayAt(birthDate, teenStartAge);
+  return [
+    ...(hasPregnancy && now >= 1 ? [{ stage: 'pregnancy', to: birthDate }] : []),
+    ...(now >= 2 ? [{ stage: 'baby', from: birthDate, to: eduFrom }] : []),
+    ...(now >= 3 ? [{ stage: 'edu', from: eduFrom, to: teenFrom }] : []),
+  ];
+}
+
+// 기간을 달로 나눔 → [{ ym: 'YYYY-MM', from, to }] (from부터 to 전날까지. 첫 달·끝 달은 기간 안쪽만)
+export function monthSpans(from, to) {
+  const out = [];
+  for (let start = from; start < to;) {
+    const y = +start.slice(0, 4), m = +start.slice(5, 7), next = m === 12 ? `${y + 1}-01-01` : `${y}-${pad(m + 1)}-01`;
+    out.push({ ym: start.slice(0, 7), from: start, to: next < to ? next : to });
+    start = next;
+  }
+  return out;
 }
 
 // 홈 카드의 핵심 한 줄

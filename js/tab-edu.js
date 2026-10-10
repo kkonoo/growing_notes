@@ -1,14 +1,15 @@
-// 교육 탭: 나이에 따라 두 모드 (경계 나이는 설정 › 단계, 기본 만 12세. 지금 모드는 아이 이름 옆에). 위에는 나이에 맞는 안내(지금 챙길 것)
-//   영유아: 📚 독서 · 🎹 활동 · 🏫 기관(+ 💬 상담 메모)
-//   사춘기: 🏫 학교(+ 📝 시험·성적) · 💬 대화 메모 · 🎯 진로·관심사
+// 교육 탭: 교육 (영유아) · 교육 (사춘기) 단계에 따라 칸이 달라요 (경계 나이는 설정 › 단계). 위에는 나이에 맞는 안내(지금 챙길 것)
+//   영유아(edu): 📚 독서 · 🎹 활동 · 🏫 기관(+ 💬 상담 메모)
+//   사춘기(teen): 🏫 학교(+ 📝 시험·성적) · 💬 대화 메모 · 🎯 진로·관심사
+// 지난 영유아 기록은 타임라인 › 🗂 지난 단계 (archive.js)
 // 한 말·처음 해 본 것·일기는 📝 일기 탭(diary.js)
 // 기록 종류 (records, subjectType 'child'): 날짜만 중요해서 시각은 안 보여 줌
 //   book { title, with: together|alone, liked, memo? } · activity { activityId, name, emoji, memo? } · consult { schoolId?, school, text }
 //   grade { exam, course, score, memo? } · talk { who: child|teacher|other, text } · interest { kind: like|dream|club, text }
 // 아이 정보(children 문서): activities [{ id, name, emoji, active }] · schools [{ id, kind, name, cls, teacher, from, to }]
 // 일정·교육비는 캘린더x플래너·살림노트에서. 사진은 아직 안 함
-import { render, today, teenStartAge } from './state.js';
-import { childAge, dateStr, eduMode } from './stage.js';
+import { render, today, stageOf } from './state.js';
+import { childAge, dateStr } from './stage.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, tapOnce, quickAdd } from './records.js';
 import { saveChild } from './profiles.js';
 import { pickTips, tipsBlock } from './tips.js';
@@ -211,14 +212,14 @@ defineType('talk', { emoji: '💬', label: '대화', dateOnly: true, text: talkT
 defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', label: '진로·관심사', rowLabel: interestName, dateOnly: true, text: r => r.data.text, edit: r => interestForm(current, r.data.kind, r) });
 
 // ---------- 그리기 ----------
-// 모드별 칸과 그 칸에서 읽는 기록 종류
+// 단계별 칸과 그 칸에서 읽는 기록 종류
 const MODES = {
-  early: { types: ['book', 'activity', 'consult'],
+  edu: { types: ['book', 'activity', 'consult'],
     sections: [{ value: 'book', label: '📚 독서' }, { value: 'activity', label: '🎹 활동' }, { value: 'school', label: '🏫 기관' }] },
   teen: { types: ['grade', 'talk', 'interest'],
     sections: [{ value: 'school', label: '🏫 학교' }, { value: 'talk', label: '💬 대화' }, { value: 'interest', label: '🎯 진로·관심사' }] },
 };
-const sections = new Map(); // 아이·모드별로 보고 있는 칸
+const sections = new Map(); // 아이·단계별로 보고 있는 칸
 let showStopped = false;
 
 function block(title, ...actions) {
@@ -236,7 +237,7 @@ export function eduTab(s, el) {
   const tips = tipsBlock(pickTips({ days: dayCount, months }), render);
   if (tips) el.append(tips);
 
-  const mode = eduMode(child.birthDate, today(), teenStartAge()), M = MODES[mode], key = `${s.key}:${mode}`;
+  const mode = stageOf(s) === 'teen' ? 'teen' : 'edu', M = MODES[mode], key = `${s.key}:${mode}`;
   const sec = M.sections.some(x => x.value === sections.get(key)) ? sections.get(key) : M.sections[0].value;
   el.append(picker(M.sections, sec, v => { sections.set(key, v); render(); }, { row: 'chip-row', btn: 'chip small' }).el);
 
@@ -295,7 +296,7 @@ export function eduTab(s, el) {
 
   if (sec === 'school') el.append(schoolBlock(child, mode));
 
-  if (sec === 'school' && mode === 'early') {
+  if (sec === 'school' && mode === 'edu') {
     const c = block('💬 상담 메모', button('＋ 상담 메모', () => consultForm(child), 'btn small'));
     const consults = of('consult');
     if (!consults.length) c.append(h('p', 'hint', '선생님과 상담한 내용을 날짜별로 남겨요.'));
@@ -347,11 +348,13 @@ function schoolBlock(child, mode) {
   const teen = mode === 'teen';
   const b = block(teen ? '🏫 학교' : '🏫 기관', button(teen ? '＋ 학교 추가' : '＋ 기관 추가', () => schoolForm(child, null, teen ? 'school' : 'daycare'), 'btn small'));
   if (!schools.length) b.append(h('p', 'hint', teen ? '학교와 학년·반, 담임, 다닌 기간을 적어 둘 수 있어요.' : '어린이집·유치원·학교와 반, 담임, 다닌 기간을 적어 둘 수 있어요.'));
-  for (const sc of schools) {
-    const row = button('', () => schoolForm(child, sc), 'rec-row');
-    const period = sc.from ? `${ym(sc.from)}~${ym(sc.to)}` : '';
-    row.append(h('span', 'rec-date', `${schoolEmoji(sc.kind)} ${sc.name}`), h('span', 'rec-text', [sc.cls, sc.teacher && `담임 ${sc.teacher}`, period].filter(Boolean).join(' · ')));
-    b.append(row);
-  }
+  b.append(...schools.map(sc => schoolRow(child, sc)));
   return b;
+}
+// 기관 한 줄: 이름, 반·담임·다닌 기간. 누르면 고치기 (보관함에서도 씀)
+export function schoolRow(child, sc) {
+  const row = button('', () => schoolForm(child, sc), 'rec-row');
+  const period = sc.from ? `${ym(sc.from)}~${ym(sc.to)}` : '';
+  row.append(h('span', 'rec-date', `${schoolEmoji(sc.kind)} ${sc.name}`), h('span', 'rec-text', [sc.cls, sc.teacher && `담임 ${sc.teacher}`, period].filter(Boolean).join(' · ')));
+  return row;
 }

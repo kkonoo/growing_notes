@@ -1,7 +1,8 @@
 // 타임라인 탭: 이 아이(또는 임신)의 기록을 한 달씩, 날짜별로 최근 것부터. 임신에서 이어진 아이면 임신 중 기록도 같이
 // ‹ 2026년 10월 › 로 넘기고, 제목을 누르면 연·월 고르기. 종류 필터. 한 번에 한 달치만 읽음 (몇 년 쌓여도 같은 양)
-import { render } from './state.js';
-import { dateStr } from './stage.js';
+// 맨 위 🗂 지난 단계: 끝난 단계의 정리 화면(보관함, archive.js)으로
+import { state, render, go, today, eduStartAge, teenStartAge } from './state.js';
+import { dateStr, pastStages, STAGES } from './stage.js';
 import { watchRecords, loadNotice, TYPES } from './records.js';
 import { memberLabel } from './family.js';
 import { h, button, fmtDay, fmtTime } from './ui.js';
@@ -38,6 +39,13 @@ export function monthNav(key, el) {
 }
 
 export function timelineTab(s, el) {
+  const past = s.child ? pastStages(s.child.birthDate, today(), eduStartAge(), teenStartAge(), !!s.preg) : [];
+  if (past.length) {
+    const row = h('div', 'past-row');
+    row.append(h('span', 'past-label', '🗂 지난 단계'), ...past.map(p => button(`${STAGES[p.stage].emoji} ${STAGES[p.stage].label}`,
+      () => go({ ...state.view, tab: 'timeline', panel: 'archive', archive: p.stage }), 'chip small')));
+    el.append(row);
+  }
   const range = monthNav(s.key, el);
   const ids = [s.child?.id, s.preg?.id].filter(Boolean);
   const w = watchRecords(ids, range);

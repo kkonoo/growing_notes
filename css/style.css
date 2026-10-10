@@ -128,7 +128,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 /* ---------- 단계 색 ---------- */
 [data-stage="pregnancy"] { --stage: var(--pregnancy); --stage-soft: var(--pregnancy-soft); }
 [data-stage="baby"] { --stage: var(--baby); --stage-soft: var(--baby-soft); }
-[data-stage="edu"] { --stage: var(--edu); --stage-soft: var(--edu-soft); }
+[data-stage="edu"], [data-stage="teen"] { --stage: var(--edu); --stage-soft: var(--edu-soft); }
 [data-stage="ended"] { --stage: var(--ended); --stage-soft: var(--ended-soft); }
 .badge {
   display: inline-block;
@@ -177,7 +177,8 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .big-emoji { font-size: 2.6em; line-height: 1; }
 .subject-info { flex: 1; min-width: 0; }
 .subject-info h1 { font-size: 1.4em; word-break: keep-all; }
-.subject-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; font-weight: 600; }
+.subject-title { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.subject-line { margin-top: 2px; font-weight: 600; }
 .tabs {
   display: flex; gap: 4px;
   margin: 16px 0 12px;
@@ -199,7 +200,6 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
   cursor: pointer;
 }
 .tab.now { color: var(--text); }
-.mode-tag { margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--stage-soft); color: var(--stage); font-size: .55em; font-weight: 700; vertical-align: middle; }
 .exam-head { margin: 10px 0 2px; font-weight: 700; color: var(--muted); font-size: .9em; }
 .tl-text { white-space: pre-line; }
 .tab[aria-selected="true"] { background: var(--surface); color: var(--text); font-weight: 700; box-shadow: var(--shadow); }
@@ -523,3 +523,20 @@ textarea { resize: vertical; }
 .toast.show.has-actions { pointer-events: auto; }
 .toast-btn { flex: none; white-space: nowrap; min-height: 40px; padding: 4px 10px; border: 0; border-radius: 10px; background: transparent; color: inherit; font-weight: 700; cursor: pointer; }
 .toast-btn:active { background: rgba(127, 127, 127, .3); }
+
+/* ---------- 🗂 지난 단계 (타임라인 위 버튼 + 보관함) ---------- */
+.past-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.past-label { color: var(--muted); font-size: .9em; font-weight: 600; margin-right: 2px; }
+.ar-table { display: flex; flex-direction: column; }
+.ar-row {
+  display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 6px; align-items: center;
+  width: 100%; min-height: 44px; padding: 6px 2px;
+  border: 0; border-top: 1px solid var(--line); background: none;
+  text-align: left; cursor: pointer; font-variant-numeric: tabular-nums;
+}
+.ar-head { min-height: 32px; border-top: 0; cursor: default; color: var(--muted); font-size: .85em; font-weight: 600; }
+.ar-row.on { font-weight: 700; }
+.ar-month { white-space: nowrap; }
+.ar-month .hint { font-weight: 400; }
+.ar-detail { padding: 4px 0 12px; }
+.ar-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); }

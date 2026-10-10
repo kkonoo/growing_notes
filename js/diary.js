@@ -1,17 +1,17 @@
 // 노트 탭: 📝 일기 · 🗣 한 말 · ⭐ 처음 해 본 것. 임신 중(태교일기)부터 아이(육아일기)까지 한 곳에 이어서, 한 달씩
 // 기록 종류 note { kind: note(일기)|word(한 말)|first(처음), text } — 날짜만 보여 줌. 엄마·아빠가 같은 날 각자 써도 돼요
-import { state, today, teenStartAge } from './state.js';
-import { dateStr, eduMode } from './stage.js';
+import { state, today, stageOf } from './state.js';
+import { dateStr } from './stage.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType } from './records.js';
 import { monthNav, dayGroups } from './timeline.js';
 import { h, button, openForm } from './ui.js';
 
 const KINDS = [{ value: 'note', label: '📝 일기' }, { value: 'word', label: '🗣 한 말' }, { value: 'first', label: '⭐ 처음 해 본 것' }];
 const EMOJI = { note: '📝', word: '🗣', first: '⭐' };
-// 임신 중엔 '한 말'이 없고 '처음'은 첫 태동 같은 것, 사춘기 모드(만 12세~)엔 '한 말' 없이
+// 임신 중엔 '한 말'이 없고 '처음'은 첫 태동 같은 것, 교육 (사춘기) 단계엔 '한 말' 없이
 function kindsFor(subjectType, child) {
   if (subjectType === 'pregnancy') return [KINDS[0], { value: 'first', label: '⭐ 처음 (첫 태동 등)' }];
-  if (child && eduMode(child.birthDate, today(), teenStartAge()) === 'teen') return [KINDS[0], KINDS[2]];
+  if (child && stageOf({ child }) === 'teen') return [KINDS[0], KINDS[2]];
   return KINDS;
 }
 const rowLabel = r => (r.data.kind === 'word' ? '한 말' : r.data.kind === 'first' ? (r.subjectType === 'pregnancy' ? '처음' : '처음 해 본 것') : '일기');

@@ -16,6 +16,7 @@ https://kkonoo.github.io/growing_notes/
 - 임신 종료 표시, 홈에서 숨기기 (설정 › 아이·임신에서 다시 보이기)
 - 배우자 초대: 24시간 동안 한 번만 쓸 수 있는 링크·코드
 - 단계는 저장하지 않고 날짜로 계산 (출생 전 임신 → 만 3세 생일 전 육아 → 교육. 설정에서 나이 변경)
+- 아이 화면의 탭은 두 줄: 윗줄 **임신 · 육아 · 교육**(단계), 아랫줄 **📝 일기 · 🗓 타임라인**(모아 보기)
 - **임신 탭**: 예정일 기준 주수, 다음 진료 때 물어볼 것(여러 줄 한 번에 추가, 체크, 들은 답 메모),
   검진 기록(날짜·체중·혈압·메모), 진통 타이머(시작·끝 버튼 → 지속시간·간격 자동 계산, 최근 1시간 요약, 화면 꺼짐 방지)
 - **육아 탭**: 화면 아래 버튼으로 수유(모유 왼쪽·오른쪽, 분유, 유축)·수면(잠들었어요 ↔ 깼어요)·기저귀(소변·대변·둘 다)를
@@ -23,9 +24,15 @@ https://kkonoo.github.io/growing_notes/
   오늘 요약, 오늘 기록(기록한 사람 표시), 최근 7일 패턴(24시간 띠 + 같은 값의 표)
 - **타임라인 탭**: 한 달씩(‹ › 로 넘기기, 제목을 누르면 연·월 고르기), 종류 필터, 날짜별 기록과 기록한 사람.
   출산한 아이는 임신 중 기록도 `🤰 임신 중` 표시와 함께 보여요. 한 번에 한 달치만 읽어서 몇 년 쌓여도 느려지지 않아요
-- **교육 탭**: 📚 독서(책 기록, 최근 책을 누르면 "또 읽었어요"로 바로 기록, 이번 달·올해 권수),
-  🎹 활동(피아노·태권도 등 등록 → "다녀왔어요", 진도 메모, 이번 달 횟수), 🗣 메모(한 말 · 처음 해 본 것 · 한 줄),
-  🏫 기관(어린이집·유치원·학교, 반, 담임, 기간) + 💬 상담 메모. 일정·교육비는 캘린더x플래너·살림노트에서
+- **교육 탭**: 나이에 따라 두 모드 (경계는 설정 › 단계, 기본 만 12세)
+  - 영유아 모드: 📚 독서(책 기록, 최근 책을 누르면 "또 읽었어요"로 바로 기록, 이번 달·올해 권수),
+    🎹 활동(피아노·태권도 등 등록 → "다녀왔어요", 진도 메모, 이번 달 횟수),
+    🏫 기관(어린이집·유치원·학교, 반, 담임, 기간) + 💬 상담 메모
+  - 사춘기 모드: 🏫 학교(학년·반, 담임, 기간) + 📝 시험·성적(과목마다 하나씩, "저장하고 다음 과목"으로 같은 시험 이어서),
+    💬 대화 메모(아이와 · 선생님과), 🎯 진로·관심사(💡 관심사 · 🎯 꿈·진로 · 🏅 동아리·활동)
+  - 일정·교육비는 캘린더x플래너·살림노트에서
+- **일기 탭**: 📝 일기 · 🗣 한 말 · ⭐ 처음 해 본 것을 날짜별로, 한 달씩. 임신 중(태교일기)에 쓴 글도 출산 뒤 아이 일기 탭에서
+  `🤰 임신 중` 표시와 함께 이어져 보여요
 - **내보내기** (설정 › 내보내기): 전체 또는 아이별로 CSV·JSON 받기 (아래 「내보내기 형식」)
 - **📌 지금 챙길 것** (임신·육아·교육 탭, 처음엔 접힘): 임신 주수·생후 일수/개월에 맞는 신청·검진 시기와 공식 링크
   (맘편한 임신 원스톱, 보건소 철분제, 출생신고·행복출산 원스톱, 부모급여 60일, 영유아 건강검진 1~8차, 예방접종도우미).
@@ -106,7 +113,7 @@ npx firebase emulators:start --only auth,firestore --project demo-growing
 |---|---|
 | `datetime` | 기록 시각 `YYYY-MM-DD HH:MM:SS` (검진은 날짜만 있어서 12:00:00) |
 | `subject`, `subject_type` | 아이 이름(출산한 아이의 임신 기록도 그 아이 이름, 출산 전이면 태명), `pregnancy`/`child` |
-| `type` | `checkup`(검진) `question`(질문) `contraction`(진통) `feeding`(수유) `sleep`(수면) `diaper`(기저귀) |
+| `type` | `checkup`(검진) `question`(질문) `contraction`(진통) `feeding`(수유) `sleep`(수면) `diaper`(기저귀) `note`(일기)<br>교육: `book`(독서) `activity`(활동) `consult`(상담) `grade`(성적) `talk`(대화) `interest`(진로·관심사) |
 | `method`, `side`, `ml`, `minutes` | 수유: `breast`/`formula`/`pumped`, `L`/`R`/`both`, 양, 시간(분) |
 | `end_time`, `duration_min` | 수면·진통의 끝 시각과 걸린 시간(분, 소수 둘째 자리). 진행 중이면 빈 칸 |
 | `interval_min` | 진통 간격(분): 앞 진통 시작 → 이번 시작 |
@@ -114,8 +121,9 @@ npx firebase emulators:start --only auth,firestore --project demo-growing
 | `weight_kg`, `bp_sys`, `bp_dia` | 검진 체중·혈압 |
 | `text`, `answer`, `done` | 질문, 들은 답, 물어봤는지 |
 | `memo`, `recorded_by` | 메모, 기록한 사람(설정 › 나의 이름) |
-| `title`, `kind`, `liked` | 교육: 책 제목, 책은 `together`/`alone`(같이·혼자) · 메모는 `word`/`first`/`note`, 좋아함 |
+| `title`, `kind`, `liked` | 책 제목·시험 이름, 종류(책 `together`/`alone` · 일기 `note`/`word`/`first` · 대화 `child`/`teacher`/`other` · 진로·관심사 `like`/`dream`/`club`), 좋아함 |
 | `activity`, `place` | 교육: 활동 이름, 상담한 기관 |
+| `course`, `score` | 성적: 과목, 점수·등급 (글자 그대로, 예: `92`, `A`) |
 
 ### JSON (백업용, 나중에 복원)
 
@@ -157,7 +165,9 @@ npm run test:e2e    # 브라우저 시나리오 (처음 한 번: npx playwright 
   질문·검진·진통 타이머, 배우자 기록의 기록자 구분, 출산 후 임신 중 기록이 아이 타임라인에 그대로,
   첫째 출생 후 기록 → 둘째 임신 → 홈 카드 두 단계, 빠른 기록·되돌리기·시각 고치기, 비행기 모드 빠른 기록, 7일 패턴,
   전체·아이별 CSV와 JSON 받기 (받은 CSV를 R `read.csv`로 읽기 포함), 타임라인 달 넘기기·연월 고르기·필터,
-  기록을 못 불러올 때(색인 준비 중 등) 기록 버튼 숨김과 자동 다시 불러오기
+  기록을 못 불러올 때(색인 준비 중 등) 기록 버튼 숨김과 자동 다시 불러오기,
+  교육 영유아·사춘기 모드(독서·활동·기관·상담 / 학교·성적·대화·진로, 설정에서 경계 나이 바꾸기),
+  일기(임신 중 → 출산 → 아이 일기 탭에 이어짐, 달 넘기기, 고치기·지우기)
 - **계산** ([tests/logic.test.mjs](tests/logic.test.mjs)): 주수·생후 일수·단계, 진통 지속시간·간격·최근 1시간 요약,
   하루 육아 정리(밤새 잔 잠은 날짜별로 나눔, 자는 중이면 지금까지), CSV(따옴표·줄바꿈·TRUE/FALSE)·JSON 백업 변환
 - R(`Rscript`)이 설치돼 있으면 CSV를 실제 `read.csv`로 읽어 보는 테스트도 돌아가요 (없으면 건너뜀)
@@ -177,10 +187,10 @@ npm run test:e2e    # 브라우저 시나리오 (처음 한 번: npx playwright 
 
 ```
 users/{uid}               { familyId }             지금 쓰는 가족 공간 (본인만)
-families/{familyId}       { members: [uid…], settings: { eduStartAge } }
+families/{familyId}       { members: [uid…], settings: { eduStartAge, teenStartAge } }
   ├ members/{uid}         { name, emoji }          기록자 표시용
   ├ pregnancies/{id}      { dueDate, status: active|born|ended, childId?, nickname?, emoji?, hidden }
-  ├ children/{id}         { name, birthDate, emoji, pregnancyId? }
+  ├ children/{id}         { name, birthDate, emoji, pregnancyId?, activities: […], schools: […] }
   └ records/{id}          { subjectType: pregnancy|child, subjectId, type, at, data, createdBy, updatedBy }
 invites/{code}            { familyId, inviterName, expiresAt, usedBy }
 ```
@@ -200,7 +210,8 @@ js/profiles.js   아이·임신 등록·고치기·출산·종료
 js/home.js       홈 카드
 js/subject.js    아이 화면 + 탭 목록 (TABS에 더하면 탭이 늘어남)
 js/tab-*.js      임신 · 육아 · 교육 탭
-js/timeline.js   타임라인 탭
+js/diary.js      일기 탭
+js/timeline.js   타임라인 탭 (달 넘기기는 일기 탭도 같이 씀)
 js/records.js    기록 추가·고치기·지우기, 화면에 보이는 동안만 구독, 기록 종류(TYPES)
 js/live.js       화면이 바뀌면 구독·1초 타이머·화면 꺼짐 방지를 정리
 js/stats.js      진통 간격·지속시간, 하루 육아 정리 같은 계산 (판정 없음)

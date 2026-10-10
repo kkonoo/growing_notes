@@ -1,5 +1,5 @@
 // 앱 상태 하나 + 다시 그리기 예약 + 화면 이동. DOM을 직접 만들지는 않음
-import { dateStr, childStage, DEFAULT_EDU_AGE } from './stage.js';
+import { dateStr, childStage, DEFAULT_EDU_AGE, DEFAULT_TEEN_AGE } from './stage.js';
 
 export const state = {
   configured: true,
@@ -42,6 +42,7 @@ export function go(view) {
 // 아이: { key: 'c:id', child, preg(이어진 임신) } / 진행 중·종료된 임신: { key: 'p:id', preg }
 export const today = () => dateStr();
 export const eduStartAge = () => state.family?.settings?.eduStartAge ?? DEFAULT_EDU_AGE;
+export const teenStartAge = () => state.family?.settings?.teenStartAge ?? DEFAULT_TEEN_AGE;
 const byDate = k => (a, b) => (a[k] < b[k] ? -1 : a[k] > b[k] ? 1 : 0);
 const childSubject = c => ({ key: `c:${c.id}`, child: c, preg: state.pregnancies.find(p => p.id === c.pregnancyId) });
 const pregSubject = p => ({ key: `p:${p.id}`, preg: p });

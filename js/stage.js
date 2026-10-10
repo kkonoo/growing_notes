@@ -21,6 +21,7 @@ export function childAge(birthDate, today) {
 }
 
 export const DEFAULT_EDU_AGE = 3;
+export const DEFAULT_TEEN_AGE = 12;
 export const STAGES = {
   pregnancy: { label: '임신', emoji: '🤰' },
   baby: { label: '육아', emoji: '🍼' },
@@ -31,6 +32,11 @@ export const STAGES = {
 export function childStage(birthDate, today, eduStartAge = DEFAULT_EDU_AGE) {
   if (dayNum(birthDate) > dayNum(today)) return 'pregnancy';
   return childAge(birthDate, today).years < eduStartAge ? 'baby' : 'edu';
+}
+
+// 교육 단계 안의 모드: 만 teenStartAge세 생일 전 = 영유아('early'), 그 뒤 = 사춘기('teen')
+export function eduMode(birthDate, today, teenStartAge = DEFAULT_TEEN_AGE) {
+  return childAge(birthDate, today).years < teenStartAge ? 'early' : 'teen';
 }
 
 // 홈 카드의 핵심 한 줄

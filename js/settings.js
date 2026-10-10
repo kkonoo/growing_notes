@@ -1,5 +1,5 @@
 // 설정 창: 계정, 나(기록자 표시), 가족(구성원·초대), 아이·임신 목록, 내보내기, 단계 경계 나이, 화면
-import { state, prefs, savePrefs, render, go, eduStartAge, nameOf, emojiOf, findSubject } from './state.js';
+import { state, prefs, savePrefs, render, go, eduStartAge, teenStartAge, nameOf, emojiOf, findSubject } from './state.js';
 import {
   logout, me, myUid, saveMe, saveSettings, createInvite, cancelInvite, checkInvite, joinFamily,
   formatCode, cleanCode, inviteLink, famCol,
@@ -15,6 +15,7 @@ const MY_EMOJI = ['🙂', '👩', '👨', '👵', '👴', '🧑', '🐻', '🐰'
 export function openSettings() {
   $('myName').value = me().name;
   $('eduAge').value = eduStartAge();
+  $('teenAge').value = teenStartAge();
   $('themeSelect').value = prefs.theme || '';
   $('inviteBox').hidden = true;
   renderSettings();
@@ -69,6 +70,11 @@ $('eduAge').addEventListener('change', e => {
   const n = Math.round(+e.target.value);
   if (n >= 1 && n <= 10) saveSettings({ eduStartAge: n });
   else { e.target.value = eduStartAge(); toast('1부터 10 사이로 적어 주세요.'); }
+});
+$('teenAge').addEventListener('change', e => {
+  const n = Math.round(+e.target.value);
+  if (n > eduStartAge() && n <= 18) saveSettings({ teenStartAge: n });
+  else { e.target.value = teenStartAge(); toast(`${eduStartAge() + 1}부터 18 사이로 적어 주세요.`); }
 });
 
 // ---------- 내보내기 ----------

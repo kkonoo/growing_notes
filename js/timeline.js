@@ -8,17 +8,19 @@ import { h, button, fmtDay, fmtTime } from './ui.js';
 
 const pad = n => String(n).padStart(2, '0');
 const ymOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
-const months = new Map();  // 아이별 보고 있는 달 'YYYY-MM' (기본: 이번 달)
+const months = new Map();  // 화면별(key) 보고 있는 달 'YYYY-MM' (기본: 이번 달)
 const filters = new Map(); // 아이별 종류 필터 (기본: 전체)
-let picking = null;        // 연·월 고르기를 펼친 아이 { key, year }
+let picking = null;        // 연·월 고르기를 펼친 화면 { key, year }
 
 const typeOf = r => TYPES[r.type] || { emoji: '📝', label: r.type, text: () => '' };
 const emojiOf = (t, r) => (typeof t.emoji === 'function' ? t.emoji(r) : t.emoji);
 
-export function timelineTab(s, el) {
-  const thisMonth = ymOf(new Date()), ym = months.get(s.key) || thisMonth;
+// 달 넘기기: ‹ 2026년 10월 › + 연·월 고르기 + 이번 달. key = 화면마다 따로 기억 (타임라인·일기)
+// → { since, until } 보고 있는 달의 처음과 다음 달 처음
+export function monthNav(key, el) {
+  const thisMonth = ymOf(new Date()), ym = months.get(key) || thisMonth;
   const [y, m] = ym.split('-').map(Number);
-  const show = v => { months.set(s.key, v); picking = null; render(); };
+  const show = v => { months.set(key, v); picking = null; render(); };
   const shift = d => show(ymOf(new Date(y, m - 1 + d, 1)));
 
   const nav = h('div', 'month-nav');
@@ -26,15 +28,19 @@ export function timelineTab(s, el) {
   prev.setAttribute('aria-label', '이전 달');
   next.setAttribute('aria-label', '다음 달');
   next.disabled = ym >= thisMonth;
-  const title = button(`${y}년 ${m}월 ▾`, () => { picking = picking?.key === s.key ? null : { key: s.key, year: y }; render(); }, 'month-title');
+  const title = button(`${y}년 ${m}월 ▾`, () => { picking = picking?.key === key ? null : { key, year: y }; render(); }, 'month-title');
   title.setAttribute('aria-label', '연·월 고르기');
   nav.append(prev, title, next);
   if (ym !== thisMonth) nav.append(button('이번 달', () => show(thisMonth), 'btn small'));
   el.append(nav);
-  if (picking?.key === s.key) el.append(monthPicker(ym, thisMonth, show));
+  if (picking?.key === key) el.append(monthPicker(ym, thisMonth, show));
+  return { since: new Date(y, m - 1, 1), until: new Date(y, m, 1) };
+}
 
+export function timelineTab(s, el) {
+  const range = monthNav(s.key, el);
   const ids = [s.child?.id, s.preg?.id].filter(Boolean);
-  const w = watchRecords(ids, { since: new Date(y, m - 1, 1), until: new Date(y, m, 1) });
+  const w = watchRecords(ids, range);
   const notice = loadNotice(w);
   if (notice) return el.append(notice);
   if (!w.list.length) return el.append(h('div', 'empty', '🗓'), h('p', 'empty-text', '이 달에는 기록이 없어요.'));

@@ -1,18 +1,21 @@
-// 교육 탭: 📚 독서 · 🎹 활동 · 🗣 메모 · 🏫 기관(+ 💬 상담 메모). 위에는 나이에 맞는 안내(지금 챙길 것)
+// 교육 탭: 나이에 따라 두 모드 (경계 나이는 설정 › 단계, 기본 만 12세). 위에는 나이에 맞는 안내(지금 챙길 것)
+//   영유아: 📚 독서 · 🎹 활동 · 🏫 기관(+ 💬 상담 메모)
+//   사춘기: 🏫 학교(+ 📝 시험·성적) · 💬 대화 메모 · 🎯 진로·관심사
+// 한 말·처음 해 본 것·일기는 📝 일기 탭(diary.js)
 // 기록 종류 (records, subjectType 'child'): 날짜만 중요해서 시각은 안 보여 줌
-//   book { title, with: together|alone, liked, memo? } · activity { activityId, name, emoji, memo? }
-//   note { kind: word|first|note, text } · consult { schoolId?, school, text }
+//   book { title, with: together|alone, liked, memo? } · activity { activityId, name, emoji, memo? } · consult { schoolId?, school, text }
+//   grade { exam, course, score, memo? } · talk { who: child|teacher|other, text } · interest { kind: like|dream|club, text }
 // 아이 정보(children 문서): activities [{ id, name, emoji, active }] · schools [{ id, kind, name, cls, teacher, from, to }]
 // 일정·교육비는 캘린더x플래너·살림노트에서. 사진은 아직 안 함
-import { render, today } from './state.js';
-import { childAge, dateStr } from './stage.js';
+import { render, today, teenStartAge } from './state.js';
+import { childAge, dateStr, eduMode } from './stage.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, tapOnce, quickAdd } from './records.js';
 import { saveChild } from './profiles.js';
 import { pickTips, tipsBlock } from './tips.js';
 import { dayGroups } from './timeline.js';
 import { h, button, openForm, picker } from './ui.js';
 
-const C = 'child', EDU = ['book', 'activity', 'note', 'consult'];
+const C = 'child';
 const DEL = [{ label: '지우기', value: 'delete', cls: 'danger' }];
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const noon = s => new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10), 12);
@@ -84,26 +87,6 @@ async function editActivityRec(r) {
   if (v) updateRecord(r.id, { at: atOf(v.date, r.at), 'data.memo': v.memo });
 }
 
-// ---------- 🗣 메모 ----------
-const KINDS = [{ value: 'word', label: '🗣 한 말' }, { value: 'first', label: '⭐ 처음 해 본 것' }, { value: 'note', label: '✏️ 메모' }];
-const KIND_EMOJI = { word: '🗣', first: '⭐', note: '✏️' };
-async function noteForm(child, kind, r) {
-  const v = await openForm({
-    title: r ? '메모 고치기' : KINDS.find(k => k.value === kind).label,
-    fields: [
-      { key: 'kind', label: '종류', type: 'choice', options: KINDS, value: r?.data.kind || kind },
-      { key: 'text', label: '내용', type: 'textarea', value: r?.data.text ?? '', required: true },
-      dateField(r),
-    ],
-    extra: r ? DEL : [],
-  });
-  if (v === 'delete') return ask(r, '메모');
-  if (!v) return;
-  const data = { kind: v.kind, text: v.text };
-  if (r) updateRecord(r.id, { at: atOf(v.date, r.at), data });
-  else addRecord(C, child.id, 'note', atOf(v.date), data);
-}
-
 // ---------- 🏫 기관 + 💬 상담 ----------
 const SCHOOL_KINDS = [
   { value: 'daycare', label: '🧸 어린이집' }, { value: 'kinder', label: '🎒 유치원' },
@@ -111,11 +94,11 @@ const SCHOOL_KINDS = [
 ];
 const schoolEmoji = k => SCHOOL_KINDS.find(x => x.value === k)?.label.split(' ')[0] || '📍';
 const ym = s => (s ? s.replace('-', '.') : '');
-async function schoolForm(child, sc) {
+async function schoolForm(child, sc, kind = 'daycare') {
   const v = await openForm({
     title: sc ? '기관 고치기' : '🏫 기관 추가',
     fields: [
-      { key: 'kind', label: '종류', type: 'choice', options: SCHOOL_KINDS, value: sc?.kind || 'daycare' },
+      { key: 'kind', label: '종류', type: 'choice', options: SCHOOL_KINDS, value: sc?.kind || kind },
       { key: 'name', label: '이름', value: sc?.name, required: true, maxLength: 40, placeholder: '예: 햇살유치원' },
       { key: 'cls', label: '반 · 학년', value: sc?.cls ?? '', maxLength: 30, half: true },
       { key: 'teacher', label: '담임', value: sc?.teacher ?? '', maxLength: 30, half: true },
@@ -152,16 +135,89 @@ async function consultForm(child, r) {
   else addRecord(C, child.id, 'consult', atOf(v.date), data);
 }
 
+// ---------- 사춘기: 📝 시험·성적 ----------
+let exams = [], courses = []; // 예전에 쓴 시험 이름·과목 (자동 완성)
+const gradeText = r => [r.data.exam, [r.data.course, r.data.score].filter(Boolean).join(' '), r.data.memo].filter(Boolean).join(' · ');
+async function gradeForm(child, r, keep) {
+  const d = r?.data || keep || {};
+  const v = await openForm({
+    title: r ? '📝 성적 고치기' : '📝 시험·성적',
+    note: r ? null : '과목마다 하나씩 기록해요. "저장하고 다음 과목"을 누르면 같은 시험으로 이어서 적어요.',
+    fields: [
+      { ...dateField(r), value: r ? dateStr(r.at) : keep?.date || today() },
+      { key: 'exam', label: '시험', value: d.exam, required: true, maxLength: 40, placeholder: '예: 1학기 중간고사', suggest: exams },
+      { key: 'course', label: '과목', value: r ? d.course : '', required: true, maxLength: 20, suggest: courses, half: true },
+      { key: 'score', label: '점수 · 등급', value: r ? d.score : '', maxLength: 20, half: true },
+      { key: 'memo', label: '메모', value: r ? d.memo ?? '' : '', maxLength: 200 },
+    ],
+    extra: r ? DEL : [{ label: '저장하고 다음 과목', value: 'next', submit: true }],
+  });
+  if (v === 'delete') return ask(r, '성적 기록');
+  if (!v) return;
+  const data = { exam: v.exam, course: v.course, score: v.score, ...(v.memo ? { memo: v.memo } : {}) };
+  if (r) return updateRecord(r.id, { at: atOf(v.date, r.at), data });
+  addRecord(C, child.id, 'grade', atOf(v.date), data);
+  if (v.action === 'next') gradeForm(child, null, { exam: v.exam, date: v.date });
+}
+
+// ---------- 사춘기: 💬 대화 메모 ----------
+const WHO = [{ value: 'child', label: '아이와' }, { value: 'teacher', label: '선생님과' }, { value: 'other', label: '기타' }];
+const talkText = r => [WHO.find(x => x.value === r.data.who)?.label, r.data.text].filter(Boolean).join(' · ');
+async function talkForm(child, r) {
+  const v = await openForm({
+    title: r ? '💬 대화 메모 고치기' : '💬 대화 메모',
+    fields: [
+      dateField(r),
+      { key: 'who', label: '누구와', type: 'choice', options: WHO, value: r?.data.who || 'child' },
+      { key: 'text', label: '내용', type: 'textarea', value: r?.data.text ?? '', required: true },
+    ],
+    extra: r ? DEL : [],
+  });
+  if (v === 'delete') return ask(r, '대화 메모');
+  if (!v) return;
+  const data = { who: v.who, text: v.text };
+  if (r) updateRecord(r.id, { at: atOf(v.date, r.at), data });
+  else addRecord(C, child.id, 'talk', atOf(v.date), data);
+}
+
+// ---------- 사춘기: 🎯 진로·관심사 ----------
+const INTERESTS = [{ value: 'like', label: '💡 관심사' }, { value: 'dream', label: '🎯 꿈·진로' }, { value: 'club', label: '🏅 동아리·활동' }];
+const INTEREST_EMOJI = { like: '💡', dream: '🎯', club: '🏅' };
+async function interestForm(child, kind, r) {
+  const v = await openForm({
+    title: r ? '고치기' : INTERESTS.find(x => x.value === kind).label,
+    fields: [
+      { key: 'kind', label: '종류', type: 'choice', options: INTERESTS, value: r?.data.kind || kind },
+      { key: 'text', label: '내용', type: 'textarea', value: r?.data.text ?? '', required: true },
+      dateField(r),
+    ],
+    extra: r ? DEL : [],
+  });
+  if (v === 'delete') return ask(r, '기록');
+  if (!v) return;
+  const data = { kind: v.kind, text: v.text };
+  if (r) updateRecord(r.id, { at: atOf(v.date, r.at), data });
+  else addRecord(C, child.id, 'interest', atOf(v.date), data);
+}
+
 // 기록 종류 등록 (타임라인·고치기). 고치기 창에 아이 정보(기관 목록)가 필요한 건 그리는 동안의 아이로
 let current = null;
 defineType('book', { emoji: '📚', label: '독서', dateOnly: true, text: bookText, edit: editBook });
 defineType('activity', { emoji: r => r.data.emoji || '🎹', label: '활동', dateOnly: true, text: actText, edit: editActivityRec });
-defineType('note', { emoji: r => KIND_EMOJI[r.data.kind] || '✏️', label: '메모', dateOnly: true, text: r => r.data.text, edit: r => noteForm(current, r.data.kind, r) });
 defineType('consult', { emoji: '💬', label: '상담', dateOnly: true, text: r => [r.data.school, r.data.text].filter(Boolean).join(' · '), edit: r => consultForm(current, r) });
+defineType('grade', { emoji: '📝', label: '성적', dateOnly: true, text: gradeText, edit: r => gradeForm(current, r) });
+defineType('talk', { emoji: '💬', label: '대화', dateOnly: true, text: talkText, edit: r => talkForm(current, r) });
+defineType('interest', { emoji: r => INTEREST_EMOJI[r.data.kind] || '💡', label: '진로·관심사', dateOnly: true, text: r => r.data.text, edit: r => interestForm(current, r.data.kind, r) });
 
 // ---------- 그리기 ----------
-const SECTIONS = [{ value: 'book', label: '📚 독서' }, { value: 'activity', label: '🎹 활동' }, { value: 'note', label: '🗣 메모' }, { value: 'school', label: '🏫 기관' }];
-const sections = new Map(); // 아이별로 보고 있는 칸
+// 모드별 칸과 그 칸에서 읽는 기록 종류
+const MODES = {
+  early: { label: '영유아 모드', types: ['book', 'activity', 'consult'],
+    sections: [{ value: 'book', label: '📚 독서' }, { value: 'activity', label: '🎹 활동' }, { value: 'school', label: '🏫 기관' }] },
+  teen: { label: '사춘기 모드', types: ['grade', 'talk', 'interest'],
+    sections: [{ value: 'school', label: '🏫 학교' }, { value: 'talk', label: '💬 대화' }, { value: 'interest', label: '🎯 진로·관심사' }] },
+};
+const sections = new Map(); // 아이·모드별로 보고 있는 칸
 let showStopped = false;
 
 function block(title, ...actions) {
@@ -179,11 +235,13 @@ export function eduTab(s, el) {
   const tips = tipsBlock(pickTips({ days: dayCount, months }), render);
   if (tips) el.append(tips);
 
-  const sec = sections.get(s.key) || 'book';
-  el.append(picker(SECTIONS, sec, v => { sections.set(s.key, v); render(); }, { row: 'chip-row', btn: 'chip small' }).el);
+  const mode = eduMode(child.birthDate, today(), teenStartAge()), M = MODES[mode], key = `${s.key}:${mode}`;
+  const sec = M.sections.some(x => x.value === sections.get(key)) ? sections.get(key) : M.sections[0].value;
+  el.append(h('p', 'hint mode-line', mode === 'early' ? `${M.label} · 만 ${teenStartAge()}세부터 사춘기 모드 (설정에서 바꿀 수 있어요)` : `${M.label} · 만 ${teenStartAge()}세부터`));
+  el.append(picker(M.sections, sec, v => { sections.set(key, v); render(); }, { row: 'chip-row', btn: 'chip small' }).el);
 
-  // 교육 기록만, 작년 1월부터 (더 예전 기록은 타임라인에서 달별로)
-  const now = new Date(), w = watchRecords([child.id], { types: EDU, since: new Date(now.getFullYear() - 1, 0, 1) });
+  // 이 모드의 교육 기록만, 작년 1월부터 (더 예전 기록은 타임라인에서 달별로)
+  const now = new Date(), w = watchRecords([child.id], { types: M.types, since: new Date(now.getFullYear() - 1, 0, 1) });
   const notice = loadNotice(w);
   if (notice) return el.append(notice);
   const of = type => w.list.filter(r => r.type === type);
@@ -235,32 +293,66 @@ export function eduTab(s, el) {
     dayGroups(el, m);
   }
 
-  if (sec === 'note') {
-    const b = block('🗣 메모');
-    const btns = h('div', 'actions');
-    for (const k of KINDS) btns.append(button(k.label, () => noteForm(child, k.value), 'btn'));
-    b.append(btns);
-    el.append(b);
-    const notes = of('note');
-    if (notes.length) dayGroups(el, notes);
-    else el.append(h('p', 'hint center', '아이가 한 말, 처음 해 본 것을 적어 두면 날짜와 함께 남아요.'));
-  }
+  if (sec === 'school') el.append(schoolBlock(child, mode));
 
-  if (sec === 'school') {
-    const schools = (child.schools || []).slice().sort((a, b) => (b.from || '').localeCompare(a.from || ''));
-    const b = block('🏫 기관', button('＋ 기관 추가', () => schoolForm(child), 'btn small'));
-    if (!schools.length) b.append(h('p', 'hint', '어린이집·유치원·학교와 반, 담임, 다닌 기간을 적어 둘 수 있어요.'));
-    for (const sc of schools) {
-      const row = button('', () => schoolForm(child, sc), 'rec-row');
-      const period = sc.from ? `${ym(sc.from)}~${ym(sc.to)}` : '';
-      row.append(h('span', 'rec-date', `${schoolEmoji(sc.kind)} ${sc.name}`), h('span', 'rec-text', [sc.cls, sc.teacher && `담임 ${sc.teacher}`, period].filter(Boolean).join(' · ')));
-      b.append(row);
-    }
-    el.append(b);
+  if (sec === 'school' && mode === 'early') {
     const c = block('💬 상담 메모', button('＋ 상담 메모', () => consultForm(child), 'btn small'));
     const consults = of('consult');
     if (!consults.length) c.append(h('p', 'hint', '선생님과 상담한 내용을 날짜별로 남겨요.'));
     el.append(c);
     dayGroups(el, consults);
   }
+
+  if (sec === 'school' && mode === 'teen') {
+    const grades = of('grade');
+    exams = [...new Set(grades.map(r => r.data.exam))];
+    courses = [...new Set(grades.map(r => r.data.course))];
+    const g = block('📝 시험·성적', button('＋ 성적 기록', () => gradeForm(child), 'btn small'));
+    if (!grades.length) g.append(h('p', 'hint', '시험마다 과목별 점수나 등급을 기록해요.'));
+    // 같은 날 같은 시험끼리 묶어서
+    const groups = new Map();
+    for (const r of grades) { const k = `${dateStr(r.at)}|${r.data.exam}`; groups.set(k, [...(groups.get(k) || []), r]); }
+    for (const [k, list] of groups) {
+      const [day, exam] = k.split('|');
+      g.append(h('div', 'exam-head', `${exam} · ${+day.slice(5, 7)}월 ${+day.slice(8, 10)}일`));
+      for (const r of list.slice().reverse()) { // 과목은 적은 순서대로
+        const row = button('', () => gradeForm(child, r), 'rec-row');
+        row.append(h('span', 'rec-date', [r.data.course, r.data.score].filter(Boolean).join(' ')), ...(r.data.memo ? [h('span', 'rec-text', r.data.memo)] : []));
+        g.append(row);
+      }
+    }
+    el.append(g);
+  }
+
+  if (sec === 'talk') {
+    el.append(block('💬 대화 메모', button('＋ 대화 메모', () => talkForm(child), 'btn small')));
+    const talks = of('talk');
+    if (talks.length) dayGroups(el, talks);
+    else el.append(h('p', 'hint center', '아이와 나눈 이야기, 선생님 상담을 날짜별로 남겨요.'));
+  }
+
+  if (sec === 'interest') {
+    const b = block('🎯 진로·관심사'), btns = h('div', 'actions');
+    for (const k of INTERESTS) btns.append(button(k.label, () => interestForm(child, k.value), 'btn'));
+    b.append(btns);
+    el.append(b);
+    const list = of('interest');
+    if (list.length) dayGroups(el, list);
+    else el.append(h('p', 'hint center', '요즘 관심 있는 것, 꿈, 동아리를 시기별로 남겨요.'));
+  }
+}
+
+// 기관(영유아) · 학교(사춘기) 목록: 이름, 반·학년, 담임, 다닌 기간. 최근에 시작한 곳부터
+function schoolBlock(child, mode) {
+  const schools = (child.schools || []).slice().sort((a, b) => (b.from || '').localeCompare(a.from || ''));
+  const teen = mode === 'teen';
+  const b = block(teen ? '🏫 학교' : '🏫 기관', button(teen ? '＋ 학교 추가' : '＋ 기관 추가', () => schoolForm(child, null, teen ? 'school' : 'daycare'), 'btn small'));
+  if (!schools.length) b.append(h('p', 'hint', teen ? '학교와 학년·반, 담임, 다닌 기간을 적어 둘 수 있어요.' : '어린이집·유치원·학교와 반, 담임, 다닌 기간을 적어 둘 수 있어요.'));
+  for (const sc of schools) {
+    const row = button('', () => schoolForm(child, sc), 'rec-row');
+    const period = sc.from ? `${ym(sc.from)}~${ym(sc.to)}` : '';
+    row.append(h('span', 'rec-date', `${schoolEmoji(sc.kind)} ${sc.name}`), h('span', 'rec-text', [sc.cls, sc.teacher && `담임 ${sc.teacher}`, period].filter(Boolean).join(' · ')));
+    b.append(row);
+  }
+  return b;
 }

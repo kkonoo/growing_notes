@@ -77,7 +77,7 @@ export function emojiPicker(choices, value, onPick) {
 
 // 입력 창: fields = [{ key, label, type: 'text'|'date'|'datetime-local'|'number'|'textarea'|'emoji'|'choice', value, required,
 //   placeholder, max, min, step, inputMode, choices(이모지), options(choice: [{ value, label }]), suggest(자동 완성 목록), hint, half(두 칸을 한 줄에) }]
-// 저장 → { key: 값 } / 취소·닫기 → null / extra 버튼 → 그 버튼의 value
+// 저장 → { key: 값 } / 취소·닫기 → null / extra 버튼 → 그 버튼의 value (submit: true면 { ...값, action: value })
 export function openForm({ title, fields, submit = '저장', extra = [], note }) {
   const dlg = $('formDlg'), form = $('formEl');
   const get = {};
@@ -120,7 +120,13 @@ export function openForm({ title, fields, submit = '저장', extra = [], note })
   const btns = h('div', 'form-btns');
   const cancel = button('취소', () => dlg.close());
   btns.append(cancel);
-  for (const x of extra) btns.append(button(x.label, () => { dlg.close(); done(x.value); }, `btn ${x.cls || ''}`));
+  for (const x of extra) {
+    btns.append(button(x.label, () => {
+      if (x.submit && !form.reportValidity()) return;
+      dlg.close();
+      done(x.submit ? { ...values(), action: x.value } : x.value);
+    }, `btn ${x.cls || ''}`));
+  }
   const ok = h('button', 'btn primary', submit);
   ok.type = 'submit';
   btns.append(ok);
@@ -128,12 +134,11 @@ export function openForm({ title, fields, submit = '저장', extra = [], note })
 
   let done;
   const result = new Promise(res => { done = v => { done = () => {}; res(v); }; });
+  const values = () => { const v = {}; for (const k in get) v[k] = get[k](); return v; };
   form.onsubmit = e => {
     e.preventDefault();
-    const v = {};
-    for (const k in get) v[k] = get[k]();
     dlg.close();
-    done(v);
+    done(values());
   };
   dlg.onclose = () => { if (!dlg.open) done(null); }; // close는 늦게 옴: 그새 다시 연 창은 그대로
   dlg.showModal();

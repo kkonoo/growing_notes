@@ -43,7 +43,7 @@ export function watchRecords(ids, { since, until, types } = {}) {
     const w = { list: [], loaded: false };
     const q = F.query(famCol('records'),
       ids.length === 1 ? F.where('subjectId', '==', ids[0]) : F.where('subjectId', 'in', ids),
-      ...(types ? [F.where('type', 'in', types)] : []),
+      ...(types ? [types.length === 1 ? F.where('type', '==', types[0]) : F.where('type', 'in', types)] : []),
       ...(since ? [F.where('at', '>=', F.Timestamp.fromDate(since))] : []),
       ...(until ? [F.where('at', '<', F.Timestamp.fromDate(until))] : []),
       F.orderBy('at', 'desc'));

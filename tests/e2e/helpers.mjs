@@ -67,7 +67,7 @@ export async function fillForm(page, values, submit) {
   const form = page.locator('#formEl');
   await form.waitFor();
   for (const [k, v] of Object.entries(values)) await form.locator(`input[name="${k}"]`).fill(v);
-  await form.getByRole('button', { name: submit }).click();
+  await form.getByRole('button', { name: submit, exact: true }).click();
 }
 
 // 'YYYY-MM-DD' (한국 시간 기준 오늘 ± n일)

@@ -172,6 +172,15 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .login-emoji { font-size: 4em; }
 .note { padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); }
 
+/* ---------- 앱 설치 안내 (main과 같은 폭) ---------- */
+.install {
+  display: flex; align-items: center; gap: 8px;
+  width: calc(100% - 32px); max-width: 728px;
+  margin: 12px auto 0;
+  padding: 4px 4px 4px 14px;
+}
+.install .icon-btn { font-size: 1em; }
+
 /* ---------- 아이 화면 ---------- */
 .subject-head { display: flex; align-items: center; gap: 12px; }
 .big-emoji { font-size: 2.6em; line-height: 1; }

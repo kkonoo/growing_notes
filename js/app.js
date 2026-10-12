@@ -1,6 +1,6 @@
 // 성장노트 시작점: Firebase 시작 → 로그인 → 내 가족 공간 → 화면 그리기. 폰 뒤로 가기, 동기화 상태 표시
 import { initFirebase, login, A, auth, EMULATOR } from './db.js';
-import { state, prefs, setRenderer, render, go, subjects, findSubject, familyReady, hasPending, nameOf, emojiOf } from './state.js';
+import { state, prefs, savePrefs, setRenderer, render, go, subjects, findSubject, familyReady, hasPending, nameOf, emojiOf } from './state.js';
 import { startUser } from './family.js';
 import { renderHome } from './home.js';
 import { renderSubject } from './subject.js';
@@ -92,6 +92,20 @@ function draw() {
   else renderHome(main);
   if ($('settings').open) renderSettings();
 }
+
+// ---------- 앱 설치 안내 ----------
+// 안드로이드 크롬 등이 "설치할 수 있음"(beforeinstallprompt)을 알려 주면 위에 안내 → 설치 누르면 브라우저 설치 창.
+// 이미 설치했으면 안 옴. ✕로 닫으면 이 기기에서는 다시 안 띄우고 브라우저 기본 동작에 맡김
+let installEvt = null;
+addEventListener('beforeinstallprompt', e => {
+  if (prefs.installClosed) return;
+  e.preventDefault(); // 브라우저 기본 안내 대신 앱 안내
+  installEvt = e;
+  $('installBar').hidden = false;
+});
+$('installBtn').addEventListener('click', () => { $('installBar').hidden = true; installEvt?.prompt(); installEvt = null; });
+$('installClose').addEventListener('click', () => { $('installBar').hidden = true; prefs.installClosed = true; savePrefs(); });
+addEventListener('appinstalled', () => { $('installBar').hidden = true; });
 
 // ---------- 시작 ----------
 applyTheme();

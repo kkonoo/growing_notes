@@ -25,6 +25,13 @@
   <nav class="chips" id="chips" aria-label="아이 고르기" hidden></nav>
 </div>
 
+<!-- 앱 설치 안내: 브라우저가 설치할 수 있다고 알려 줄 때만 보임 (app.js) -->
+<div class="note install" id="installBar" hidden>
+  <span class="grow">📲 홈 화면에 앱으로 설치하면 바로 열 수 있어요</span>
+  <button class="btn primary small" id="installBtn" type="button">설치</button>
+  <button class="icon-btn" id="installClose" type="button" aria-label="닫기">✕</button>
+</div>
+
 <main id="main"></main>
 
 <dialog id="settings" class="sheet">

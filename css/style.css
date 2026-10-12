@@ -178,6 +178,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
   width: calc(100% - 32px); max-width: 728px;
   margin: 12px auto 0;
   padding: 4px 4px 4px 14px;
+  word-break: keep-all;
 }
 .install .icon-btn { font-size: 1em; }
 

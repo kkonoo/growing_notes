@@ -106,6 +106,14 @@ addEventListener('beforeinstallprompt', e => {
 $('installBtn').addEventListener('click', () => { $('installBar').hidden = true; installEvt?.prompt(); installEvt = null; });
 $('installClose').addEventListener('click', () => { $('installBar').hidden = true; prefs.installClosed = true; savePrefs(); });
 addEventListener('appinstalled', () => { $('installBar').hidden = true; });
+// 아이폰·아이패드는 이 신호가 없어서 방법만 안내. 홈 화면에서 연 앱(standalone)이면 안 띄움.
+// 'Safari/'가 없는 건 카카오톡 같은 앱 안 브라우저 → 홈 화면에 추가가 없어서 안 띄움 (크롬 CriOS·엣지 EdgiOS는 있음)
+const ua = navigator.userAgent;
+if (/iPhone|iPad|iPod/.test(ua) && /Safari\//.test(ua) && !navigator.standalone && !prefs.installClosed) {
+  $('installText').textContent = '📲 공유 버튼(Safari는 ··· 안)에서 「홈\u00a0화면에\u00a0추가」를 누르면 앱으로 쓸 수 있어요';
+  $('installBtn').hidden = true;
+  $('installBar').hidden = false;
+}
 
 // ---------- 시작 ----------
 applyTheme();

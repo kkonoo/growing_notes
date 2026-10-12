@@ -83,8 +83,9 @@ https://kkonoo.github.io/growing_notes/
 7. GitHub repo **Settings → Pages** → Branch `main`, 폴더 `/ (root)`.
 8. https://kkonoo.github.io/growing_notes/ 를 열고 Google로 로그인 → 홈이 나오면 끝이에요.
    폰에서는 브라우저 메뉴의 **홈 화면에 추가**로 앱처럼 설치해요.
-   안드로이드 크롬처럼 설치 신호(`beforeinstallprompt`)를 주는 브라우저에서는 앱 위에 **📲 설치** 안내가 떠요
-   (이미 설치했으면 안 뜸, ✕로 닫으면 그 기기에서는 다시 안 띄움. 아이폰은 이 신호가 없어서 공유 버튼 › 홈 화면에 추가)
+   안드로이드 크롬처럼 설치 신호(`beforeinstallprompt`)를 주는 브라우저에서는 앱 위에 **📲 설치** 안내가 떠요.
+   아이폰(Safari·크롬·엣지)은 이 신호가 없어서 "공유 버튼(Safari는 ··· 안)에서 「홈 화면에 추가」" 안내만 떠요 (카카오톡 같은 앱 안 브라우저에서는 안 뜸).
+   이미 설치한 앱으로 열었으면 안 뜨고, ✕로 닫으면 그 기기에서는 다시 안 띄워요
 
 ## 배우자 초대
 

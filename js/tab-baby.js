@@ -4,6 +4,7 @@
 import { render, today as todayStr } from './state.js';
 import { childAge } from './stage.js';
 import { pickTips, tipsBlock } from './tips.js';
+import { guideBlock } from './guide.js';
 import { updateRecord, deleteRecord, watchRecords, loadNotice, defineType, tapOnce, quickAdd as addNow } from './records.js';
 import { babyDay, startOfDay, fmtMins } from './stats.js';
 import { sinceEl } from './live.js';
@@ -179,6 +180,6 @@ export function babyTab(s, el) {
   } else list.append(h('p', 'hint', '오늘은 아직 기록이 없어요.'));
 
   const { dayCount, months } = childAge(child.birthDate, todayStr());
-  const tips = tipsBlock(pickTips({ days: dayCount, months }), render);
-  el.append(now, tiles, ...(tips ? [tips] : []), list, renderPattern(mine, today), quickBar(child, sleeping));
+  const tips = tipsBlock(pickTips({ days: dayCount, months }), render), guide = guideBlock(child.id, months, render);
+  el.append(now, tiles, ...[tips, guide].filter(Boolean), list, renderPattern(mine, today), quickBar(child, sleeping));
 }

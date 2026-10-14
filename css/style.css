@@ -293,6 +293,19 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .tip-links { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .tip-links a { text-decoration: none; color: inherit; display: inline-flex; align-items: center; }
 
+/* ---------- 이 시기 아이 (지금 챙길 것과 같은 모양 + 시기 넘기기, 방법 카드) ---------- */
+.guide .tip-body { word-break: keep-all; }
+.guide-nav { display: flex; align-items: center; gap: 4px; border-top: 1px solid var(--line); }
+.guide-period { flex: 1; text-align: center; font-weight: 600; }
+.guide-nav .icon-btn:disabled { opacity: .3; }
+.guide-list { margin: 0 0 8px; padding-left: 1.2em; }
+.guide-list li { margin: 2px 0; }
+.guide-opts { display: grid; gap: 8px; margin-bottom: 8px; }
+.guide-opt { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
+.guide-opt p { margin: 4px 0 0; }
+.guide-label { margin-right: 6px; color: var(--muted); font-size: .9em; font-weight: 600; }
+.guide .note { margin: 0 0 8px; }
+
 /* ---------- 진통 타이머 ---------- */
 .panel-head { display: flex; align-items: center; gap: 12px; }
 .panel-head h2 { font-size: 1.15em; }

@@ -13,6 +13,7 @@ import { childAge, dateStr } from './stage.js';
 import { addRecord, updateRecord, deleteRecord, watchRecords, loadNotice, defineType, tapOnce, quickAdd } from './records.js';
 import { saveChild } from './profiles.js';
 import { pickTips, tipsBlock } from './tips.js';
+import { guideBlock } from './guide.js';
 import { dayGroups } from './timeline.js';
 import { h, button, openForm, picker } from './ui.js';
 
@@ -238,6 +239,8 @@ export function eduTab(s, el) {
   const { dayCount, months } = childAge(child.birthDate, today());
   const tips = tipsBlock(pickTips({ days: dayCount, months }), render);
   if (tips) el.append(tips);
+  const guide = guideBlock(child.id, months, render); // 교육 시작 나이를 만 3세보다 앞당긴 경우만 (0~35개월)
+  if (guide) el.append(guide);
 
   const mode = stageOf(s) === 'teen' ? 'teen' : 'edu', M = MODES[mode], key = `${s.key}:${mode}`;
   const sec = M.sections.some(x => x.value === sections.get(key)) ? sections.get(key) : M.sections[0].value;

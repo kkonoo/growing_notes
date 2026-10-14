@@ -24,11 +24,30 @@ test('첫째 출생 후 기록 몇 개 → 둘째 임신 등록 → 홈에 두 �
   await A.page.locator('.quickbar').waitFor();
   assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '🍼 육아');
   // 생후 101일: 지금 챙길 것 = 예방접종 확인 (건강검진 2차는 4개월부터)
-  assert.match(await A.page.locator('.tips-head').innerText(), /지금 챙길 것 · 1개/);
+  const tipsHead = A.page.getByRole('button', { name: /지금 챙길 것/ });
+  assert.match(await tipsHead.innerText(), /지금 챙길 것 · 1개/);
   assert.equal(await A.page.locator('.tip-title').count(), 0, '처음엔 접힘');
-  await A.page.locator('.tips-head').click();
+  await tipsHead.click();
   assert.deepEqual(await A.page.locator('.tip-title').allInnerTexts(), ['💉 예방접종 일정·내역 확인']);
-  await A.page.locator('.tips-head').click(); // 다시 접기
+  await tipsHead.click(); // 다시 접기
+
+  // 이 시기 아이: 생후 3개월 → 2~3개월. 처음엔 접힘 → 펼치면 발달이 먼저, ‹ › 로 다른 시기, 지금으로 돌아오기
+  const guide = A.page.locator('.guide');
+  assert.match(await guide.locator('.tips-head').innerText(), /이 시기 아이 · 생후 2~3개월/);
+  await guide.locator('.tips-head').click();
+  assert.equal(await guide.locator('.guide-period').innerText(), '생후 2~3개월 (지금)');
+  await guide.locator('.tip-title', { hasText: '이 무렵 발달' }).click();
+  assert.ok(await guide.locator('.guide-list li').count() >= 4, '발달 목록');
+  assert.ok(await guide.locator('.tip-links a').count() >= 1, '출처 링크');
+  await guide.getByRole('button', { name: '이전 시기' }).click();
+  await guide.getByRole('button', { name: '생후 0~1개월 · 지금으로' }).click();
+  assert.equal(await guide.locator('.guide-period').innerText(), '생후 2~3개월 (지금)');
+  // 의견이 갈리는 주제(수면교육, 생후 6~8개월) = 방법 카드 여러 개
+  await guide.getByRole('button', { name: '다음 시기' }).click();
+  await guide.getByRole('button', { name: '다음 시기' }).click();
+  await guide.locator('.tip-title', { hasText: '수면교육' }).click();
+  assert.ok(await guide.locator('.guide-opt').count() >= 3, '방법 카드');
+  await guide.locator('.tips-head').click(); // 다시 접기
 
   // 분유: 누르면 바로 저장 → 토스트의 고치기로 양 넣기
   await quick(A.page, /분유/).click();

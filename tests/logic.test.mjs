@@ -5,6 +5,7 @@ import { pregnancyAge, pregnancyLine, childAge, childStage, childLine, birthdayA
 import { fmtDur, fmtClock, fmtMins, fmtAgo, contractionRows, contractionSummary, babyDay, startOfDay } from '../js/stats.js';
 import { toCSV, toBackup, withDates, localDateTime, isoLocal, CSV_COLUMNS } from '../js/export.js';
 import { pickTips, TIPS } from '../js/tips.js';
+import { PERIODS, periodIndex } from '../js/guide.js';
 import { spawnSync } from 'node:child_process';
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -275,5 +276,29 @@ test('안내 데이터: 모두 출처·링크 주소가 있고, 금액(원) 문�
     assert.ok(t.src && t.title && t.body, t.id);
     for (const l of t.links) assert.match(l.url, /^https:\/\//, t.id);
     assert.doesNotMatch(t.body, /\d+\s*(만\s*)?원/, `${t.id}: 금액은 넣지 않기`);
+  }
+});
+
+// ---------- 이 시기 아이 ----------
+test('이 시기 아이: 0~35개월은 빈틈·겹침 없이 시기 하나씩, 36개월부터는 없음', () => {
+  PERIODS.forEach((p, i) => assert.equal(p.months[0], i ? PERIODS[i - 1].months[1] + 1 : 0, p.id));
+  assert.equal(PERIODS.at(-1).months[1], 35);
+  assert.equal(PERIODS[periodIndex(0)].label, '생후 0~1개월');
+  assert.equal(PERIODS[periodIndex(3)].label, '생후 2~3개월');
+  assert.equal(PERIODS[periodIndex(35)].label, '생후 24~35개월');
+  assert.equal(periodIndex(36), -1);
+});
+test('이 시기 아이 데이터: 시기마다 발달이 먼저, 모든 주제에 출처 링크, 방법 카드엔 이름·설명, 판정 문구 없음', () => {
+  for (const p of PERIODS) {
+    assert.equal(p.topics[0].emoji, '👶', `${p.id}: 발달이 맨 앞`);
+    assert.equal(new Set(p.topics.map(t => t.id)).size, p.topics.length, `${p.id}: 주제 id 겹침`);
+    for (const t of p.topics) {
+      const id = `${p.id}/${t.id}`;
+      assert.ok(t.emoji && t.title && (t.body || t.list || t.options), id);
+      assert.ok(t.src.length, `${id}: 출처`);
+      for (const l of t.src) assert.match(l.url, /^https:\/\//, id);
+      for (const o of t.options || []) assert.ok(o.name && o.how, id);
+      assert.doesNotMatch(JSON.stringify(t), /발달이 늦|정상이 아니|비정상|문제가 있는 거/, `${id}: 판정 문구`);
+    }
   }
 });

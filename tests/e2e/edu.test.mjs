@@ -22,6 +22,7 @@ test('교육 (영유아) 아이는 교육 탭부터, 칸 3개', async () => {
   await A.page.locator('.chip-row .chip').first().waitFor();
   assert.deepEqual(await A.page.locator('.tab-body > .chip-row .chip').allInnerTexts(), ['📚 독서', '🎹 활동', '🏫 기관']);
   assert.equal(await A.page.locator('.subject-title .badge').innerText(), '📚 교육 (영유아)', '이름 옆에 지금 단계');
+  assert.match(await A.page.locator('.guide .tips-head').innerText(), /이 시기 아이 · 만 4세/, '유아도 이 시기 아이 (생후 1500일 = 만 4세)');
 });
 
 test('독서: 책 기록 → "또 읽었어요" 한 번에 → 이번 달 2번 (1권)', async () => {

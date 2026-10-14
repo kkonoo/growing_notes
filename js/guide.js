@@ -482,11 +482,11 @@ export const PERIODS = [
 // 만 개월 → 시기 번호 (0~35개월 밖이면 -1)
 export const periodIndex = months => PERIODS.findIndex(p => months >= p.months[0] && months <= p.months[1]);
 
-// ---------- 그리기: 처음엔 접힌 한 줄 → 누르면 ‹ 시기 › + 주제 제목 → 제목을 누르면 내용 ----------
+// ---------- 그리기: 처음엔 접힌 한 줄 → 누르면 ‹ 시기 › + 주제 제목 → 제목을 누르면 내용 (방법 카드도 이름만 → 누르면 설명) ----------
 // 펼친 상태·넘겨 본 시기는 기억하지 않음 (앱을 열 때마다 접힌 채로, 지금 시기)
 let blockOpen = false;
 const shown = new Map(); // 아이 id → 넘겨 보고 있는 시기 번호 (없으면 지금 시기)
-const opened = new Set(); // '시기 id/주제 id'
+const opened = new Set(); // '시기 id/주제 id', 방법 카드는 '시기 id/주제 id/번호'
 
 export function guideBlock(childId, months, rerender) {
   const now = periodIndex(months);
@@ -510,17 +510,22 @@ export function guideBlock(childId, months, rerender) {
   sec.append(nav);
 
   for (const t of p.topics) {
-    const key = `${p.id}/${t.id}`, open = opened.has(key);
-    const row = button(`${t.emoji} ${t.title}`, () => { if (open) opened.delete(key); else opened.add(key); rerender(); }, `tip-title${open ? ' open' : ''}`);
-    row.setAttribute('aria-expanded', open);
-    sec.append(row);
-    if (open) sec.append(topicBody(t));
+    const key = `${p.id}/${t.id}`;
+    sec.append(toggle(key, `${t.emoji} ${t.title}`, 'tip-title', rerender));
+    if (opened.has(key)) sec.append(topicBody(t, key, rerender));
   }
   sec.append(h('p', 'hint', `${GUIDE_CHECKED} 확인. 의학적 조언이 아니에요. 아이가 걱정되면 소아청소년과나 영유아 건강검진에서 상담해요.`));
   return sec;
 }
 
-function topicBody(t) {
+function toggle(key, label, cls, rerender) {
+  const open = opened.has(key);
+  const b = button(label, () => { if (open) opened.delete(key); else opened.add(key); rerender(); }, `${cls}${open ? ' open' : ''}`);
+  b.setAttribute('aria-expanded', open);
+  return b;
+}
+
+function topicBody(t, key, rerender) {
   const body = h('div', 'tip-body');
   if (t.body) body.append(h('p', null, t.body));
   if (t.list) {
@@ -531,13 +536,16 @@ function topicBody(t) {
   if (t.options) {
     body.append(h('p', 'hint', '의견이 여러 가지인 주제라 방법을 나란히 보여 드려요. 어느 쪽이 정답이라고 하지 않아요.'));
     const opts = h('div', 'guide-opts');
-    for (const o of t.options) {
-      const c = h('div', 'guide-opt');
-      c.append(h('strong', null, o.name), h('p', null, o.how));
-      if (o.fits) c.append(labeled('잘 맞는 경우', o.fits));
-      if (o.known) c.append(labeled('알려진 것', o.known));
+    t.options.forEach((o, i) => {
+      const c = h('div', 'guide-opt'), k = `${key}/${i}`;
+      c.append(toggle(k, o.name, 'guide-opt-name', rerender));
+      if (opened.has(k)) {
+        c.append(h('p', null, o.how));
+        if (o.fits) c.append(labeled('잘 맞는 경우', o.fits));
+        if (o.known) c.append(labeled('알려진 것', o.known));
+      }
       opts.append(c);
-    }
+    });
     body.append(opts);
   }
   if (t.note) body.append(h('p', 'note', t.note));

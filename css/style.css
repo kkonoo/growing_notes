@@ -300,9 +300,15 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .guide-nav .icon-btn:disabled { opacity: .3; }
 .guide-list { margin: 0 0 8px; padding-left: 1.2em; }
 .guide-list li { margin: 2px 0; }
-.guide-opts { display: grid; gap: 8px; margin-bottom: 8px; }
-.guide-opt { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
-.guide-opt p { margin: 4px 0 0; }
+.guide-opts { display: grid; gap: 6px; margin-bottom: 8px; }
+.guide-opt { padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
+.guide-opt p { margin: 0 0 8px; }
+.guide-opt-name {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 8px 0;
+  border: 0; background: none; text-align: left; font-weight: 700; cursor: pointer;
+}
+.guide-opt-name::after { content: '▾'; margin-left: auto; color: var(--muted); }
+.guide-opt-name.open::after { content: '▴'; }
 .guide-label { margin-right: 6px; color: var(--muted); font-size: .9em; font-weight: 600; }
 .guide .note { margin: 0 0 8px; }
 

@@ -33,20 +33,30 @@ test('첫째 출생 후 기록 몇 개 → 둘째 임신 등록 → 홈에 두 �
 
   // 이 시기 아이: 생후 3개월 → 2~3개월. 처음엔 접힘 → 펼치면 발달이 먼저, ‹ › 로 다른 시기, 지금으로 돌아오기
   const guide = A.page.locator('.guide');
+  const period = text => guide.locator('.guide-period', { hasText: text }).waitFor(); // 다시 그리기는 다음 프레임
   assert.match(await guide.locator('.tips-head').innerText(), /이 시기 아이 · 생후 2~3개월/);
   await guide.locator('.tips-head').click();
-  assert.equal(await guide.locator('.guide-period').innerText(), '생후 2~3개월 (지금)');
+  await period('생후 2~3개월 (지금)');
   await guide.locator('.tip-title', { hasText: '이 무렵 발달' }).click();
+  await guide.locator('.guide-list li').first().waitFor();
   assert.ok(await guide.locator('.guide-list li').count() >= 4, '발달 목록');
   assert.ok(await guide.locator('.tip-links a').count() >= 1, '출처 링크');
   await guide.getByRole('button', { name: '이전 시기' }).click();
   await guide.getByRole('button', { name: '생후 0~1개월 · 지금으로' }).click();
-  assert.equal(await guide.locator('.guide-period').innerText(), '생후 2~3개월 (지금)');
+  await period('생후 2~3개월 (지금)');
   // 의견이 갈리는 주제(수면교육, 생후 6~8개월) = 방법 카드 여러 개
   await guide.getByRole('button', { name: '다음 시기' }).click();
+  await period('생후 4~5개월 · 지금으로');
   await guide.getByRole('button', { name: '다음 시기' }).click();
+  await period('생후 6~8개월 · 지금으로');
   await guide.locator('.tip-title', { hasText: '수면교육' }).click();
+  await guide.locator('.guide-opt').first().waitFor();
   assert.ok(await guide.locator('.guide-opt').count() >= 3, '방법 카드');
+  // 방법 카드도 처음엔 이름만 → 누르면 설명
+  assert.equal(await guide.locator('.guide-opt p').count(), 0, '방법 카드는 접힘');
+  await guide.getByRole('button', { name: /의자법/ }).click();
+  await guide.locator('.guide-opt', { hasText: '의자법' }).locator('p').first().waitFor();
+  assert.equal(await guide.locator('.guide-opt', { hasNotText: '의자법' }).locator('p').count(), 0, '누른 카드만 펼침');
   await guide.locator('.tips-head').click(); // 다시 접기
 
   // 분유: 누르면 바로 저장 → 토스트의 고치기로 양 넣기

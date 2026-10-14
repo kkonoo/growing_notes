@@ -131,6 +131,81 @@ const S = {
   schoolAge: { label: '초·중등교육법 제13조 (취학 의무)', url: 'https://law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1032860055' },
   schoolNotice: { label: '초·중등교육법 시행령 제17조 (취학 통지)', url: 'https://www.law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=1000947464' },
   enrollment: { label: '교육부: 취학통지·예비소집 (2026학년도)', url: 'https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=104634&lev=0&m=020402&opType=N&page=3&s=moe&searchType=null&statusYN=W' },
+  // 초등 (만 6~11세)
+  phoneAge: { label: '미국소아과학회: 휴대폰은 몇 살부터', url: 'https://www.aap.org/en/patient-care/media-and-children/center-of-excellence-on-social-media-and-youth-mental-health/qa-portal/qa-portal-library/qa-portal-library-questions/appropriate-age-to-introduce-a-mobile-device/' },
+  firstPhone: { label: 'AAP: 첫 휴대폰, 준비됐을까', url: 'https://www.healthychildren.org/English/family-life/Media/Pages/Cell-Phones-Whats-the-Right-Age-to-Start.aspx' },
+  wait8th: { label: 'Wait Until 8th (미국 부모 서약)', url: 'https://www.waituntil8th.org/' },
+  anxiousGen: { label: '하이트 「불안 세대」 운동', url: 'https://www.anxiousgeneration.com/' },
+  odgers: { label: 'Odgers 2024 (불안 세대 반론, Nature)', url: 'https://www.nature.com/articles/d41586-024-00902-2' },
+  phone12: { label: 'Barzilay 2026 (12살 스마트폰과 건강)', url: 'https://pubmed.ncbi.nlm.nih.gov/41324306/' },
+  phoneAgeStudy: { label: 'Sun 2023 (첫 폰 나이 5년 추적)', url: 'https://pubmed.ncbi.nlm.nih.gov/36056573/' },
+  schoolPhone: { label: '초·중등교육법 제20조의5 (교내 스마트기기)', url: 'https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032275567' },
+  schoolPhoneNews: { label: '법제처: 3월부터 교내 스마트기기 사용 제한 (2026)', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148960442' },
+  overuse: { label: '과학기술정보통신부: 스마트폰 과의존 실태조사 (2025)', url: 'https://eiec.kdi.re.kr/policy/callDownload.do?dtime=20260326234731&filenum=1&num=278528' },
+  gameRating: { label: '게임콘텐츠등급분류위원회: 등급분류', url: 'https://www.gcrb.or.kr/Institution/EtcForm01.aspx' },
+  gameTime: { label: '정책브리핑: 셧다운제 폐지, 게임시간 선택제 (2021)', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148897555' },
+  youtubeKids: { label: 'YouTube: 가족 계정 고르기', url: 'https://support.google.com/youtube/answer/10315420' },
+  googleAge: { label: 'Google: 나라별 계정 나이', url: 'https://support.google.com/accounts/answer/1350409?hl=en' },
+  mediaPlan: { label: 'AAP: 가족 미디어 계획', url: 'https://www.healthychildren.org/English/fmp/Pages/MediaPlan.aspx' },
+  tiktokAge: { label: 'TikTok: 가입 나이', url: 'https://support.tiktok.com/en/safety-hc/account-and-user-safety/underage-appeals-on-tiktok' },
+  esafety: { label: '호주 eSafety: 16세 미만 SNS 제한', url: 'https://www.esafety.gov.au/about-us/industry-regulation/social-media-age-restrictions' },
+  cyberSurvey: { label: '연합뉴스: 2025 사이버폭력 실태조사', url: 'https://www.yna.co.kr/view/AKR20260330069500017' },
+  report117: { label: '찾기쉬운 생활법령: 학교폭력 신고 (117)', url: 'https://easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=3&cciNo=1&cnpClsNo=1&csmSeq=1408&popMenu=ov' },
+  grooming: { label: '찾기쉬운 생활법령: 온라인 성착취 대화 대처', url: 'https://easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=6&cciNo=1&cnpClsNo=2&csmSeq=659&popMenu=ov' },
+  d4u: { label: '중앙디지털성범죄피해자지원센터', url: 'https://d4u.stop.or.kr/ko/main' },
+  bullySigns: { label: 'StopBullying.gov: 괴롭힘 신호', url: 'https://www.stopbullying.gov/bullying/warning-signs' },
+  bullySupport: { label: 'StopBullying.gov: 아이 돕기', url: 'https://www.stopbullying.gov/prevention/support-the-children-involved' },
+  aapBullying: { label: 'AAP: 괴롭힘과 부모가 할 일', url: 'https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Bullying-Its-Not-Ok.aspx' },
+  bullySurvey: { label: '교육부: 2026년 1차 학교폭력 실태조사', url: 'https://eiec.kdi.re.kr/policy/callDownload.do?dtime=20260909162349&filenum=1&num=286577' },
+  familyTalk: { label: 'AAP: 가족 대화 늘리기', url: 'https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/pages/Improving-Family-Communications.aspx' },
+  cdcTalk: { label: 'CDC: 아이와 이어지는 대화', url: 'https://www.cdc.gov/healthy-youth/connecting-conversations/index.html' },
+  praiseEffort: { label: 'Mueller·Dweck 1998 (노력 칭찬)', url: 'https://pubmed.ncbi.nlm.nih.gov/9686450/' },
+  mindsetMeta: { label: 'Sisk 2018 (마인드셋 메타분석)', url: 'https://pubmed.ncbi.nlm.nih.gov/29505339/' },
+  mindsetMeta2: { label: 'Burnette 2023 (마인드셋 교육 메타분석)', url: 'https://doi.org/10.1037/bul0000368' },
+  pubertyGirls: { label: 'AAP: 여자아이 사춘기 몸 변화', url: 'https://www.healthychildren.org/english/ages-stages/gradeschool/puberty/pages/physical-development-girls-what-to-expect.aspx' },
+  pubertyBoys: { label: 'AAP: 남자아이 사춘기 몸 변화', url: 'https://www.healthychildren.org/English/ages-stages/gradeschool/puberty/Pages/Physical-Development-Boys-What-to-Expect.aspx' },
+  padVoucher: { label: '성평등가족부: 여성청소년 생리용품 바우처', url: 'https://www.mogef.go.kr/sp/yth/sp_yth_f017.do' },
+  cdcAnxiety: { label: 'CDC: 아이의 불안과 우울', url: 'https://www.cdc.gov/children-mental-health/about/about-anxiety-and-depression-in-children.html' },
+  helpLines: { label: '보건복지상담센터: 109·1388·1577-0199', url: 'https://www.129.go.kr/109' },
+  emotionCheck: { label: '학생정서·행동특성검사 운영 매뉴얼 (부산교육청)', url: 'https://home.pen.go.kr/upload/happylogin/na/bbs_3162/ntt_744827/doc_be76vccfc-5bv93-40v71-90vd4-a0e6v77f4v8c2a_v247.pdf' },
+  cdcMid: { label: 'CDC 육아 팁: 6~11세 (2008)', url: 'https://www2c.cdc.gov/podcasts/media/pdf/PosParenting_MidChildhood.pdf' },
+  cdc68: { label: 'CDC 6~8세 페이지 (2024 보관본, restoredcdc.org)', url: 'https://restoredcdc.org/www.cdc.gov/child-development/positive-parenting-tips/middle-childhood-6-8-years.html' },
+  cdc911: { label: 'CDC 9~11세 페이지 (2024 보관본, restoredcdc.org)', url: 'https://dev2.restoredcdc.org/www.cdc.gov/child-development/positive-parenting-tips/middle-childhood-9-11-years-old.html' },
+  pubertyKids: { label: 'AAP: 사춘기 몸 변화', url: `${AAP_HC}/gradeschool/puberty/Pages/Physical-Development-of-School-Age-Children.aspx` },
+  kdcaPrecocious: { label: '질병관리청: 성조숙증', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=1807' },
+  necaPrecocious: { label: '병원신문: 한국보건의료연구원 성조숙증 치료 분석 (2026)', url: 'https://www.khanews.com/news/articleView.html?idxno=248275' },
+  precociousTrend: { label: '심사평가원 연구: 소아 내분비 질환 추이 (2026)', url: 'https://www.e-epih.org/journal/view.php?number=1684' },
+  schoolSleep: { label: 'AAP: 나이별 수면 시간', url: 'https://www.healthychildren.org/English/healthy-living/sleep/Pages/healthy-sleep-habits-how-many-hours-does-your-child-need.aspx' },
+  whoActivity: { label: 'WHO: 신체활동 (5~17세)', url: 'https://iris.who.int/server/api/core/bitstreams/a137d0b6-64ec-4e86-a69a-ae38ca7cef59/content' },
+  kdcaObesityRules: { label: '질병관리청: 소아청소년 비만 예방관리수칙 (2026)', url: 'https://www.kdca.go.kr/bbs/kdca/42/310302/artclView.do?layout=unknown' },
+  kdcaObesity: { label: '질병관리청: 우리 아이 비만과 성장', url: 'https://health.kdca.go.kr/healthinfo/biz/health/ntcnInfo/healthSourc/thtimtCntnts/thtimtCntntsView.do?thtimt_cntnts_sn=58' },
+  outdoorTrial: { label: 'He 2015 (바깥 활동과 근시, JAMA)', url: 'https://jamanetwork.com/journals/jama/fullarticle/2441261' },
+  outdoorLight: { label: 'Wu 2018 (그늘에서도 효과, 대만)', url: 'https://pure.lib.cgu.edu.tw/en/publications/myopia-prevention-and-outdoor-light-intensity-in-a-school-based-c-3/' },
+  cochraneMyopia: { label: '코크란: 바깥 활동과 근시 (2024)', url: 'https://www.cochrane.org/ko/evidence/CD013549_what-are-benefits-and-risks-interventions-increase-time-spent-outdoors-preventing-incidence-and' },
+  aapos: { label: '미국소아안과사시학회: 근시가 늘 때', url: 'https://engage.aapos.org/glossary/treatment-for-progressive-myopia' },
+  kdcaMyopia: { label: '질병관리청: 굴절이상(근시)', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5217' },
+  aaoMyopia: { label: '미국안과학회: 어린이 근시 조절', url: 'https://www.aao.org/education/clinical-statement/myopia-control-in-children' },
+  schoolCheckup: { label: '교육부 학생건강정보센터: 학생건강검사', url: 'https://schoolhealth.kr/web/srs/selectSchoolOverview.do' },
+  bikeSafety: { label: 'AAP: 자전거 안전', url: 'https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Bicycle-Safety-Myths-and-Facts.aspx' },
+  helmets: { label: 'AAP: 헬멧 써야 할 때', url: 'https://www.healthychildren.org/English/safety-prevention/at-play/Pages/bicycling-and-beyond-when-your-kids-should-wear-helmets.aspx' },
+  walkSafety: { label: '행정안전부: 어린이 교통안전 수칙 (2025)', url: 'https://mois.go.kr/video/bbs/type019/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000255&nttId=121637&searchCode1=' },
+  homeAlone: { label: 'AAP: 혼자 집에 있을 준비', url: 'https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Is-Your-Child-Ready-To-Stay-Home-Alone.aspx' },
+  firstGrade: { label: '교육부 고시 제2022-33호 (입학 초기 적응 활동)', url: 'https://www.sen.go.kr/component/file/ND_fileDownload.do?q_fileId=e6090e47-9453-40f3-90b9-cdea9a8e9da5&q_fileSn=2095930' },
+  homework: { label: 'AAP: 숙제 습관', url: `${AAP_HC}/gradeschool/school/Pages/Developing-Good-Homework-Habits.aspx` },
+  homeworkMeta: { label: 'Cooper 2006 (숙제와 성적)', url: 'https://eric.ed.gov/?id=EJ751143' },
+  homeworkParents: { label: 'Patall 2008 (부모의 숙제 도움)', url: 'https://eric.ed.gov/?id=EJ896560' },
+  homeworkQuality: { label: 'Moroni 2015 (도움의 횟수보다 방식)', url: 'https://phrepo.phbern.ch/1018/' },
+  privateEduStats: { label: '국가데이터처·교육부: 2025 초중고 사교육비조사', url: 'https://www.korea.kr/briefing/policyBriefingView.do?newsId=156748552' },
+  advanceLaw: { label: '공교육정상화법 제8조 (선행교육 금지)', url: 'https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0008&lsiSeq=268711&urlMode=lsScJoRltInfoR' },
+  bray: { label: 'Bray 2014 (사교육 효과 연구가 엇갈리는 이유)', url: 'https://hub.hku.hk/handle/10722/203477' },
+  kdiTutoring: { label: 'KDI: 대학규제와 사교육 (2018)', url: 'https://www.kdi.re.kr/research/reportView?&pub_no=16368' },
+  kimTutoring: { label: '김희삼 2010 (사교육의 효과 분석)', url: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2787544' },
+  readAloud: { label: 'AAP: 소리 내어 읽어 주기', url: `${AAP_HC}/gradeschool/school/Pages/Help-Your-Child-Enjoy-Reading-Aloud-Tips-for-Parents.aspx` },
+  readingSurvey: { label: '문화체육관광부: 2025 국민 독서실태 조사', url: 'https://www.mcst.go.kr/site/s_notice/press/pressView.jsp?pSeq=22278' },
+  bookLink: { label: '국립중앙도서관: 책이음', url: 'https://books.nl.go.kr/one' },
+  cfpb: { label: '미국 소비자금융보호국: 6~12세와 돈 벌기', url: 'https://www.consumerfinance.gov/consumer-tools/money-as-you-grow/school-age-children-preteens/explore-earning/' },
+  bokAllowance: { label: '한국은행 추천: 용돈은 정기적으로 (2003)', url: 'https://www.korea.kr/briefing/policyBriefingView.do?newsId=148745212' },
+  bucciol: { label: 'Bucciol 2014 (저축 가르치는 방법)', url: 'https://www.sciencedirect.com/science/article/abs/pii/S0167487014000580' },
   reading: { label: 'AAP: 태어날 때부터 함께 책 읽기 (2024)', url: 'https://www.healthychildren.org/English/news/Pages/beyond-literacy-shared-reading-starting-in-infancy-offers-lifelong-benefits.aspx' },
 };
 
@@ -623,6 +698,218 @@ const SCHOOL_READY = {
   src: [S.schoolAge, S.schoolNotice, S.enrollment, S.checkupItems, S.goeFirst, S.privateEdu],
 };
 
+// ---------- 초등 (만 6~11세) ----------
+const PHONE_FIRST = {
+  id: 'phone-first', emoji: '📱', title: '첫 스마트폰은 언제',
+  body: '처음 주기에 딱 맞는 나이는 연구로 정해져 있지 않아요 (미국소아과학회). 미국소아과학회는 폰과 SNS는 따로 정하고, SNS는 13살까지 미루길 권해요.',
+  options: [
+    {
+      name: '기다렸다 주기 (또래 가정과 같이 약속)', how: '또래 가정과 함께 약속하고 스마트폰을 미뤄요. 미국 "Wait Until 8th"는 8학년(중2) 말까지, 하이트의 "불안 세대" 운동은 고등학교 전엔 스마트폰 없이, 16살 전엔 SNS 없이를 내세워요. 그동안 통화만 되는 폰은 써도 된다고 해요.',
+      fits: '주변 가정과 함께 약속하기 쉬운 집',
+      known: '12살에 스마트폰이 있는 아이가 우울·비만·잠 부족과 관련이 있었다는 1만 명 넘는 관찰 연구가 있어요(2026). 관련성일 뿐 원인이라고 할 수는 없어요. 하이트의 주장은 과학적 근거가 부족하다는 반론도 있어요(Nature 2024).',
+    },
+    {
+      name: '통화·문자 폰이나 시계 먼저', how: '통화·문자만 되는 폰이나 시계로 연락 수단만 먼저 마련해요.',
+      fits: '등하교·학원·두 집 생활처럼 연락이 꼭 필요한 집',
+      known: '미국소아과학회는 어린 나이엔 이런 기기가 더 잘 맞을 수 있다고 해요. 이 방식만 따로 본 연구는 찾지 못했어요.',
+    },
+    {
+      name: '준비되면 규칙과 함께', how: '숙제 같은 일에 책임감이 있는지, 다른 기기 규칙을 잘 지키는지, 부모가 도울 준비가 됐는지 살펴보고 보호 기능과 규칙을 같이 정해요. 책임감을 보이면 제한을 조금씩 풀어요. 아직 아니라고 정해도 괜찮아요.',
+      fits: '아이와 자주 이야기할 시간이 있는 집',
+      known: '처음 폰을 받은 나이와 우울·성적·잠 사이에 의미 있는 관련이 없었다는 5년 추적 연구가 있어요(2023). 미국 한 지역의 저소득 가정 아이 263명을 본 연구예요.',
+    },
+  ],
+  note: '2026년 3월부터 학교 수업 중에는 스마트기기 사용이 법으로 제한되고, 학교 안 사용·소지 규칙은 학교마다 학칙으로 정해요.',
+  src: [S.phoneAge, S.firstPhone, S.wait8th, S.anxiousGen, S.phone12, S.odgers, S.phoneAgeStudy, S.schoolPhone, S.schoolPhoneNews],
+};
+const GAMES = {
+  id: 'games', emoji: '🎮', title: '게임·유튜브',
+  list: [
+    '게임은 등급(전체이용가·12세·15세·청소년이용불가)을 먼저 확인해요.',
+    '강제 셧다운제는 2022년에 없어졌고, 만 18세 미만은 보호자나 아이가 요청하면 게임할 수 있는 시간대를 정할 수 있어요(게임시간 선택제).',
+    '13세 미만(한국 구글 계정은 14세 미만)은 유튜브 키즈나 보호자가 관리하는 계정을 쓸 수 있어요.',
+    '미국소아과학회는 학령기 아이의 오락용 화면 시간으로 하루 1~2시간쯤을 예로 들고, 시간보다 내용과 잠·운동·숙제를 밀어내지 않는지를 보라고 해요. 잠들기 1시간 전엔 화면을 끄고 기기는 침실 밖에 둬요.',
+    '가족 미디어 계획(미국소아과학회)처럼 규칙을 아이와 같이 정해 봐요.',
+    '2025년 조사에서 만 3~9세의 26%(보호자 응답), 만 10~19세의 43%가 스마트폰 과의존 위험군이었어요 (과학기술정보통신부).',
+  ],
+  src: [S.gameRating, S.gameTime, S.youtubeKids, S.googleAge, S.aapMedia2026, S.mediaPlan, S.overuse],
+};
+const ONLINE_SAFETY = {
+  id: 'online-safety', emoji: '🔐', title: 'SNS·온라인 안전',
+  list: [
+    '대부분의 SNS는 만 13세부터 가입할 수 있고, 한국에서는 틱톡·구글 계정처럼 만 14세가 기준인 곳이 많아요. 호주는 2025년 12월부터 16살 미만의 SNS 계정을 막고 있어요.',
+    '비밀번호와 개인정보(주소, 학교, 사진)는 친구에게도 알려 주지 않기로 약속해요.',
+    '사이버폭력은 청소년 10명 중 4명꼴이 겪었고, 피해는 전혀 모르는 사람에게서 가장 많이 와요 (2025 실태조사, 초4~고3).',
+    '어른이 온라인에서 성적인 대화를 이어 가거나 사진을 요구하면 처벌 대상이에요. 대화방을 나가지 말고 화면을 캡처해 둔 뒤 보호자에게 알리라고 가르쳐요.',
+    '학교폭력·사이버폭력은 117(24시간, 문자 #0117), 디지털 성범죄는 디지털성범죄피해자지원센터(02-735-8994, 평일 8~22시·주말 9~18시)나 24시간 여성긴급전화 1366, 긴급하면 112예요.',
+  ],
+  src: [S.tiktokAge, S.googleAge, S.esafety, S.cyberSurvey, S.grooming, S.report117, S.d4u],
+};
+const BULLYING = {
+  id: 'bullying', emoji: '🛡', title: '친구 관계·학교폭력',
+  list: [
+    '이유 없이 자주 배나 머리가 아프다고 하거나, 학교에 가기 싫어하거나, 물건이 자주 없어지거나 망가지거나, 갑자기 친구가 없어지면 친구 관계를 살며시 물어봐요. 다른 이유일 수도 있어요.',
+    '"더 얘기해 줄래?", "그때 어땠어?"처럼 묻고 끝까지 들어요. 바로 해결하려 하기보다 먼저 들어 주고, "네 잘못이 아니야"라고 말해 줘요.',
+    '"무시해"나 "맞서 싸워"라고 하지 않아요. 상대 부모에게 바로 연락하기보다 학교를 통해요. 괴롭힘은 둘을 마주 앉혀 화해시키는 방식으로는 잘 풀리지 않아요.',
+    '학교폭력을 알게 되면 학교나 117 학교폭력 신고센터(24시간, 문자 #0117)에 신고할 수 있고, 긴급하면 112예요. 메신저 따돌림이나 딥페이크 같은 사이버폭력도 학교폭력이에요.',
+    '2026년 조사에서 초등 4~6학년 피해응답률은 5.7%로 중·고등학생보다 높았고, 언어폭력이 가장 많았어요 (교육부).',
+    '우리 아이가 괴롭히는 쪽이라면 때리지 않는 방식으로 분명하고 일관되게 한계를 정하고, 필요하면 소아청소년과나 상담 전문가와 이야기해요.',
+  ],
+  src: [S.bullySigns, S.bullySupport, S.aapBullying, S.report117, S.bullySurvey],
+};
+const TALK = {
+  id: 'talk', emoji: '💬', title: '대화·감정·칭찬',
+  list: [
+    '하루 10분이라도 TV·휴대폰을 끄고 아이 얼굴을 보며 이야기해요.',
+    '"오늘 제일 좋았던 일과 힘들었던 일은?", "이번 주에 걱정되는 거 있어?"처럼 묻고, 끊지 말고 끝까지 들은 뒤 들은 말을 되짚어 줘요. 말하기 싫어하면 "준비되면 언제든 들을게"라고 해요.',
+    '"그런 걸로 속상해하면 안 돼"처럼 감정을 깎아내리지 않아요. "넌 나빠" 대신 "그렇게 하는 건 싫어"처럼 행동을 말해요.',
+    '노력과 과정을 칭찬하라는 연구(5학년 대상)가 유명해요. 다만 학생들에게 "성장 마인드셋"을 가르치는 교육의 효과는 작거나 대상에 따라 다르다는 분석도 있어요.',
+  ],
+  src: [S.familyTalk, S.cdcTalk, S.praiseEffort, S.mindsetMeta, S.mindsetMeta2],
+};
+const PUBERTY_TALK = {
+  id: 'puberty-talk', emoji: '🌱', title: '사춘기 준비·성교육',
+  list: [
+    '여자아이는 보통 만 8~13세에 가슴 몽우리로, 남자아이는 만 9~14세(평균 11세)에 고환이 커지는 것으로 사춘기가 시작돼요. 첫 생리는 대개 가슴 몽우리 뒤 2~3년 안에 와요.',
+    '국내에서는 여아 만 8세 전 가슴 발달, 남아 만 9세 전 고환 커짐을 성조숙증으로 봐요. 진단과 해석은 소아내분비 전문의에게 받기를 권하고, 정상인 사춘기를 늦춘다고 키가 더 크지는 않아요 (질병관리청).',
+    '생리대를 가방에 미리 넣어 두고, 생리와 몽정은 사춘기에 누구나 겪는 일이고 부끄러운 게 아니라고 알려 줘요. 한 번에 끝내는 이야기가 아니라 여러 번 나누는 이야기예요.',
+    '물어보면 짧고 정직하게, 몸의 정확한 이름으로 답하고 "궁금한 게 풀렸어?"라고 확인해요. 이 나이엔 친구나 인터넷에서 먼저 답을 찾기도 해서, 집에서 편하게 물어볼 수 있다는 걸 알려 줘요.',
+    '기초생활수급·차상위·한부모 가정이면 9~24세 여성청소년 생리용품 바우처를 주민센터나 복지로에서 신청할 수 있어요.',
+  ],
+  options: [
+    {
+      name: '성조숙증으로 진단되면 치료', how: '기준 나이 전에 사춘기가 시작되고 검사로 진단되면 사춘기 진행을 늦추는 주사(GnRH 유사체) 치료를 해요.',
+      known: '한국보건의료연구원은 정확히 진단된 아이에게는 효과와 단기·중기 안전성이 확인된 표준 치료라고 해요.',
+    },
+    {
+      name: '기준 언저리면 지켜보기', how: '기준 나이 무렵이나 진단 기준에 못 미치는 경우 바로 치료하기보다 진행을 지켜봐요.',
+      known: '진단 기준에 못 미치는 아이에게 키를 키우려고 치료하는 경우, 최종 키가 늘어난다는 근거는 찾지 못했어요 (한국보건의료연구원 문헌 분석). 의료진 61.6%는 진단 뒤에도 경과를 보며 치료를 미룬 적이 있다고 답했어요. 진단받은 아이는 2017년 약 10만 6천 명에서 2023년 약 20만 6천 명으로 늘었어요.',
+    },
+  ],
+  src: [S.pubertyGirls, S.pubertyBoys, S.pubertyKids, S.kdcaPrecocious, S.necaPrecocious, S.precociousTrend, S.bodyTalk, S.padVoucher],
+};
+const MIND = {
+  id: 'mind', emoji: '😟', title: '걱정·마음이 힘들 때',
+  list: [
+    '걱정과 두려움은 흔하지만 오래가거나 아주 심하면 불안이나 우울일 수 있어요. 불안한 아이는 짜증이나 화, 잠 문제, 두통·배앓이로 보이기도 하고 걱정을 혼자 품기도 해요. 우울한 아이는 슬퍼 보이지 않고 말썽이나 게으름으로 오해받기도 해요.',
+    '걱정되면 소아청소년과나 정신건강 전문가와 먼저 이야기해요.',
+    '초1·초4 때 학교에서 보호자가 학생정서·행동특성검사에 답하고, 필요하면 보호자 동의를 받아 Wee센터 같은 전문기관에 연결돼요.',
+    '마음이 힘들 땐 청소년전화 1388, 정신건강상담 1577-0199(모두 24시간), 자살 위기는 109(24시간), 위급하면 112·119에 연락해요.',
+  ],
+  src: [S.cdcAnxiety, S.emotionCheck, S.helpLines],
+};
+
+const SCHOOL_START = {
+  id: 'school-start', emoji: '🏫', title: '초등학교 1학년 적응',
+  list: [
+    '1학년은 3월에 "입학 초기 적응 활동"을 34시간 해요. 시기와 내용은 학교마다 달라요.',
+    '학습 준비물(색종이·도화지·풀 등)은 학교에서 대부분 줘서, 입학 전엔 꼭 필요한 학용품만 준비해도 돼요. 외투·모자·신발 안쪽에 이름을 써요.',
+    '집에 오면 알림장과 가정통신문 앱을 같이 확인하고, 전날 밤에 아이가 스스로 가방을 챙기게 해요.',
+    '수업 중에도 선생님께 말하고 화장실에 다녀올 수 있다고 알려 주고, 사물함에 여벌옷(속옷 포함)을 넣어 둬요.',
+    '15~20분쯤 집중할 수 있으면 크게 걱정하지 않아도 돼요. "학교 재미있었어?"보다 "오늘 배운 것 중에 뭐가 제일 재미있었어?"처럼 물어봐요. 처음엔 힘들어해도 대부분 잘 적응해요.',
+  ],
+  src: [S.firstGrade, S.goeFirst],
+};
+const HOMEWORK = {
+  id: 'homework', emoji: '✏️', title: '숙제·공부 습관',
+  body: '초등학교에서는 숙제와 성적의 관련이 중·고등학교보다 약했어요. 부모가 도와주는 횟수보다 아이가 느끼는 방식이 더 관련이 있었어요: 도움이 된다고 느낀 도움은 성취와 같이 갔고, 간섭으로 느낀 도움은 반대였어요(6학년 연구).',
+  options: [
+    {
+      name: '옆에서 함께', how: '부모가 곁에 앉아 시작을 돕고, 짧게 나눠서 하게 해요. 문제를 대신 풀어 주지는 않아요.',
+      fits: '1~2학년, 혼자 시작하기 어려워하는 아이',
+      known: '미국소아과학회와 경기도교육청이 소개하는 방식이고, 부모 교육으로 초등학생의 숙제 완성이 늘었다는 분석이 있어요. 다만 자주, 간섭처럼 느껴지게 도우면 성취가 낮았다는 연구도 있어요.',
+    },
+    {
+      name: '스스로 하고, 물어볼 때만', how: '아이가 먼저 몇 문제를 해 보고, 막히면 그때 설명해 줘요.',
+      fits: '혼자서도 시작할 수 있는 아이',
+      known: '미국소아과학회는 도와주기 전에 아이가 먼저 해 보게 하라고 해요. 늘 도움이 필요하면 선생님과 이야기해 보라고 해요.',
+    },
+    {
+      name: '시간·장소만 정해 주기', how: '조용하고 밝은 자리와 시간을 아이와 같이 정하고, 내용에는 끼어들지 않아요.',
+      fits: '숙제 때문에 자주 다투는 집',
+      known: '미국소아과학회는 시간과 장소를 미리 정하면 숙제 다툼의 흔한 원인 두 가지가 없어진다고 해요. 부모가 규칙을 정하는 방식이 성취와 가장 관련이 컸다는 분석도 있어요(관찰 연구).',
+    },
+  ],
+  src: [S.homework, S.homeworkMeta, S.homeworkParents, S.homeworkQuality, S.goeFirst],
+};
+const PRIVATE_EDU = {
+  id: 'private-edu', emoji: '📚', title: '사교육·선행학습',
+  body: '2025년 초등학생 84.4%가 사교육을 받았고, 일반 교과 사교육의 목적은 학교 수업 보충(49.5%)이 가장 많고 선행학습(22.7%)이 그다음이에요. 공교육정상화법은 학교의 선행 교육과 학원의 선행학습 광고를 막지만, 가정의 선택을 막지는 않아요.',
+  options: [
+    {
+      name: '학원·선행 적극 활용', how: '학원이나 과외로 다음 학기·학년 내용을 미리 배워요.',
+      fits: '진학 경쟁이 걱정되는 집, 아이가 학원을 좋아하는 경우',
+      known: '사교육 효과는 연구마다 엇갈려요. 한국 연구에서는 성적을 올리는 효과는 제한적이지만 상위권 대학 입학 가능성에는 의미 있는 영향이 있었다는 분석이 있어요(KDI 2018). 비용과 아이의 시간·흥미도 같이 봐야 해요.',
+    },
+    {
+      name: '필요한 과목만 보충', how: '어려워하는 과목만 골라 보충해요.',
+      fits: '특정 과목이 뒤처질까 걱정되는 집',
+      known: '가장 흔한 목적(학교 수업 보충)과 같은 방식이에요. 초6 중 성적이 낮은 아이들은 사교육을 오래 받은 영어·수학 성적이 높았다는 분석이 있어요(관찰 연구).',
+    },
+    {
+      name: '학교 수업 중심 + 집에서 복습·독서', how: '학교 수업을 따라가고, 집에서는 주간학습안내를 보며 복습하고 책을 읽어요.',
+      fits: '사교육 부담을 줄이고 싶은 집',
+      known: '경기도교육청은 지나친 선행, 특히 저학년 선행은 도움이 안 되는 경우가 많다고 해요. 스스로 공부한 시간이 장기 성적과 더 관련이 컸다는 분석도 있어요(고등학생 자료).',
+    },
+  ],
+  note: '한국 연구는 대부분 중·고등학생을 본 것이라 초등학생만의 근거는 적어요.',
+  src: [S.privateEduStats, S.advanceLaw, S.bray, S.kdiTutoring, S.kimTutoring, S.goeFirst],
+};
+const READING_KID = {
+  id: 'reading-kid', emoji: '📖', title: '책 읽기',
+  list: [
+    '글을 읽게 된 뒤에도 소리 내어 읽어 주는 시간을 이어 가요. 번갈아 읽거나 아이가 부모에게 읽어 줘도 좋아요. 끝까지 다 읽지 않아도 되고, 같은 책을 또 골라도 괜찮아요.',
+    '경기도교육청은 열 살 전후 아이는 읽을 때보다 들을 때 더 잘 이해한다며, 매일 20분쯤, 특히 잠자기 전에 읽어 주길 권해요. 줄거리 확인 질문만 하면 부담이 될 수 있어요.',
+    '도서관 회원증을 만들어요. 책이음 회원증 하나로 전국 2,900곳 넘는 참여 도서관에서 빌릴 수 있어요.',
+    '2025년 조사에서 초4~고3 학생의 94.6%가 1년에 책을 한 권 넘게 읽었어요 (문화체육관광부).',
+  ],
+  src: [S.readAloud, S.cdcMid, S.goeFirst, S.bookLink, S.readingSurvey],
+};
+const MONEY = {
+  id: 'money', emoji: '💰', title: '용돈·경제 교육',
+  body: '어떤 방식이든 "어디에 쓸 계획이야?", "써 보니 어땠어?"처럼 돈 이야기를 나누는 게 가장 중요하다고 해요 (미국 소비자금융보호국). 저금통을 같이 만들거나 용돈기입장을 써 봐요.',
+  options: [
+    {
+      name: '정기 용돈 (정한 날, 정한 금액)', how: '저학년은 주마다, 고학년은 달마다처럼 정한 날 정한 금액을 줘요.',
+      fits: '계획 세우기와 용돈기입장을 연습하고 싶은 집',
+      known: '한국은행(2003)은 달라고 할 때마다 주는 것보다 정기적으로 주는 게 낫다고 했어요. 용돈만 주는 것보다 조언·관리와 함께할 때 효과가 있었다는 네덜란드 연구가 있어요(관찰 연구).',
+    },
+    {
+      name: '집안일 대가로', how: '정한 집안일을 하면 그만큼 받아요.',
+      fits: '일과 돈의 관계를 알려 주고 싶은 집',
+      known: '미국 소비자금융보호국은 가족을 위한 일로 돈을 벌 수도 있다고 안내하고, 한국은행(2003)은 집안일 대가로 용돈을 주지 말라고 했어요. 두 방식을 직접 비교한 연구는 찾지 못했어요.',
+    },
+    {
+      name: '필요할 때마다', how: '필요한 일이 있을 때 이야기하고 그때 줘요.',
+      fits: '아직 돈 계획이 어려운 어린 아이, 지출을 직접 챙기고 싶은 집',
+      known: '정기 용돈보다 덜 효과적이라는 의견이 있지만(한국은행 2003), 연구 근거는 많지 않아요.',
+    },
+  ],
+  note: '한국은행(2003)은 성적과 용돈을 엮지 말라고도 했어요.',
+  src: [S.cfpb, S.bokAllowance, S.bucciol, S.cdc911],
+};
+const HEALTH_KID = {
+  id: 'health-kid', emoji: '🏃', title: '잠·운동·눈 건강',
+  list: [
+    '만 6~12세는 하루 9~12시간 자는 게 권장돼요. 주말에도 비슷한 시간에 일어나고, 잠들기 1시간 전엔 화면을 끄고 침실엔 화면 기기를 두지 않아요 (미국소아과학회).',
+    '하루 평균 60분 넘게 숨이 찰 만큼 움직이고, 일주일에 3일은 뛰기·매달리기처럼 힘을 쓰는 활동을 해요. 조금이라도 움직이는 게 안 움직이는 것보다 나아요 (WHO).',
+    '체중 관리는 "살 빼기"가 아니라 키가 자라는 동안 균형 있게 먹고 움직이기예요. 굶기거나 아이만 따로 바꾸기보다 가족이 같이 식단과 운동을 바꾸고, 음식으로 보상하지 않아요. 질병관리청 수칙: 하루 60분 친구와 놀기, TV·스마트폰은 하루 2시간 이내, 목마를 땐 물 먼저.',
+    '바깥에서 보내는 시간이 근시가 생기는 걸 줄인다는 연구가 있어요(학교에서 매일 40분 바깥 수업을 더한 중국 무작위 연구 등). 강한 햇빛이 아니라 나무 그늘이어도 효과가 있었어요. 미국소아안과사시학회는 하루 2시간 넘게 바깥에 있기를 권해요.',
+    '책은 30cm 넘게 떨어져 보고, 1시간쯤 보면 10분은 먼 곳을 봐요. 근시는 주로 초1~2 무렵 발견돼서 정기적으로 시력을 검사해요. 초1·초4 학교 건강검사에 눈 검사가 들어 있어요.',
+    '근시 진행을 늦추는 치료(저농도 아트로핀, 드림렌즈 등)는 효과와 감염 같은 위험을 안과 전문의와 상의해서 정해요.',
+  ],
+  src: [S.schoolSleep, S.whoActivity, S.kdcaObesityRules, S.kdcaObesity, S.outdoorTrial, S.outdoorLight, S.cochraneMyopia, S.aapos, S.kdcaMyopia, S.schoolCheckup, S.aaoMyopia],
+};
+const SAFETY_SCHOOL = {
+  id: 'safety-school', emoji: '🚲', title: '자전거·길·혼자 있기',
+  list: [
+    '자전거는 짧게 타도 매번 헬멧을 써요. 헬멧은 머리 다칠 위험을 85%쯤 줄여요. 해 질 녘이나 어두울 땐 타지 않게 해요. 도로교통법도 자전거를 탈 때 인명보호 장구를 쓰도록 정하고 있어요.',
+    '걸을 땐 스마트폰·이어폰을 쓰지 않고, 신호를 기다릴 땐 한 발 뒤에 서고, 횡단보도를 건너기 전 좌우를 보고 손을 들어요 (행정안전부).',
+    '혼자 집에 있기는 정해진 나이가 없어요. 미국소아과학회는 몇 시간 혼자 있기는 보통 11~12살을 이야기하고, 대부분 10~11살쯤 돼야 규칙적으로 혼자 있을 수 있다고 해요. 더 어리면 아이 준비에 맞춰 짧은 시간부터 연습해요.',
+  ],
+  src: [S.bikeSafety, S.helmets, S.roadLaw, S.walkSafety, S.homeAlone],
+};
+
 // 주제: { id, emoji, title, body?, list?, options?: [{ name, how, fits?, known? }], note?, src: [{ label, url }] }
 // options가 있으면 = 의견이 갈리는 주제 → 방법 카드를 나란히. 시기마다 맨 앞은 발달
 export const PERIODS = [
@@ -792,6 +1079,33 @@ export const PERIODS = [
         '한 발로 깡충 뛰고, 단추 몇 개를 채워요',
       ], CDC('5-years', '5세')),
       SCHOOL_READY, LETTERS, ENGLISH, BODY_SAFETY, FRIENDS, PRAISE_KID, SCREEN, BEDWETTING, PICKY, TEETH, SAFETY_KID,
+    ],
+  },
+  {
+    id: 'y6', months: [72, 107], label: '만 6~8세',
+    topics: [
+      kid([
+        '혼자 옷을 입고 신발 끈을 묶고, 공을 손으로 더 잘 받아요.',
+        '친구에게 인정받고 싶은 마음이 커지고, 친구 관계와 함께하는 활동에 관심이 많아져요.',
+        '부모에게서 조금씩 독립하려 하고, 앞으로의 일을 생각하기 시작해요.',
+        '생각하는 힘이 빠르게 자라고, 겪은 일과 생각·감정을 말로 더 잘 표현해요.',
+        '나에게만 향하던 관심이 다른 사람에게로 넓어져요.',
+        '해 볼 것: 상 차리기 같은 집안일을 맡겨요. "똑똑하네"보다 "열심히 궁리했구나"처럼 한 일을 칭찬하고, "하지 마" 다음엔 대신 할 수 있는 걸 알려 줘요. 친구와의 다툼 같은 문제는 스스로 풀어 보게 해요.',
+      ], S.cdcMid, S.cdc68),
+      SCHOOL_START, HOMEWORK, PRIVATE_EDU, READING_KID, MONEY, TALK, BULLYING, GAMES, PHONE_FIRST, HEALTH_KID, SAFETY_SCHOOL,
+    ],
+  },
+  {
+    id: 'y9', months: [108, 143], label: '만 9~11세',
+    topics: [
+      kid([
+        '친구 관계가 더 깊고 복잡해지고, 같은 성별 친구가 특히 중요해져요.',
+        '또래 압력이 커지는 시기예요. 자기 자신을 좋게 느끼는 아이가 나쁜 또래 압력을 더 잘 버텨요.',
+        '사춘기가 다가오면서 몸에 관심이 커지고, 몸에 대한 고민이나 먹는 문제가 이 무렵 시작되기도 해요. 특히 여자아이는 사춘기 몸 변화가 보이기 시작할 수 있어요.',
+        '학교 공부가 어려워지고, 다른 사람의 입장을 더 잘 이해하고, 집중하는 시간이 길어져요.',
+        '해 볼 것: "자랑스러워"와 함께 "스스로 뿌듯하겠다"라고 말해 줘요. 규칙에는 이유를 같이 말하고, 친구들의 가족도 알고 지내요. 친구가 위험한 걸 하자고 할 때 어떻게 할지 이야기해 둬요.',
+      ], S.cdcMid, S.cdc911),
+      PUBERTY_TALK, MIND, BULLYING, TALK, ONLINE_SAFETY, PHONE_FIRST, GAMES, HOMEWORK, PRIVATE_EDU, MONEY, READING_KID, HEALTH_KID, SAFETY_SCHOOL,
     ],
   },
 ];

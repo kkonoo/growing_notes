@@ -73,6 +73,64 @@ const S = {
   pottyReview: { label: '배변훈련 방법 리뷰 (2006)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4781561/' },
   blum: { label: 'Blum 2003 (시작 나이와 기간)', url: 'https://doi.org/10.1542/peds.111.4.810' },
   li: { label: 'Li 2020 (일찍 시작과 소변 문제)', url: 'https://doi.org/10.1016/j.jpurol.2020.02.016' },
+  // 유아 (만 3~5세)
+  sleepHours: { label: '미국소아과학회: 나이별 수면 시간 (2016)', url: 'https://publications.aap.org/aapnews/news/6630/AAP-endorses-new-recommendations-on-sleep-times' },
+  naps: { label: 'Staton 2020 (낮잠 그만두는 나이 메타분석)', url: 'https://doi.org/10.1016/j.smrv.2019.101247' },
+  napTips: { label: 'KidsHealth: 낮잠', url: 'https://kidshealth.org/en/parents/naps.html' },
+  bedwetting: { label: 'AAP: 밤에 이불 적시기', url: `${AAP_HC}/toddler/toilet-training/Pages/Bedwetting.aspx` },
+  kdcaEnuresis: { label: '질병관리청: 야뇨증(소아)', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=5719' },
+  niddk: { label: '미국국립보건원(NIDDK): 아이 소변 가리기', url: 'https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems-bedwetting-children/symptoms-causes' },
+  mayoEnuresis: { label: '메이오 클리닉: 야뇨', url: 'https://www.mayoclinic.org/diseases-conditions/bed-wetting/symptoms-causes/syc-20366685' },
+  picky: { label: 'AAP: 편식하는 아이 10가지 팁', url: `${AAP_HC}/toddler/nutrition/Pages/Picky-Eaters.aspx` },
+  kpsPicky: { label: '대한소아청소년과학회: 편식하는 아이들을 위한 조언', url: 'https://www.pediatrics.or.kr/bbs/index.html?category=B&code=infantcare&gubun=&key=&keyfield=&mode=view&number=8678&page=1' },
+  satter: { label: '엘린 새터: 먹기 책임 나누기', url: 'https://www.ellynsatterinstitute.org/how-to-feed/the-division-of-responsibility-in-feeding/' },
+  pressure: { label: 'Galloway 2006 ("다 먹어" 실험)', url: 'https://doi.org/10.1016/j.appet.2006.01.019' },
+  tasteReward: { label: 'Remington 2012 (맛보기 + 스티커)', url: 'https://doi.org/10.3945/ajcn.111.024596' },
+  kapd: { label: '대한소아치과학회: 불소치약 사용', url: 'https://kapd.org/board/bbs/board.php?bo_table=consulting&page=1&sod=desc&sop=and&sst=wr_datetime&wr_id=160' },
+  kdcaFluoride: { label: '질병관리청: 불소도포', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6572' },
+  kdcaCavity: { label: '질병관리청: 충치', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6891' },
+  aapTeeth: { label: 'AAP: 아이 충치 예방', url: 'https://www.healthychildren.org/English/healthy-living/oral-health/Pages/Teething-and-Dental-Hygiene.aspx' },
+  checkupSchedule: { label: '국민건강보험: 영유아 건강검진 안내', url: 'https://www.nhis.or.kr/nhis/healthin/wbhaca04800m01.do' },
+  roadLaw: { label: '도로교통법 제50조', url: 'https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1032815189' },
+  easylawCar: { label: '찾기쉬운 생활법령: 어린이 탑승안전', url: 'https://www.easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=1&cciNo=2&cnpClsNo=1&csmSeq=690&popMenu=ov' },
+  carSeats: { label: 'AAP: 카시트', url: 'https://www.healthychildren.org/English/safety-prevention/on-the-go/Pages/Car-Safety-Seats-Information-for-Families.aspx' },
+  drowning: { label: 'AAP: 익사 예방 권고 (2026)', url: 'https://www.healthychildren.org/English/news/Pages/AAP-releases-updated-drowning-prevention-recommendations.aspx' },
+  pool: { label: 'AAP: 수영장 안전', url: 'https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Swimming-Pool-Safety.aspx' },
+  kdcaDrowning: { label: '질병관리청: 물에 빠짐', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=1747' },
+  kidsAdjust: { label: 'KidsHealth: 유치원 적응 돕기', url: 'https://kidshealth.org/en/parents/adjust-to-preschool.html' },
+  goeKinder: { label: '경기도교육청: 신입생 학부모 유치원 안내서 (2025)', url: 'https://www.goe.go.kr/resource/goe/na/bbs_2638/2025/05/07dd971d-6aec-45a5-bbf3-d746eff71a0d.pdf' },
+  play: { label: 'AAP: 아이들은 놀면서 배워요', url: 'https://healthychildren.org/English/family-life/power-of-play/Pages/young-children-learn-a-lot-when-they-play.aspx' },
+  siblings: { label: 'AAP: 형제 다툼', url: 'https://healthychildren.org/English/family-life/family-dynamics/pages/Sibling-Rivalry.aspx' },
+  mediation: { label: 'Smith·Ross 2007 (형제 다툼 중재 연구)', url: 'https://doi.org/10.1111/j.1467-8624.2007.01033.x' },
+  sharing: { label: 'Chernyak 2013 (스스로 고른 나누기)', url: 'https://doi.org/10.1177/0956797613482335' },
+  directions: { label: 'CDC: 지시하는 법', url: 'https://www.cdc.gov/parenting-toddlers/communication/giving-directions.html' },
+  rewards: { label: 'CDC: 칭찬과 보상', url: 'https://www.cdc.gov/parenting-toddlers/responding-to-behavior/using-rewards.html' },
+  responding: { label: 'CDC: 행동에 반응하기', url: 'https://www.cdc.gov/parenting-toddlers/responding-to-behavior/index.html' },
+  deci: { label: 'Deci 1999 (보상과 흥미, 128개 실험)', url: 'https://doi.org/10.1037/0033-2909.125.6.627' },
+  bodyTalk: { label: 'AAP: 아이와 몸·성 이야기하기', url: `${AAP_HC}/preschool/Pages/Talking-to-Your-Young-Child-About-Sex.aspx` },
+  bodyBehavior: { label: 'AAP: 유아의 몸에 대한 호기심', url: `${AAP_HC}/preschool/Pages/Sexual-Behaviors-Young-Children.aspx` },
+  abusePrevention: { label: 'AAP: 아동 성폭력 예방', url: 'https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Sexual-Abuse.aspx' },
+  childWelfare: { label: '아동복지법 시행령 별표 6 (안전교육 기준)', url: 'https://www.law.go.kr/LSW/flDownload.do?bylClsCd=110201&flSeq=153219923&gubun=' },
+  aapMedia2026: { label: '미국소아과학회 디지털 미디어 새 권고 요약 (2026)', url: 'https://publications.aap.org/aapnews/news/pdfDownload/34088' },
+  nuri: { label: '교육부: 2019 개정 누리과정 (유아·놀이 중심)', url: 'https://moe.go.kr/boardCnts/view.do?boardID=294&boardSeq=78061&lev=0&m=020402&opType=N&page=1&s=moe&searchType=null&statusYN=W' },
+  hangeul: { label: '교육부: 초등 한글 책임교육 (2019)', url: 'https://if-blog.tistory.com/9389' },
+  privateEdu: { label: '교육부: 영유아 사교육 대응 방안 (2026)', url: 'https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=105780&lev=0&m=020402&opType=N&page=1&s=moe&searchType=null&statusYN=W' },
+  powerOfPlay: { label: '미국소아과학회: 놀이의 힘 (2018)', url: 'https://publications.aap.org/pediatrics/article/142/3/e20182058/38649/The-Power-of-Play-A-Pediatric-Role-in-Enhancing' },
+  highscope: { label: 'HighScope 비교 연구 (23살까지 추적)', url: 'https://doi.org/10.1016/S0885-2006(97)90009-0' },
+  marcon: { label: 'Marcon 2002 (유치원 방식과 이후 성적)', url: 'https://ecrp.illinois.edu/v4n1/marcon.html' },
+  lonigan: { label: 'Lonigan의 Marcon 연구 반론', url: 'https://ecrp.illinois.edu/v5n1/lonigan.html' },
+  nelp: { label: '미국 조기 문해 위원회 보고서 (NELP 2008)', url: 'https://eric.ed.gov/?id=ED504224' },
+  suggate: { label: 'Suggate 2013 (5살 대 7살 읽기 시작)', url: 'https://eric.ed.gov/?id=EJ1007877' },
+  guidedPlay: { label: 'Skene 2022 (이끄는 놀이 메타분석)', url: 'https://doi.org/10.1111/cdev.13730' },
+  goeFirst: { label: '경기도교육청: 행복한 학부모 꿈꾸는 1학년 (2024)', url: 'https://www.goe.go.kr/resource/goe/na/bbs_2638/2025/05/fcac4b96-e1ce-4ca6-adb2-fc12d83c16c1.pdf' },
+  moeEnglish: { label: '교육부: 유치원 방과후 놀이 중심 영어 (2018)', url: 'https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=75408&lev=0&m=020402&opType=N&s=moe&statusYN=C' },
+  baf: { label: '바르셀로나 시작 나이 연구 (BAF)', url: 'https://ripl.uk/the-barcelona-age-factor-project/' },
+  munoz: { label: 'Muñoz 2011 (시작 나이와 노출량)', url: 'https://doi.org/10.1515/iral.2011.006' },
+  flege: { label: 'Flege 1995 (배우기 시작한 나이와 억양)', url: 'https://doi.org/10.1121/1.413041' },
+  hartshorne: { label: 'Hartshorne 2018 (언어 학습 결정적 시기)', url: 'https://doi.org/10.1016/j.cognition.2018.04.007' },
+  schoolAge: { label: '초·중등교육법 제13조 (취학 의무)', url: 'https://law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1032860055' },
+  schoolNotice: { label: '초·중등교육법 시행령 제17조 (취학 통지)', url: 'https://www.law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=1000947464' },
+  enrollment: { label: '교육부: 취학통지·예비소집 (2026학년도)', url: 'https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=104634&lev=0&m=020402&opType=N&page=3&s=moe&searchType=null&statusYN=W' },
   reading: { label: 'AAP: 태어날 때부터 함께 책 읽기 (2024)', url: 'https://www.healthychildren.org/English/news/Pages/beyond-literacy-shared-reading-starting-in-infancy-offers-lifelong-benefits.aspx' },
 };
 
@@ -277,7 +335,7 @@ const DISCIPLINE = {
   body: '방식이 달라도 공통으로 권하는 건 같아요: 때리거나 소리 지르거나 창피 주지 않기, 규칙은 짧고 늘 같게, 잘했을 때 바로 구체적으로 칭찬하기.',
   options: [
     {
-      name: '타임아웃', how: '한 번 경고하고("안 멈추면 타임아웃이야"), 그래도 위험하거나 남을 다치게 하거나 규칙을 어기면 재미있는 게 없는 조용한 곳에 잠깐 있게 해요. 흔히 나이 1살당 1분이에요. 끝나면 좋은 행동을 칭찬해요.',
+      name: '타임아웃', how: '한 번 경고하고("안 멈추면 타임아웃이야"), 그래도 위험하거나 남을 다치게 하거나 규칙을 어기면 재미있는 게 없는 조용한 곳에 잠깐 있게 해요. 흔히 나이 1살당 1분이고, 3살부터는 "마음이 가라앉으면 돌아와"처럼 아이가 스스로 끝내게 해도 돼요. 끝나면 좋은 행동을 칭찬해요.',
       fits: '위험한 행동·때리기처럼 분명한 규칙 어김에 늘 같은 결과를 주고 싶은 집',
       known: '3살 때 타임아웃을 썼다는 집과 아닌 집 1,400여 명을 5학년까지 봤을 때 아이 정서·행동에 차이가 없었어요 (부모 응답 연구). 따뜻한 관계 안에서 차분하게 쓰면 해롭지 않다는 분석도 있어요. 혼자 떨어지는 게 아이에게 거절처럼 느껴질 수 있다고 걱정하는 전문가도 있어요.',
     },
@@ -304,11 +362,15 @@ const SCREEN = {
   id: 'screen', emoji: '📱', title: '영상 보여 주기',
   body: '기관마다 기준이 조금 달라요.',
   options: [
-    { name: 'WHO (2019)', how: '1살까지는 영상을 보여 주지 않고, 2살은 하루 1시간 이하(적을수록 좋음)를 권해요. 그 시간에 책 읽기·이야기·노래·퍼즐을 같이 하길 권해요.' },
-    { name: '미국소아과학회 (2016)', how: '18개월 전에는 영상통화 말고는 피하고, 18~24개월은 좋은 프로그램을 골라 같이 보고, 2~5살은 좋은 프로그램을 하루 1시간 이하로 같이 보길 권해요.' },
+    { name: 'WHO (2019)', how: '1살까지는 영상을 보여 주지 않고, 2~4살은 앉아서 보는 화면 시간을 하루 1시간 이하로(적을수록 좋음) 권해요. 그 시간에 어른과 책 읽기·이야기·노래·퍼즐을 하길 권해요.' },
+    {
+      name: '미국소아과학회 새 권고 (2026)', how: '시간 숫자만 보지 말고 아이·내용·가족 관계를 함께 보라고 해요. 영아는 디지털 미디어로 배우지 않지만 가끔 짧고 좋은 영상은 해롭지 않고, 걸음마·유아기는 하루 1시간 미만을 예로 들어요.',
+      known: '내용의 질과 어른과 같이 보기를 강조하고, 잠들기 1시간 전에는 화면을 쉬고 기기는 침실 밖에 두길 권해요. 부모가 자책하기보다 오래 보게 만드는 앱 설계 같은 문제를 짚어 보라고도 해요.',
+    },
+    { name: '미국소아과학회 이전 권고 (2016)', how: '18개월 전에는 영상통화 말고는 피하고, 18~24개월은 좋은 프로그램을 골라 같이 보고, 2~5살은 좋은 프로그램을 하루 1시간 이하로 같이 보길 권했어요. 2026년에 새 권고로 바뀌었어요.' },
   ],
-  note: '두 곳 모두 아이 혼자 보게 두기보다 어른과 같이 보고 이야기하는 걸 중요하게 봐요. 영유아 건강검진 4차(18~24개월) 건강교육에도 전자미디어 노출이 들어 있어서 검진 때 물어봐도 돼요.',
-  src: [S.whoScreen, S.who5, S.aapMedia, S.checkupItems],
+  note: '모두 아이 혼자 보게 두기보다 어른과 같이 보고 이야기하는 걸 중요하게 봐요. 영유아 건강검진 4차(18~24개월)와 7차(54~60개월) 건강교육에도 전자미디어 노출이 들어 있어서 검진 때 물어봐도 돼요.',
+  src: [S.whoScreen, S.who5, S.aapMedia2026, S.aapMedia, S.checkupItems],
 };
 const READING = {
   id: 'reading', emoji: '📚', title: '같이 책 읽기',
@@ -352,6 +414,210 @@ const POTTY = {
     },
   ],
   src: [S.potty, S.pottyTips, S.pottyReview, S.blum, S.li],
+};
+
+// ---------- 유아 (만 3~5세) ----------
+const SLEEP_KID = {
+  id: 'sleep-kid', emoji: '🌙', title: '잠·낮잠',
+  list: [
+    '만 3~5세는 낮잠을 포함해 하루 10~13시간 자는 게 권장돼요 (미국수면의학회·미국소아과학회, WHO). 매일 비슷한 시간에 자고 일어나요.',
+    '낮잠을 그만두는 때는 아이마다 크게 달라요. 연구를 모아 보면 만 3세 무렵 3명 중 1명, 만 4세까지 절반 남짓, 만 5세까지 80%쯤이 낮잠을 안 자요 (연구마다 차이가 커요).',
+    '낮잠을 안 자려 하면 억지로 재우기보다 책 보기처럼 조용히 쉬는 시간을 가져요. 낮잠을 그만두면 밤잠을 조금 일찍 재워 봐요.',
+    '잠자기 1~2시간 전에는 화면을 보지 않아요 (CDC).',
+  ],
+  src: [S.sleepHours, S.whoScreen, S.naps, S.napTips, CDC('4-years', '4세')],
+};
+const BEDWETTING = {
+  id: 'bedwetting', emoji: '🌛', title: '밤 소변 가리기',
+  list: [
+    '낮에는 대개 만 4세쯤, 밤에는 만 5~6세쯤 소변을 가려요 (미국국립보건원).',
+    '만 5세 전에는 밤에 이불을 적시는 게 정상 발달 과정일 수 있어요. 만 5세 아이 15%쯤, 6세 10%쯤이 밤에 실수해요 (질병관리청).',
+    '아이 잘못이나 게으름 때문이 아니에요. 혼내거나 놀리지 말고, 가족끼리 놀리지 않기로 정해요. 마른 밤에는 칭찬해요.',
+    '6개월 넘게 잘 가리다 갑자기 다시 실수하거나, 소변 볼 때 아파하거나, 낮에도 자주 실수하거나, 소변이 뿌옇거나 분홍빛이면 소아청소년과에 물어봐요 (미국소아과학회).',
+  ],
+  options: [
+    {
+      name: '질병관리청: 만 5세가 기준이지만 절대적이지 않아요', how: '다섯 번째 생일이 지나고 주 2번 넘게 3개월 이상 이어지면 야뇨증으로 봐요. 아이가 어리면 좀 더 기다려 보길 권하지만, 아이가 힘들어하면 병원에 가 보라고 해요. 밤에 깨우거나 기저귀를 채우는 방법은 먼저 권하지 않아요.',
+    },
+    {
+      name: '미국소아과학회: 실수한 밤엔 벌 대신 응원', how: '5살과 7살 아이 15%가 밤에 이불을 적시고, 15살이면 1% 아래로 줄어요. 약은 6살 이상에서 써요.',
+    },
+    { name: '메이오 클리닉: 7살 전에는 대개 걱정하지 않아요', how: '7살이 지나도 밤에 실수하거나, 몇 달 잘 가리다가 다시 시작하면 진료를 권해요.' },
+  ],
+  src: [S.kdcaEnuresis, S.bedwetting, S.niddk, S.mayoEnuresis],
+};
+const PICKY = {
+  id: 'picky', emoji: '🥦', title: '편식',
+  list: [
+    '이 무렵 새 음식을 낯설어하고 좋아하는 몇 가지만 먹으려는 건 흔한 일이에요. 편식은 대개 지나가는 발달 과정이에요.',
+    '한 음식을 받아들이기까지 10번 넘게 맛봐야 할 수도 있어요. 한 번 싫다고 해도 계속 상에 올려요.',
+    '온 가족이 같은 음식을 먹고, 싫다고 따로 차려 주지 않아요. 아이가 좋아하는 음식도 하나는 같이 놓아요. 식사 때 TV·휴대폰은 꺼요.',
+    '억지로 먹이거나 안 먹었다고 벌주면 좋아할 수 있던 음식도 싫어하게 될 수 있어요. 간식을 보상으로 걸지 않아요.',
+  ],
+  options: [
+    {
+      name: '차려만 주고 권하지 않기 (먹기 책임 나누기)', how: '무엇을·언제·어디서 먹을지는 어른이 정하고, 먹을지와 얼마나 먹을지는 아이가 정해요 (엘린 새터). 싫어하는 음식도 계속 상에 올리되 먹으라고 하지 않아요.',
+      fits: '식사 때마다 실랑이가 잦은 집',
+      known: '유아들에게 "다 먹어"라고 한 날보다 안 한 날 더 많이 먹고 싫다는 말도 훨씬 적었다는 실험이 있어요 (Galloway 2006).',
+    },
+    {
+      name: '매일 한 입 맛보기 + 작은 스티커', how: '싫어하는 채소를 매일 아주 조금 맛보게 하고, 맛보면 스티커를 줘요. 간식 같은 음식 보상은 쓰지 않아요.',
+      fits: '정해진 방식이 편한 집, 맛보기 자체를 놀이처럼 하고 싶은 집',
+      known: '3~4살 173명 무작위 연구에서 12일 동안 맛보기 + 스티커를 한 쪽은 먹는 양과 좋아하는 정도가 늘었고 3개월 뒤에도 이어졌어요. 칭찬만 한 쪽은 차이가 크지 않았어요 (Remington 2012). 보상 쓰기에는 반대하는 의견도 있어요.',
+    },
+  ],
+  src: [S.picky, S.kpsPicky, S.satter, S.pressure, S.tasteReward],
+};
+const TEETH = {
+  id: 'teeth', emoji: '🦷', title: '양치·치과',
+  list: [
+    '불소가 1,000ppm 이상 든 치약을 만 3세 전에는 쌀알만큼, 만 3세부터는 작은 콩알만큼 써요. 저불소 치약은 권하지 않아요 (대한소아치과학회).',
+    '아직 잘 뱉지 못하니 양은 어른이 짜 줘요. 미국소아과학회는 양치는 8살쯤까지, 치실은 10살쯤까지 도와주라고 해요.',
+    '영유아 구강검진은 30~41개월, 42~53개월, 54~65개월에 한 번씩 받을 수 있고 본인 부담이 없어요. 정기 치과 검진은 보통 6개월마다 권해요.',
+    '치과에서 하는 불소도포는 3세 이상에서 1년에 2번 넘게 권하고, 보건소에서 하는 곳도 있어요 (질병관리청).',
+  ],
+  src: [S.kapd, S.aapTeeth, S.checkupSchedule, S.kdcaCavity, S.kdcaFluoride],
+};
+const SAFETY_KID = {
+  id: 'safety-kid', emoji: '🚗', title: '카시트·물놀이 안전',
+  list: [
+    '차에서는 모든 좌석에서 안전띠를 매야 하고, 6세 미만은 카시트(유아보호용 장구)를 단 뒤 안전띠를 매야 해요 (도로교통법 제50조). 아이를 안고 타지 않아요.',
+    '하네스 달린 앞보기 카시트를 제품이 허용하는 키·몸무게까지 되도록 오래(적어도 4살까지) 쓰고, 그다음엔 안전띠가 몸에 맞을 때까지(보통 키 145cm쯤, 8~12살) 부스터를 써요. 13살 아래는 뒷좌석에 타요 (미국소아과학회).',
+    '물놀이 때는 수영할 줄 아는 어른이 팔 닿는 거리에서 지켜봐요. 잠깐이라도 아이만, 또는 아이끼리만 두지 않아요.',
+    '수영을 배우면 위험이 줄지만 물에 안 빠지게 해 주지는 않아요. 깊은 물이나 배에서는 구명조끼를 입혀요.',
+    '물에 빠지는 사고는 5세 이하에서 가장 많고, 욕조나 양동이에서도 생겨요. 간이 수영장은 쓰고 나면 바로 물을 비워요.',
+  ],
+  src: [S.roadLaw, S.easylawCar, S.carSeats, S.drowning, S.pool, S.kdcaDrowning],
+};
+
+const ADJUST = {
+  id: 'adjust', emoji: '🏫', title: '어린이집·유치원 적응',
+  list: [
+    '만 3세 무렵 많은 아이가 등원 때 엄마·아빠와 헤어진 뒤 10분 안에 진정해요 (CDC).',
+    '다니기 전에 몇 번 미리 가 보고, 집에서 헤어지는 인사를 연습해 봐요.',
+    '인사는 짧고 매일 같은 방식으로 해요. 몰래 나가면 아이가 더 불안해하고, 길게 끄는 작별은 "가기 싫은 곳"이라는 느낌을 키울 수 있어요. 울며 붙잡아도 다시 들어가지 않고 일관되게 해요.',
+    '"낮잠 자고 간식 먹으면 데리러 올게"처럼 아이가 아는 일로 약속하고 꼭 지켜요.',
+    '처음엔 짧게 떨어져 있다가 차츰 늘려요. 적응 기간과 방식은 기관마다 달라서 입학 상담 때 물어봐요.',
+  ],
+  src: [CDC('3-years', '3세'), S.separation, S.kidsAdjust, S.goeKinder],
+};
+const FRIENDS = {
+  id: 'friends', emoji: '🤝', title: '친구·형제 다툼',
+  list: [
+    '만 3세엔 다른 아이에게 다가가 같이 놀기 시작하고, 만 4세엔 속상한 친구를 위로하고, 만 5세쯤엔 놀이 규칙과 차례를 지켜요 (CDC). 장난감을 뺏거나 밀치는 건 이 나이에 흔하고, 대개 미워서 그러는 게 아니에요.',
+    '뺏는 대신 "나도 해도 돼?", "내 차례 언제야?"라고 말하는 법을 같이 연습해요. 차례는 타이머로 정해도 좋아요.',
+    '아끼는 물건 몇 개는 나누지 않아도 돼요. 친구가 오기 전에 미리 치워 두게 해요.',
+    '때리거나 다칠 것 같으면 바로 끼어들어요. 형제 다툼에서는 한쪽 편을 들지 않아요.',
+  ],
+  options: [
+    {
+      name: '스스로 풀게 두기', how: '가까이 있다가 위험해지거나 도움을 청할 때만 끼어들어요.',
+      fits: '가벼운 다툼, 아이들끼리 말로 풀어 볼 수 있을 때',
+      known: 'CDC·미국소아과학회가 권하는 방식이고, 경기도교육청 안내서도 작은 다툼은 스스로 해결하게 하라고 해요. 그때마다 부모가 나서면 기대는 법을 먼저 배울 수 있다고 해요.',
+    },
+    {
+      name: '부모가 중재하기', how: '규칙을 말하고 → 무엇 때문인지 정리하고 → 아이들 각자의 이야기를 듣고 → 아이들이 해결책을 내게 해요. 부모가 대신 정해 주지 않아요.',
+      fits: '같은 다툼이 되풀이될 때, 한쪽이 늘 밀릴 때',
+      known: '5~10살 형제가 있는 48가족 무작위 연구에서 중재를 배운 집 아이들이 더 자주 양보하고 서로의 입장을 더 잘 이해했어요. 주로 5살 넘은 아이를 본 연구예요.',
+    },
+  ],
+  note: '나누기를 시켜서 하게 하기보다 아이가 스스로 고르게 했을 때 다음에 더 잘 나눴다는 3~4살 연구도 있어요.',
+  src: [CDC('4-years', '4세'), S.play, S.siblings, S.mediation, S.sharing, S.goeKinder],
+};
+const PRAISE_KID = {
+  id: 'praise-kid', emoji: '⭐', title: '지시·칭찬·보상표',
+  list: [
+    '이 무렵 규칙을 시험해 보는 건 자연스러워요. 장난감 정리처럼 쉬운 일을 맡기고 해내면 칭찬해요.',
+    '지시는 한 번에 하나씩, "치울래?"처럼 묻지 말고 "장난감 치워 줘"처럼 말해요. 못 하는 것과 안 하는 것은 달라요.',
+    '"이거 입을래, 저거 입을래?"처럼 괜찮은 것 두 가지 중에 고르게 해요.',
+    '결과는 행동과 이어지게 정해요. 다투던 장난감을 잠깐 치우는 식이에요. 경고는 지킬 수 있을 때만 하고, 밥처럼 꼭 필요한 건 빼앗지 않아요.',
+    '화나는 마음은 괜찮지만 때리거나 부수는 건 안 된다고 알려 주고, 말로 푸는 법을 가르쳐요.',
+    '"장난감 치운 거 봤어!"처럼 무엇을 잘했는지 짚어서 칭찬해요.',
+  ],
+  options: [
+    {
+      name: '스티커 보상표', how: '바꾸고 싶은 행동 몇 가지(잠자리에 누워 있기, 변기 쓰기 등)를 정하고, 해낼 때마다 바로 스티커를 붙여요. 한 번 받은 보상은 빼앗지 않아요.',
+      fits: '바꾸고 싶은 생활 습관이 분명할 때',
+      known: 'CDC가 안내하는 방법이에요. 잘 안 되면 목표나 보상을 바꿔 보라고 해요.',
+    },
+    {
+      name: '물건 보상 없이 칭찬과 관심으로', how: '스티커나 선물 대신, 무엇을 잘했는지 짚어 주는 칭찬과 관심으로 알려 줘요.',
+      fits: '그림 그리기처럼 아이가 이미 좋아하는 활동',
+      known: '128개 실험을 모은 분석에서 미리 약속한 물건 보상은 원래 좋아하던 활동에 대한 흥미를 떨어뜨렸고, 칭찬 같은 긍정적인 말은 흥미를 높였어요. 다만 이미 좋아하는 활동에 대한 연구라 생활 습관 보상표와는 다를 수 있어요.',
+    },
+  ],
+  src: [S.discipline, S.directions, S.responding, S.rewards, S.deci],
+};
+const BODY_SAFETY = {
+  id: 'body-safety', emoji: '🙈', title: '몸 안전 교육',
+  list: [
+    '음경·질 같은 생식기도 다른 몸 부분처럼 정확한 이름으로 불러요. 다른 이름으로 바꿔 부르면 나쁘거나 숨길 곳이라는 느낌을 줄 수 있어요.',
+    '수영복으로 가리는 곳과 입은 허락 없이 남이 보거나 만지면 안 되는 곳이라고 알려 줘요. 아이도 남을 만지기 전에 "응"이라는 대답을 먼저 들어야 해요.',
+    '뽀뽀·포옹을 억지로 시키지 않아요. 할머니·할아버지께도 손 흔들기나 하이파이브로 인사해도 괜찮아요. 엄마·아빠도 안아도 되는지 먼저 물어봐 주세요.',
+    '깜짝 선물 같은 비밀은 지켜도 되지만, 몸에 관한 비밀은 꼭 믿는 어른에게 말하라고 해요. 말해도 혼나지 않고, 믿어 준다고 알려 줘요.',
+    '3~6살에 자기 몸을 만지거나 궁금해하는 건 흔한 발달이에요. 놀라지 말고 "혼자 있는 곳에서 해"처럼 차분하게 말해요.',
+    '목욕할 때, 잠자리, 병원 가기 전처럼 일상에서 짧게 되풀이해요. 어린이집·유치원도 법에 따라 6개월에 1번 넘게 성폭력 예방 교육(내 몸의 소중함, 정확한 이름, 좋은 느낌과 싫은 느낌)을 해요.',
+  ],
+  src: [S.bodyTalk, S.bodyBehavior, S.abusePrevention, S.childWelfare],
+};
+
+const LETTERS = {
+  id: 'letters', emoji: '🔤', title: '한글·숫자 언제 가르칠까',
+  body: '누리과정(만 3~5세 국가 교육과정)은 "유아 중심·놀이 중심"이에요. 초등학교 1학년 국어에서 한글을 처음부터 가르치고, 2017년부터 한글 수업이 27시간에서 68시간으로 늘었어요 (교육부).',
+  options: [
+    {
+      name: '놀이 중심', how: '놀이·그림책·생활 속에서 글자와 수를 만나고, 학습지로 따로 가르치지 않아요. 누리과정이 이 방향이에요.',
+      fits: '누리과정 방향을 따르고 싶은 집, 아이가 아직 글자에 관심이 적을 때',
+      known: '미국소아과학회는 놀이하며 배우게 하는 프로그램이 성공적이라며 균형 잡힌 교육과정을 권해요. 놀이 중심 유치원을 다닌 아이가 나중에 더 나았다는 추적 연구도 있지만(HighScope, Marcon), 표본이 작거나 인과를 밝히지 못했다는 한계와 반론이 있어요. 경기도교육청 1학년 안내서는 입학 전엔 한글을 가르치기보다 책을 많이 읽어 주라고 해요.',
+    },
+    {
+      name: '일찍 가르치기 (학습지·한글 떼기)', how: '학습지나 수업으로 글자·소리·숫자를 순서대로 가르쳐요.',
+      fits: '아이가 글자에 관심을 보이는 집, 입학 전에 미리 익히게 하고 싶은 집',
+      known: '글자와 소리를 짚어 가르치면 읽기 기초 기술이 오른다는 분석이 있어요(미국 NELP 2008, 연구자가 1:1·소그룹으로 자주 가르친 경우). 5살에 읽기를 배운 아이와 7살에 배운 아이를 비교한 뉴질랜드 연구에서는 11살쯤 차이가 없어졌고, 늦게 시작한 쪽이 독해가 조금 더 좋았어요(실험 연구는 아니에요). 대부분 영어권 연구라 한글에 그대로 맞을지는 알 수 없어요.',
+    },
+    {
+      name: '관심 따라가며 생활 속에서', how: '간판·과자 봉지 글자 읽기, 집 안 물건에 단어 카드 붙이기, 같이 책 읽기, 엘리베이터·버스 번호 같은 생활 속 숫자 찾기, 놀이하며 세기를 해요.',
+      fits: '두 방식 사이 어딘가를 원하는 집',
+      known: '같이 책 읽기는 글자 지식과 말하기에 도움이 됐고(NELP), 어른이 이끌어 주는 놀이가 직접 가르치기보다 초기 수학에 조금 더 나았다는 분석이 있어요(Skene 2022). 다만 "이끄는 놀이"를 정하는 기준이 연구마다 달라요.',
+    },
+  ],
+  note: '2024년 시험 조사에서 만 5세의 81%가 사교육을 받았어요. 교육부는 2026년 유아 대상 학원의 레벨테스트를 금지하는 법 개정(국회 통과)과, 36개월 이상 유아에게 하루 3시간·주 15시간이 넘는 인지 교습을 막는 계획을 냈어요.',
+  src: [S.nuri, S.hangeul, S.goeFirst, S.powerOfPlay, S.highscope, S.marcon, S.lonigan, S.nelp, S.suggate, S.guidedPlay, S.privateEdu],
+};
+const ENGLISH = {
+  id: 'english', emoji: '🌍', title: '영어 조기교육',
+  body: '정규 영어 수업은 초등학교 3학년부터예요. 유치원 방과후 과정에서는 노래·게임·율동 같은 놀이 중심 영어만 하루 1시간 이내로 할 수 있어요 (교육부).',
+  options: [
+    {
+      name: '일찍, 일주일에 몇 시간씩', how: '학원·방과후처럼 일주일에 몇 시간 영어를 접해요.',
+      fits: '영어를 놀이처럼 일찍 접하게 하고 싶은 집',
+      known: '노출이 적은 학교 수업 환경에서는 늦게(11살쯤) 시작한 아이가 더 빨리 배워 따라잡았고, 같은 양을 배우면 시작 나이가 결과를 가르지 않았다는 연구가 많아요(스페인 BAF 연구). 대부분 8~11살에 시작한 아이들 연구라 3~5살과는 다를 수 있어요.',
+    },
+    {
+      name: '생활 속에서 많이 접하기 (몰입)', how: '영어를 쓰는 환경에서 지내거나 하루 중 많은 시간을 영어로 보내요.',
+      fits: '영어를 생활에서 많이 쓸 수 있는 집',
+      known: '캐나다 이민자 240명 연구에서 일찍 배우기 시작할수록 외국인 억양이 적었어요. 문법을 배우는 능력은 17살 무렵까지 유지된다는 대규모 연구도 있어요. 노출이 아주 많은 환경에서 나온 결과예요.',
+    },
+    {
+      name: '초등 정규 수업까지 기다리기', how: '따로 가르치지 않고 초등 3학년 정규 수업부터 시작해요. 노래나 그림책으로 가볍게 접하는 정도로 해요.',
+      fits: '우리말 말하기·읽기를 먼저 다지고 싶은 집, 사교육 부담을 줄이고 싶은 집',
+      known: '노출이 적은 수업 환경이라면 늦게 시작해도 따라잡을 수 있다는 위 연구들이 이쪽 근거가 돼요.',
+    },
+  ],
+  note: '어느 쪽이든 시작 나이만큼 얼마나, 어떤 질의 영어를 접하느냐가 중요하다고 해요.',
+  src: [S.moeEnglish, S.baf, S.munoz, S.flege, S.hartshorne, S.privateEdu],
+};
+const SCHOOL_READY = {
+  id: 'school-ready', emoji: '🎒', title: '초등학교 입학 준비',
+  list: [
+    '만 6세가 되는 해의 다음 해 3월 1일에 입학해요. 1년 일찍(만 5세가 된 해의 다음 해)이나 1년 늦게(만 7세가 된 해의 다음 해) 입학할 수도 있어요.',
+    '취학통지서는 입학 전 해 12월 20일까지 주민센터(읍·면·동)에서 보내고, 정부24에서도 받을 수 있어요.',
+    '12월~1월 학교 예비소집에는 아이와 함께 직접 가요. 오지 않으면 학교가 아이 안전을 확인해요.',
+    '영유아 건강검진 8차(66~71개월)에서 예방접종 확인과 취학 전 준비 상담을 해요. 입학 전에 DTaP 5차, IPV 4차, MMR 2차, 일본뇌염 접종을 확인해요.',
+    '화장실 혼자 가고 뒤처리하기, 지퍼·단추, 우유갑 열기, 젓가락처럼 스스로 하는 일을 미리 연습해 봐요. 내 물건에는 이름을 써 둬요.',
+    '교육부는 유치원·어린이집과 초등학교를 잇는 "이음교육"을 늘려 5세 아이의 학교 적응을 돕겠다고 했어요 (2026).',
+  ],
+  src: [S.schoolAge, S.schoolNotice, S.enrollment, S.checkupItems, S.goeFirst, S.privateEdu],
 };
 
 // 주제: { id, emoji, title, body?, list?, options?: [{ name, how, fits?, known? }], note?, src: [{ label, url }] }
@@ -475,6 +741,54 @@ export const PERIODS = [
         '다른 아이 옆에서 놀고, 가끔은 같이 놀아요 (30개월쯤)',
       ], CDC('2-years', '24개월'), CDC('30-months', '30개월')),
       DISCIPLINE, POTTY, SCREEN, TANTRUM,
+    ],
+  },
+  {
+    id: 'y3', months: [36, 47], label: '만 3세',
+    topics: [
+      dev([
+        '말을 두 번 이상 주고받으며 대화해요',
+        '"엄마 어디 있어?"처럼 누구·뭐·어디·왜를 물어요',
+        '그림책을 보며 물으면 "달려", "먹어"처럼 무슨 행동인지 말해요',
+        '이름을 물으면 자기 이름을 말하고, 대부분 다른 사람도 알아들을 만큼 말해요',
+        '어린이집 등원처럼 엄마·아빠와 헤어진 뒤 10분 안에 진정해요',
+        '다른 아이들에게 다가가 같이 어울려 놀아요',
+        '보여 주면 동그라미를 따라 그리고, 포크를 써요',
+        '헐렁한 바지나 겉옷 같은 옷을 혼자 입어요',
+      ], CDC('3-years', '3세')),
+      ADJUST, DISCIPLINE, PRAISE_KID, FRIENDS, SCREEN, SLEEP_KID, PICKY, TEETH, SAFETY_KID,
+    ],
+  },
+  {
+    id: 'y4', months: [48, 59], label: '만 4세',
+    topics: [
+      dev([
+        '놀이할 때 선생님·슈퍼히어로·강아지처럼 다른 무언가가 되어 흉내 내요',
+        '친구가 없으면 같이 놀자고 찾고, 우는 친구를 안아 주며 위로해요',
+        '"도우미" 역할을 좋아하고, 도서관·놀이터처럼 장소에 따라 행동을 달리해요',
+        '네 낱말 이상으로 문장을 말하고, 그날 있었던 일을 한 가지 넘게 이야기해요',
+        '"외투는 뭐 할 때 입어?" 같은 간단한 질문에 대답해요',
+        '물건 색깔을 몇 가지 말하고, 잘 아는 이야기에서 다음에 무슨 일이 생기는지 말해요',
+        '몸의 부분이 세 군데 넘게 있는 사람을 그리고, 크레파스를 주먹이 아닌 손가락으로 쥐어요',
+        '큰 공을 대부분 잡고, 어른이 지켜보면 음식을 덜거나 물을 따라요',
+      ], CDC('4-years', '4세')),
+      FRIENDS, PRAISE_KID, BODY_SAFETY, LETTERS, ENGLISH, SCREEN, BEDWETTING, SLEEP_KID, PICKY, TEETH, SAFETY_KID,
+    ],
+  },
+  {
+    id: 'y5', months: [60, 71], label: '만 5세',
+    topics: [
+      dev([
+        '친구들과 놀이할 때 규칙을 지키거나 차례를 기다려요',
+        '양말 짝 맞추기, 밥 먹고 상 치우기 같은 간단한 집안일을 해요',
+        '들은 이야기나 지어낸 이야기를 사건 두 가지 넘게 넣어 말해요',
+        '세 번 넘게 말을 주고받으며 대화를 이어 가요',
+        '10까지 세고, "어제", "내일", "아침", "밤" 같은 시간 말을 써요',
+        '이야기 시간이나 만들기에 5~10분 집중해요 (화면 보는 시간 말고)',
+        '자기 이름 글자 중 몇 개를 쓰고, 가리키면 글자를 몇 개 읽어요',
+        '한 발로 깡충 뛰고, 단추 몇 개를 채워요',
+      ], CDC('5-years', '5세')),
+      SCHOOL_READY, LETTERS, ENGLISH, BODY_SAFETY, FRIENDS, PRAISE_KID, SCREEN, BEDWETTING, PICKY, TEETH, SAFETY_KID,
     ],
   },
 ];

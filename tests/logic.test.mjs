@@ -280,20 +280,22 @@ test('안내 데이터: 모두 출처·링크 주소가 있고, 금액(원) 문�
 });
 
 // ---------- 이 시기 아이 ----------
-test('이 시기 아이: 0~71개월은 빈틈·겹침 없이 시기 하나씩, 72개월(만 6세)부터는 없음', () => {
+test('이 시기 아이: 0~143개월은 빈틈·겹침 없이 시기 하나씩, 144개월(만 12세)부터는 없음', () => {
   PERIODS.forEach((p, i) => assert.equal(p.months[0], i ? PERIODS[i - 1].months[1] + 1 : 0, p.id));
-  assert.equal(PERIODS.at(-1).months[1], 71);
+  assert.equal(PERIODS.at(-1).months[1], 143);
   assert.equal(PERIODS[periodIndex(0)].label, '생후 0~1개월');
   assert.equal(PERIODS[periodIndex(3)].label, '생후 2~3개월');
   assert.equal(PERIODS[periodIndex(35)].label, '생후 24~35개월');
   assert.equal(PERIODS[periodIndex(36)].label, '만 3세');
   assert.equal(PERIODS[periodIndex(59)].label, '만 4세');
   assert.equal(PERIODS[periodIndex(71)].label, '만 5세');
-  assert.equal(periodIndex(72), -1);
+  assert.equal(PERIODS[periodIndex(72)].label, '만 6~8세');
+  assert.equal(PERIODS[periodIndex(143)].label, '만 9~11세');
+  assert.equal(periodIndex(144), -1);
 });
-test('이 시기 아이 데이터: 시기마다 발달이 먼저, 모든 주제에 출처 링크, 방법 카드엔 이름·설명, 판정 문구 없음', () => {
+test('이 시기 아이 데이터: 시기마다 발달(아이 모습)이 먼저, 모든 주제에 출처 링크, 방법 카드엔 이름·설명, 판정 문구 없음', () => {
   for (const p of PERIODS) {
-    assert.equal(p.topics[0].emoji, '👶', `${p.id}: 발달이 맨 앞`);
+    assert.equal(p.topics[0].id, 'dev', `${p.id}: 발달(아이 모습)이 맨 앞`);
     assert.equal(new Set(p.topics.map(t => t.id)).size, p.topics.length, `${p.id}: 주제 id 겹침`);
     for (const t of p.topics) {
       const id = `${p.id}/${t.id}`;

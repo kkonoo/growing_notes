@@ -239,7 +239,7 @@ export function eduTab(s, el) {
   const { dayCount, months } = childAge(child.birthDate, today());
   const tips = tipsBlock(pickTips({ days: dayCount, months }), render);
   if (tips) el.append(tips);
-  const guide = guideBlock(child.id, months, render); // 0~71개월 (만 5세까지)
+  const guide = guideBlock(child.id, months, render); // 0~143개월 (만 11세까지)
   if (guide) el.append(guide);
 
   const mode = stageOf(s) === 'teen' ? 'teen' : 'edu', M = MODES[mode], key = `${s.key}:${mode}`;

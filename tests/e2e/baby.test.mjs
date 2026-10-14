@@ -40,7 +40,9 @@ test('첫째 출생 후 기록 몇 개 → 둘째 임신 등록 → 홈에 두 �
   await guide.locator('.tip-title', { hasText: '이 무렵 발달' }).click();
   await guide.locator('.guide-list li').first().waitFor();
   assert.ok(await guide.locator('.guide-list li').count() >= 4, '발달 목록');
-  assert.ok(await guide.locator('.tip-links a').count() >= 1, '출처 링크');
+  assert.equal(await guide.locator('.tip-links a').count(), 0, '출처는 접힘');
+  await guide.getByRole('button', { name: /^출처 \d+곳/ }).click();
+  await guide.locator('.tip-links a').first().waitFor();
   await guide.getByRole('button', { name: '이전 시기' }).click();
   await guide.getByRole('button', { name: '생후 0~1개월 · 지금으로' }).click();
   await period('생후 2~3개월 (지금)');

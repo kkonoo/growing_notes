@@ -482,11 +482,11 @@ export const PERIODS = [
 // 만 개월 → 시기 번호 (0~35개월 밖이면 -1)
 export const periodIndex = months => PERIODS.findIndex(p => months >= p.months[0] && months <= p.months[1]);
 
-// ---------- 그리기: 처음엔 접힌 한 줄 → 누르면 ‹ 시기 › + 주제 제목 → 제목을 누르면 내용 (방법 카드도 이름만 → 누르면 설명) ----------
+// ---------- 그리기: 처음엔 접힌 한 줄 → 누르면 ‹ 시기 › + 주제 제목 → 제목을 누르면 내용 (방법 카드·출처도 접힌 채로) ----------
 // 펼친 상태·넘겨 본 시기는 기억하지 않음 (앱을 열 때마다 접힌 채로, 지금 시기)
 let blockOpen = false;
 const shown = new Map(); // 아이 id → 넘겨 보고 있는 시기 번호 (없으면 지금 시기)
-const opened = new Set(); // '시기 id/주제 id', 방법 카드는 '시기 id/주제 id/번호'
+const opened = new Set(); // '시기 id/주제 id', 방법 카드는 '…/번호', 출처는 '…/src'
 
 export function guideBlock(childId, months, rerender) {
   const now = periodIndex(months);
@@ -549,9 +549,13 @@ function topicBody(t, key, rerender) {
     body.append(opts);
   }
   if (t.note) body.append(h('p', 'note', t.note));
-  const links = h('div', 'tip-links');
-  for (const l of t.src) links.append(Object.assign(h('a', 'btn small', `${l.label} ↗`), { href: l.url, target: '_blank', rel: 'noopener' }));
-  body.append(links);
+  const sk = `${key}/src`;
+  body.append(toggle(sk, `출처 ${t.src.length}곳`, 'guide-src', rerender));
+  if (opened.has(sk)) {
+    const links = h('div', 'tip-links');
+    for (const l of t.src) links.append(Object.assign(h('a', 'btn small', `${l.label} ↗`), { href: l.url, target: '_blank', rel: 'noopener' }));
+    body.append(links);
+  }
   return body;
 }
 function labeled(label, text) {

@@ -1,6 +1,7 @@
 // 📖 이 시기 아이: 만 개월에 맞는 발달과 육아 안내 (0~215개월: 육아 0~2세 + 유아 만 3~5세 + 초등 만 6~11세 + 사춘기 만 12~17세)
 // 원칙: 판정 안 함("이 무렵 많은 아이가 하는 것"만, "늦다"는 말 없음), 의견이 갈리는 주제는 방법을 나란히 두고 권하지 않음,
-// 모두 출처. 시기는 영유아 건강검진 차수와 맞물리게 나눔. 바뀌면 이 파일만 고치면 돼요
+// 모두 출처. 해마다 바뀌는 조사 통계(참여율·경험률·검거 수 등)는 행동에 영향이 없고 관리만 늘어서 넣지 않음(권고 기준·법·연구 결과 숫자만).
+// 시기는 영유아 건강검진 차수와 맞물리게 나눔. 바뀌면 이 파일만 고치면 돼요
 import { h, button } from './ui.js';
 
 export const GUIDE_CHECKED = '2026년 10월'; // 내용·링크를 마지막으로 확인한 때
@@ -141,7 +142,6 @@ const S = {
   phoneAgeStudy: { label: 'Sun 2023 (첫 폰 나이 5년 추적)', url: 'https://pubmed.ncbi.nlm.nih.gov/36056573/' },
   schoolPhone: { label: '초·중등교육법 제20조의5 (교내 스마트기기)', url: 'https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032275567' },
   schoolPhoneNews: { label: '법제처: 3월부터 교내 스마트기기 사용 제한 (2026)', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148960442' },
-  overuse: { label: '과학기술정보통신부: 스마트폰 과의존 실태조사 (2025)', url: 'https://eiec.kdi.re.kr/policy/callDownload.do?dtime=20260326234731&filenum=1&num=278528' },
   gameRating: { label: '게임콘텐츠등급분류위원회: 등급분류', url: 'https://www.gcrb.or.kr/Institution/EtcForm01.aspx' },
   gameTime: { label: '정책브리핑: 셧다운제 폐지, 게임시간 선택제 (2021)', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148897555' },
   youtubeKids: { label: 'YouTube: 가족 계정 고르기', url: 'https://support.google.com/youtube/answer/10315420' },
@@ -201,7 +201,6 @@ const S = {
   kdiTutoring: { label: 'KDI: 대학규제와 사교육 (2018)', url: 'https://www.kdi.re.kr/research/reportView?&pub_no=16368' },
   kimTutoring: { label: '김희삼 2010 (사교육의 효과 분석)', url: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2787544' },
   readAloud: { label: 'AAP: 소리 내어 읽어 주기', url: `${AAP_HC}/gradeschool/school/Pages/Help-Your-Child-Enjoy-Reading-Aloud-Tips-for-Parents.aspx` },
-  readingSurvey: { label: '문화체육관광부: 2025 국민 독서실태 조사', url: 'https://www.mcst.go.kr/site/s_notice/press/pressView.jsp?pSeq=22278' },
   bookLink: { label: '국립중앙도서관: 책이음', url: 'https://books.nl.go.kr/one' },
   cfpb: { label: '미국 소비자금융보호국: 6~12세와 돈 벌기', url: 'https://www.consumerfinance.gov/consumer-tools/money-as-you-grow/school-age-children-preteens/explore-earning/' },
   bokAllowance: { label: '한국은행 추천: 용돈은 정기적으로 (2003)', url: 'https://www.korea.kr/briefing/policyBriefingView.do?newsId=148745212' },
@@ -212,8 +211,6 @@ const S = {
   cdc1517: { label: 'CDC 15~17세 페이지 (2024 보관본, restoredcdc.org)', url: 'https://restoredcdc.org/www.cdc.gov/child-development/positive-parenting-tips/adolescence-15-17-years.html' },
   cdcTeens: { label: 'CDC: 10대 자녀 이해하기', url: 'https://www.cdc.gov/parenting-teens/tips-understanding-and-adapting/index.html' },
   yhs: { label: '질병관리청: 2025 청소년건강행태조사 결과', url: 'https://www.kdca.go.kr/bbs/kdca/42/215505/artclView.do' },
-  yhsSite: { label: '질병관리청: 청소년건강행태조사 (학교급별 표)', url: 'https://www.kdca.go.kr/yhs/' },
-  yhsStats: { label: '질병관리청: 2025 청소년건강행태조사 통계집 (생활법령 게시)', url: 'https://www.easylaw.go.kr/CSP/FlDownload.laf?flSeq=1769409513884' },
   kdcaGrowth: { label: '질병관리청: 성장 장애', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6767' },
   kdcaMenses: { label: '질병관리청: 정상 월경의 이해', url: 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6618' },
   teenSleep: { label: 'AAP: 10대의 학교생활과 잠', url: 'https://www.healthychildren.org/English/ages-stages/teen/school/Pages/Helping-Your-Teen-Succeed-In-School.aspx' },
@@ -243,7 +240,6 @@ const S = {
   kaynak: { label: 'Kaynak 2014 (부모와 청소년 음주 리뷰)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4108600/' },
   niaaa: { label: '미국 국립알코올남용연구소: 10~14세와 술 이야기', url: 'https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/make-a-difference-child-alcohol' },
   adhdMisuse: { label: '식약처: ADHD 치료제 안전 사용', url: 'https://nedrug.mfds.go.kr/eBook/catImage/184/26.pdf' },
-  drugStats: { label: '연합뉴스: 2025 마약류 범죄백서', url: 'https://www.yna.co.kr/view/AKR20260728157000004' },
   gamblingSurvey: { label: '한국도박문제예방치유원: 2025 청소년 도박 실태조사', url: 'https://www.kcgp.or.kr/portal/bbs/B0000031/view.do?menuNo=200021&nttId=776664&pageIndex=1' },
   kcgp1336: { label: '한국도박문제예방치유원: 1336 상담', url: 'https://www.kcgp.or.kr/portal/main/contents.do?menuNo=200062' },
   gamblingPolice: { label: '연합뉴스: 청소년 사이버도박 단속 (2024)', url: 'https://www.yna.co.kr/view/AKR20241109021200004' },
@@ -277,7 +273,6 @@ const S = {
   youthLabor: { label: '청소년·청년근로권익센터', url: 'https://www.youthlabor.co.kr/customer/info' },
   pmLaw: { label: '찾기쉬운 생활법령: 전동킥보드 운전자', url: 'https://www.easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=2&cciNo=1&cnpClsNo=1&csmSeq=1506&popMenu=ov' },
   licenseAge: { label: '도로교통법 제82조 (면허 나이)', url: 'https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsId=001638&lsJoLnkSeq=1000923517&print=print' },
-  pmAccidents: { label: '국회입법조사처: 개인형 이동장치 사고 (2025)', url: 'https://www.nars.go.kr/news/view.do?brdSeq=48139&cmsCode=CM0026' },
   pmFines: { label: '경찰청 법령해석: 개인형 이동장치 범칙금·과태료 (2025)', url: 'https://www.law.go.kr/LSW/cgmExpcInfoP.do?cgmExpcDatSeq=409914&mode=2&ofiClsCd=350128' },
   pmBill: { label: '연합뉴스: PM법 국토위 통과 (2025)', url: 'https://www.yna.co.kr/view/AKR20251217075700001' },
   pmBillBack: { label: '한국경제: PM법 다시 손본다 (2026년 1월)', url: 'https://www.hankyung.com/article/2026011259961' },
@@ -299,7 +294,6 @@ const S = {
   esafety3m: { label: '호주 eSafety: 16세 미만 SNS 제한 3개월 평가', url: 'https://www.esafety.gov.au/research/social-media-age-restrictions-evaluation/early-days-early-insights-three-months-report' },
   snsBill: { label: '서울신문: 국내 SNS 나이 제한 법안 계류 (2026)', url: 'https://www.seoul.co.kr/news/economy/2026/09/24/20260924500008' },
   deepfakeLaw: { label: '법무부: 성폭력처벌법 개정 공포 (2024)', url: 'https://www.moj.go.kr/bbs/moj/159/588549/artclView.do' },
-  deepfakePolice: { label: '경찰청: 딥페이크 성범죄 집중단속 결과', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148941987' },
   groomingLaw: { label: '아동·청소년성보호법 제15조의2 (그루밍)', url: 'https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033366091' },
   cyberViolence: { label: '학교폭력예방법 제2조 (사이버폭력)', url: 'https://law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=900727212' },
   victimHelp: { label: '찾기쉬운 생활법령: 디지털성범죄 피해자 지원센터 지원 내용', url: 'https://easylaw.go.kr/CSP/common/OnhunqueansInfoRetrieve.laf?onhunqnaAstSeq=86&onhunqueSeq=5824' },
@@ -309,8 +303,6 @@ const S = {
   birthControl: { label: 'AAP: 10대와 피임', url: 'https://www.healthychildren.org/English/ages-stages/teen/dating-sex/Pages/Birth-Control-for-Sexually-Active-Teens.aspx' },
   whoCse: { label: 'WHO: 포괄적 성교육', url: 'https://www.who.int/news-room/fact-sheets/detail/comprehensive-sexuality-education' },
   consentAge: { label: '헌법재판소: 16세 미만 의제강간 합헌 (2024)', url: 'https://www.ccourt.go.kr/site/kor/ex/bbs/View.do?bcIdx=1008052&cbIdx=1195' },
-  teenSex: { label: '임 외 2024 (청소년 성관계·피임, 2023 자료)', url: 'https://www.e-sciencecentral.org/articles/pubreader/SC000053753' },
-  datingViolence: { label: '뉴시스: 10대 교제폭력 검거 (2025)', url: 'https://www.newsis.com/view/NISX20250904_0003316614' },
   morningAfter: { label: '농민신문: 사후피임약 전문의약품 유지 (2026)', url: 'https://www.nongmin.com/article/20260202500422' },
   aha: { label: '아하!서울시립청소년성문화센터', url: 'https://ahacenter.kr/aha/' },
   violence2023: { label: '교육부: 학교폭력 근절 종합대책 (2023)', url: 'https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=94668&lev=0&m=020402&opType=N&s=moe&statusYN=W' },
@@ -767,7 +759,7 @@ const LETTERS = {
       known: '같이 책 읽기는 글자 지식과 말하기에 도움이 됐고(NELP), 어른이 이끌어 주는 놀이가 직접 가르치기보다 초기 수학에 조금 더 나았다는 분석이 있어요(Skene 2022). 다만 "이끄는 놀이"를 정하는 기준이 연구마다 달라요.',
     },
   ],
-  note: '2024년 시험 조사에서 만 5세의 81%가 사교육을 받았어요. 교육부는 2026년 유아 대상 학원의 레벨테스트를 금지하는 법 개정(국회 통과)과, 36개월 이상 유아에게 하루 3시간·주 15시간이 넘는 인지 교습을 막는 계획을 냈어요.',
+  note: '교육부는 2026년 유아 대상 학원의 레벨테스트를 금지하는 법 개정(국회 통과)과, 36개월 이상 유아에게 하루 3시간·주 15시간이 넘는 인지 교습을 막는 계획을 냈어요.',
   src: [S.nuri, S.hangeul, S.goeFirst, S.powerOfPlay, S.highscope, S.marcon, S.lonigan, S.nelp, S.suggate, S.guidedPlay, S.privateEdu],
 };
 const ENGLISH = {
@@ -838,16 +830,15 @@ const GAMES = {
     '13세 미만(한국 구글 계정은 14세 미만)은 유튜브 키즈나 보호자가 관리하는 계정을 쓸 수 있어요.',
     '미국소아과학회는 학령기 아이의 오락용 화면 시간으로 하루 1~2시간쯤을 예로 들고, 시간보다 내용과 잠·운동·숙제를 밀어내지 않는지를 보라고 해요. 잠들기 1시간 전엔 화면을 끄고 기기는 침실 밖에 둬요.',
     '가족 미디어 계획(미국소아과학회)처럼 규칙을 아이와 같이 정해 봐요.',
-    '2025년 조사에서 만 3~9세의 26%(보호자 응답), 만 10~19세의 43%가 스마트폰 과의존 위험군이었어요 (과학기술정보통신부).',
   ],
-  src: [S.gameRating, S.gameTime, S.youtubeKids, S.googleAge, S.aapMedia2026, S.mediaPlan, S.overuse],
+  src: [S.gameRating, S.gameTime, S.youtubeKids, S.googleAge, S.aapMedia2026, S.mediaPlan],
 };
 const ONLINE_SAFETY = {
   id: 'online-safety', emoji: '🔐', title: 'SNS·온라인 안전',
   list: [
     '대부분의 SNS는 만 13세부터 가입할 수 있고, 한국에서는 틱톡·구글 계정처럼 만 14세가 기준인 곳이 많아요. 호주는 2025년 12월부터 16살 미만의 SNS 계정을 막고 있어요.',
     '비밀번호와 개인정보(주소, 학교, 사진)는 친구에게도 알려 주지 않기로 약속해요.',
-    '사이버폭력은 청소년 10명 중 4명꼴이 겪었고, 피해는 전혀 모르는 사람에게서 가장 많이 와요 (2025 실태조사, 초4~고3).',
+    '사이버폭력 피해는 전혀 모르는 사람에게서 가장 많이 와요 (사이버폭력 실태조사).',
     '어른이 온라인에서 성적인 대화를 이어 가거나 사진을 요구하면 처벌 대상이에요. 대화방을 나가지 말고 화면을 캡처해 둔 뒤 보호자에게 알리라고 가르쳐요.',
     '학교폭력·사이버폭력은 117(24시간, 문자 #0117), 디지털 성범죄는 디지털성범죄피해자지원센터(02-735-8994, 평일 8~22시·주말 9~18시)나 24시간 여성긴급전화 1366, 긴급하면 112예요.',
   ],
@@ -860,7 +851,7 @@ const BULLYING = {
     '"더 얘기해 줄래?", "그때 어땠어?"처럼 묻고 끝까지 들어요. 바로 해결하려 하기보다 먼저 들어 주고, "네 잘못이 아니야"라고 말해 줘요.',
     '"무시해"나 "맞서 싸워"라고 하지 않아요. 상대 부모에게 바로 연락하기보다 학교를 통해요. 괴롭힘은 둘을 마주 앉혀 화해시키는 방식으로는 잘 풀리지 않아요.',
     '학교폭력을 알게 되면 학교나 117 학교폭력 신고센터(24시간, 문자 #0117)에 신고할 수 있고, 긴급하면 112예요. 메신저 따돌림이나 딥페이크 같은 사이버폭력도 학교폭력이에요.',
-    '2026년 조사에서 초등 4~6학년 피해응답률은 5.7%로 중·고등학생보다 높았고, 언어폭력이 가장 많았어요 (교육부).',
+    '학교폭력은 언어폭력이 가장 많아요 (교육부 실태조사).',
     '우리 아이가 괴롭히는 쪽이라면 때리지 않는 방식으로 분명하고 일관되게 한계를 정하고, 필요하면 소아청소년과나 상담 전문가와 이야기해요.',
   ],
   src: [S.bullySigns, S.bullySupport, S.aapBullying, S.report117, S.bullySurvey],
@@ -942,7 +933,7 @@ const HOMEWORK = {
 };
 const PRIVATE_EDU = {
   id: 'private-edu', emoji: '📚', title: '사교육·선행학습',
-  body: '2025년 초등학생 84.4%가 사교육을 받았고, 일반 교과 사교육의 목적은 학교 수업 보충(49.5%)이 가장 많고 선행학습(22.7%)이 그다음이에요. 공교육정상화법은 학교의 선행 교육과 학원의 선행학습 광고를 막지만, 가정의 선택을 막지는 않아요.',
+  body: '공교육정상화법은 학교의 선행 교육과 학원의 선행학습 광고를 막지만, 가정의 선택을 막지는 않아요.',
   options: [
     {
       name: '학원·선행 적극 활용', how: '학원이나 과외로 다음 학기·학년 내용을 미리 배워요.',
@@ -968,10 +959,9 @@ const READING_KID = {
   list: [
     '글을 읽게 된 뒤에도 소리 내어 읽어 주는 시간을 이어 가요. 번갈아 읽거나 아이가 부모에게 읽어 줘도 좋아요. 끝까지 다 읽지 않아도 되고, 같은 책을 또 골라도 괜찮아요.',
     '경기도교육청은 열 살 전후 아이는 읽을 때보다 들을 때 더 잘 이해한다며, 매일 20분쯤, 특히 잠자기 전에 읽어 주길 권해요. 줄거리 확인 질문만 하면 부담이 될 수 있어요.',
-    '도서관 회원증을 만들어요. 책이음 회원증 하나로 전국 2,900곳 넘는 참여 도서관에서 빌릴 수 있어요.',
-    '2025년 조사에서 초4~고3 학생의 94.6%가 1년에 책을 한 권 넘게 읽었어요 (문화체육관광부).',
+    '도서관 회원증을 만들어요. 책이음 회원증 하나로 전국 참여 도서관에서 빌릴 수 있어요.',
   ],
-  src: [S.readAloud, S.cdcMid, S.goeFirst, S.bookLink, S.readingSurvey],
+  src: [S.readAloud, S.cdcMid, S.goeFirst, S.bookLink],
 };
 const MONEY = {
   id: 'money', emoji: '💰', title: '용돈·경제 교육',
@@ -1035,23 +1025,21 @@ const TEEN_BODY = {
 const MIND_TEEN = {
   id: 'mind-teen', emoji: '😟', title: '우울·불안·자해',
   list: [
-    '2025년 중·고등학생 중 최근 1년 동안 2주 내내 일상을 멈출 만큼 슬프거나 절망한 적이 있는 학생은 남 21.7%, 여 29.9%였고, 스트레스를 많이 느끼는 학생은 남 32.9%, 여 50.3%였어요 (질병관리청).',
     '잠이나 식사가 크게 바뀌거나, 좋아하던 걸 그만두거나, 죽음·자살 이야기를 하거나, 자기를 깎아내리거나, 아끼던 물건을 나눠 주거나, 자해 흔적이 보이면 경고 신호일 수 있어요 (한국생명존중희망재단).',
     '걱정되면 "혹시 죽고 싶다는 생각을 한 적 있어?"라고 직접 물어봐요. 물어본다고 그런 생각이 생기지는 않는다고 해요 (미국소아과학회, CDC, 연구 리뷰). 다그치지 말고 끝까지 듣고, 혼자 해결하려 하지 말고 전문가와 연결해요.',
     '약은 잠가 두고 집에 두는 양을 줄이고, 안 쓰는 약은 버려요. 10대 자살 시도에서 가장 흔한 방법이 약 과다 복용이고, 생각에서 행동까지 몇 분밖에 안 걸릴 때가 많아요 (미국소아과학회).',
     '마음이 힘들 땐 자살예방상담 109, 청소년전화 1388(문자 1388, 카카오톡 "청소년상담1388"), 정신건강상담 1577-0199에 연락해요. 모두 24시간이에요. 위급하면 112·119예요.',
     '학교 Wee클래스·Wee센터, 지역 청소년상담복지센터, 정신건강복지센터에서도 상담받을 수 있어요.',
   ],
-  src: [S.yhs, S.kfspSigns, S.aapSuicide, S.cdc1517, S.dazzi, S.aapMeans, S.helpLines, S.youth1388, S.eyouth, S.wee],
+  src: [S.kfspSigns, S.aapSuicide, S.cdc1517, S.dazzi, S.aapMeans, S.helpLines, S.youth1388, S.eyouth, S.wee],
 };
 const SUBSTANCE = {
   id: 'substance', emoji: '🚭', title: '술·담배·약물',
   body: '청소년보호법은 청소년(만 19세 미만, 19세가 되는 해 1월 1일부터는 빠짐)에게 술·담배를 팔거나 그냥 주는 걸 막아요. 2026년 4월 24일부터는 합성니코틴 액상형 전자담배도 담배로 규제돼요.',
   list: [
-    '2025년 최근 30일 안에 술을 마신 학생은 중학생 남 4.8%·여 3.4%, 고등학생 남 15.1%·여 8.9%였어요. 술을 마신 학생 중 남 42.1%, 여 52.0%는 마실 때 한 번에 평균 남자 소주 5잔, 여자 3잔 이상을 마셨어요.',
-    '담배 제품을 쓰는 학생은 남 5.4%, 여 2.8%이고, 그중 61.4%는 궐련·액상형·궐련형 전자담배 중 두 가지 이상을 같이 써요.',
+    '담배 제품을 쓰는 청소년은 궐련·액상형·궐련형 전자담배 중 두 가지 이상을 같이 쓰는 경우가 많아요 (질병관리청).',
     '한 번의 훈계보다 짧은 대화를 여러 번 해요. 아이가 아는 것과 생각을 먼저 묻고, 친구가 권하거나 곤란한 자리에 있을 때 어떻게 거절하고 언제 부모에게 연락할지 미리 같이 정해 둬요.',
-    '"공부 잘하는 약"이라며 ADHD 치료제(메틸페니데이트)를 치료 말고 다른 목적으로 쓰는 건 위험해요 (식약처). 2025년 10대 마약사범은 674명으로 전년(649명)보다 3.9% 늘었어요.',
+    '"공부 잘하는 약"이라며 ADHD 치료제(메틸페니데이트)를 치료 말고 다른 목적으로 쓰는 건 위험해요 (식약처).',
   ],
   options: [
     {
@@ -1063,28 +1051,26 @@ const SUBSTANCE = {
       known: '미국 국립알코올남용연구소가 권하는 방식이에요. 부모가 분명히 반대한다는 게 아이들이 술을 마시지 않는 큰 이유라고 해요. 위 리뷰(2014)도 법적 나이까지는 술을 말리라고 결론지었어요.',
     },
   ],
-  src: [S.youthLaw, S.alcoholLaw, S.nicotine, S.yhs, S.yhsSite, S.niaaa, S.cdc1214, S.cdc1517, S.kaynak, S.mattick, S.adhdMisuse, S.drugStats],
+  src: [S.youthLaw, S.alcoholLaw, S.nicotine, S.yhs, S.niaaa, S.cdc1214, S.cdc1517, S.kaynak, S.mattick, S.adhdMisuse],
 };
 const SLEEP_TEEN = {
   id: 'sleep-teen', emoji: '😴', title: '잠·운동',
   list: [
-    '만 13~18세는 하루 8~10시간 자는 게 권장돼요 (미국수면의학회, 미국소아과학회 지지). 2025년 한국 중·고등학생의 주중 평균 수면은 6.3시간(중학생 6.9시간, 고등학생 5.6시간)이었고, 잠으로 피로가 충분히 풀린다는 학생은 남 28.3%, 여 16.9%였어요.',
+    '만 13~18세는 하루 8~10시간 자는 게 권장돼요 (미국수면의학회, 미국소아과학회 지지).',
     '사춘기에는 몸의 시계가 늦어져서 밤늦게까지 졸리지 않고 아침에 일어나기 힘들어요. 미국소아과학회는 그래서 중·고등학교 등교를 오전 8시 30분 이후로 하자고 권했어요(2014).',
     '주말에도 평일과 일어나는 시간을 크게 다르게 하지 않고, 잠들기 1시간 전엔 화면을 끄고 침실엔 화면 기기를 두지 않아요.',
-    '하루 평균 60분 이상 숨이 찰 만큼 움직이고, 일주일에 3일은 근육·뼈를 쓰는 운동을 하는 게 권장돼요 (WHO). 2025년 하루 60분씩 주 5일 이상 움직인 학생은 남 24.5%, 여 8.5%였어요.',
+    '하루 평균 60분 이상 숨이 찰 만큼 움직이고, 일주일에 3일은 근육·뼈를 쓰는 운동을 하는 게 권장돼요 (WHO).',
   ],
-  src: [S.sleepHours, S.teenSleep, S.schoolStart, S.schoolSleep, S.yhs, S.yhsStats, S.whoActivity],
+  src: [S.sleepHours, S.teenSleep, S.schoolStart, S.schoolSleep, S.whoActivity],
 };
 const FOOD_TEEN = {
   id: 'food-teen', emoji: '🍽', title: '먹기·몸 이미지',
   list: [
-    '2025년 중·고등학생 10명 중 4명 넘게(남 41.9%, 여 45.3%) 일주일에 5일 이상 아침을 걸렀어요.',
     '집에서는 몸무게·외모 대신 건강하게 먹고 움직이는 이야기를 해요. 미국소아과학회는 다이어트·끼니 거르기·다이어트약을 말리고, 가족이 함께 먹는 끼니를 늘리라고 해요(2016).',
-    '2025년 정상 체중이거나 그보다 덜 나가는데도 "살쪘다"고 느끼는 학생이 남 17.6%, 여 28.2%였어요.',
     '섭식장애가 있는 아이의 평균 나이는 12.5세쯤이에요 (미국소아과학회). 갑자기 살이 많이 빠지거나, 먹은 걸 숨기거나, 식사 뒤 바로 화장실에 자주 가거나, 지나치게 운동하거나, 같이 먹는 자리를 피하면 소아청소년과나 정신건강 전문가와 이야기해요. 남자아이는 근육에 집착하거나 보충제에 매달리는 모습으로 나타나기도 해요.',
     '청소년 카페인은 하루 몸무게 1kg당 2.5mg 이하가 권고돼요(60kg이면 150mg). 에너지음료 한 캔(250mL)에 80mg쯤 들어 있어 커피음료나 에너지음료 두 개면 넘을 수 있어요. 고카페인 제품엔 "고카페인 함유"와 카페인 양이 적혀 있고, 학교에서는 커피·고카페인 음료를 팔지 않아요.',
   ],
-  src: [S.yhs, S.yhsStats, S.aapWeight, S.aapWeightNews, S.aapEd, S.nhsEd, S.caffeine, S.kdcaCaffeine],
+  src: [S.aapWeight, S.aapWeightNews, S.aapEd, S.nhsEd, S.caffeine, S.kdcaCaffeine],
 };
 const VACCINE_TEEN = {
   id: 'vaccine-teen', emoji: '💉', title: '예방접종·건강검사',
@@ -1103,7 +1089,7 @@ const MONEY_TEEN = {
     '계획 세우기, 모으기, 비교해서 사기를 아이가 스스로 해 보게 하고, 번 돈의 10% 이상 모으기 같은 목표를 같이 정해 봐요 (미국 소비자금융보호국).',
     '2026년 5월부터 후불교통 기능이 없는 체크카드는 만 7세부터, 후불교통 체크카드는 만 12세부터 만들 수 있어요 (후불교통 한도 월 10만 원).',
     '보호자 동의 없이 한 게임·앱 결제는 취소하고 환불받을 수 있어요. 다만 아이가 속임수로 동의를 받은 것처럼 꾸몄으면 안 될 수 있어요. 분쟁은 한국소비자원 1372, 콘텐츠분쟁조정위원회 1588-2594예요.',
-    '2025년 조사(초4~고3)에서 4.0%가 도박을 해 본 적이 있었고, 온라인 카지노(35.8%)·오프라인 복권(31.7%)·온라인 미니게임(29.8%) 순이었어요. 절반 넘게(54.0%) 도박 광고를 본 적이 있었어요. 경찰 단속(2023년 9월~2024년 10월)에서 붙잡힌 사이버도박 사범의 47.2%가 19세 미만이었어요.',
+    '청소년 도박은 온라인 카지노(바카라 등)·온라인 미니게임 같은 불법 사이트에서 많이 하고, 도박 광고에도 쉽게 노출돼요 (청소년 도박 실태조사, 경찰 단속).',
     '친구와 돈거래가 잦아지거나, 빚이 생기거나, 갑자기 돈이나 비싼 물건이 늘거나, 스포츠 경기 결과에 민감해지면 도박 신호일 수 있어요 (사행산업통합감독위원회). 아이 빚은 서둘러 갚아 주거나 약속하기 전에 전문 상담을 먼저 받아요.',
     '도박 상담은 한국도박문제예방치유원 1336(매일 9~22시, 문자 #1336)이나 청소년전화 1388(24시간)이에요.',
   ],
@@ -1132,7 +1118,6 @@ const HIGH_SCHOOL = {
 };
 const PRIVATE_EDU_TEEN = {
   id: 'private-edu-teen', emoji: '📚', title: '학원·인강·혼자 공부',
-  body: '2025년 사교육 참여율은 중학생 73.0%, 고등학생 63.0%였고, 참여 학생 1명당 한 달 평균 중학생 63.2만 원, 고등학생 79.3만 원을 썼어요 (국가데이터처·교육부).',
   options: [
     {
       name: '학원·선행 적극 활용', how: '학원이나 과외로 다음 학기·학년 내용을 미리 배우고 시험을 준비해요.',
@@ -1170,11 +1155,10 @@ const PM = {
   list: [
     '전동킥보드 같은 개인형 이동장치는 원동기장치자전거 면허(만 16세부터) 이상이 있어야 탈 수 있어요. 면허 없이 타면 범칙금 10만 원이고, 만 13세 미만 아이가 타게 하면 보호자에게 과태료 10만 원이에요.',
     '헬멧을 꼭 쓰고(안 쓰면 범칙금 2만 원), 혼자만 타요(둘이 타면 4만 원). 술을 마시고 타면 10만 원이에요.',
-    '2024년 개인형 이동장치 사고는 2,232건, 사망은 23명이었고, 사고의 47.6%가 20세 이하였어요 (국회입법조사처).',
     '만 16세 미만 이용 제한, 본인 확인·안전교육 의무를 담은 "PM법"은 2025년 12월 국회 국토교통위원회를 통과했지만, 2026년 1월 다시 상임위로 돌아가 고치는 중이에요(2026년 8월 기사 기준 국회 논의 중). 서울은 홍대·반포·대치동 학원가 같은 "킥보드 없는 거리"를 운영해요.',
     '자동차 운전면허는 만 18세부터예요. 교통사고는 10대가 숨지는 가장 큰 원인 가운데 하나라, 안전띠와 안전 운전 이야기를 일찍부터 나눠요. 자전거·스케이트보드를 탈 때도 헬멧을 써요 (CDC).',
   ],
-  src: [S.pmLaw, S.pmFines, S.licenseAge, S.pmAccidents, S.pmBill, S.pmBillBack, S.pmBillNow, S.seoulKick, S.cdc1214, S.cdc1517],
+  src: [S.pmLaw, S.pmFines, S.licenseAge, S.pmBill, S.pmBillBack, S.pmBillNow, S.seoulKick, S.cdc1214, S.cdc1517],
 };
 const TALK_TEEN = {
   id: 'talk-teen', emoji: '💬', title: '대화·규칙·자율',
@@ -1207,7 +1191,6 @@ const SNS_TEEN = {
   body: '미국소아과학회는 2026년 새 권고에서 화면 시간만 볼 게 아니라, 계속 쓰게 만드는 설계(알림, 끝없는 피드, 추천 알고리즘)를 아이와 함께 이야기하자고 해요. 알림을 끄고 확인할 시간을 정하고, 일주일쯤 쉬어 보면 기분과 잠이 나아지는 데 도움이 될 수 있다고 해요.',
   list: [
     '미국 12~15세 6,595명 연구에서 하루 3시간 넘게 SNS를 쓴 아이는 우울·불안 증상 위험이 2배였어요 (미국 공중보건국장, 2023). 반면 35만 명을 분석한 연구에서 디지털 기기 사용이 행복감 차이를 설명하는 정도는 0.4% 이하로 아주 작았고, 원인을 가리기 어렵다는 리뷰도 있어요.',
-    '2025년 만 10~19세의 43.0%가 스마트폰 과의존 위험군이었어요 (과학기술정보통신부).',
     '한국에서 만 14세 미만은 개인정보를 쓰는 가입에 법정대리인 동의가 필요해요. 인스타그램은 2025년 1월부터 만 14~18세를 "10대 계정"(기본 비공개, 메시지 제한, 밤 수면 모드)으로 바꿨어요.',
     '게임은 등급(12세·15세·청소년이용불가)을 확인하고, 만 18세 미만은 보호자나 본인이 요청하면 게임할 수 있는 시간대를 정할 수 있어요(게임시간 선택제).',
   ],
@@ -1223,38 +1206,35 @@ const SNS_TEEN = {
       known: '미국소아과학회가 권하는 "설계를 이해하고 함께 정하기"에 가까운 방식이에요. 미국 공중보건국장도 가족 미디어 계획을 세우라고 해요.',
     },
   ],
-  src: [S.aapDigital, S.aapMedia2026, S.surgeonGeneral, S.orben, S.odgers2020, S.overuse, S.privacyU14, S.instaTeen, S.gameRating, S.gameTime, S.anxiousGen, S.esafety3m, S.snsBill],
+  src: [S.aapDigital, S.aapMedia2026, S.surgeonGeneral, S.orben, S.odgers2020, S.privacyU14, S.instaTeen, S.gameRating, S.gameTime, S.anxiousGen, S.esafety3m, S.snsBill],
 };
 const DEEPFAKE = {
   id: 'deepfake', emoji: '🔐', title: '사진·딥페이크·성착취',
   list: [
     '딥페이크 같은 성적 허위영상물은 만들기만 해도 7년 이하 징역 또는 5천만 원 이하 벌금이고, 갖고 있거나 사거나 저장하거나 보기만 해도 3년 이하 징역 또는 3천만 원 이하 벌금이에요(2024년 10월부터). 장난이라도 범죄라고 분명히 알려 줘요.',
-    '2024년 8월~2025년 3월 경찰 집중단속에서 딥페이크 성범죄로 검거된 963명 가운데 669명이 10대였어요.',
     '학교폭력예방법도 딥페이크를 만들거나 퍼뜨리는 걸 사이버폭력으로 봐요.',
     '19세 이상이 성적인 대화를 이어 가거나 성적인 행동을 하자고 꾀면 처벌 대상이에요(그루밍). 대화방을 나가지 말고 화면을 캡처해 둔 뒤 보호자에게 알리라고 가르쳐요.',
     '내 사진이 퍼졌다면 혼내기보다 도움부터 받아요. 상담과 삭제 지원은 무료이고 부모가 대신 신청할 수도 있어요: 1366(24시간, 디지털성범죄 대표 번호), 중앙디지털성범죄피해자지원센터 02-735-8994(평일 8~22시, 주말 9~18시), 긴급하면 112, 학교폭력은 117이에요.',
   ],
-  src: [S.deepfakeArticle, S.deepfakeLaw, S.deepfakePolice, S.cyberViolence, S.groomingLaw, S.grooming, S.victimHelp, S.victimFamily, S.help1366, S.d4u, S.report117],
+  src: [S.deepfakeArticle, S.deepfakeLaw, S.cyberViolence, S.groomingLaw, S.grooming, S.victimHelp, S.victimFamily, S.help1366, S.d4u, S.report117],
 };
 const LOVE = {
   id: 'love', emoji: '💕', title: '연애·성·동의',
   list: [
     '연애와 성에 관심이 커지는 때예요. 미국소아과학회는 부모를 첫 번째 성교육자로 보고, 첫 경험을 미루는 이야기와 함께 피임·콘돔 이야기도 하라고 해요. 동의에 대한 대화는 사춘기 초반부터 시작해요.',
     '포괄적 성교육은 성행동을 늘리거나 앞당기지 않는다고 해요 (WHO).',
-    '2023년 중·고등학생의 6.5%가 성관계 경험이 있었고, 그중 늘 피임한 학생은 47.2%, 전혀 안 한 학생은 22.7%였어요.',
     '19세 이상이 13세 이상 16세 미만과 성관계하면 동의했더라도 처벌돼요(형법, 2020년부터). 사후피임약은 한국에서 의사 처방이 있어야 해요.',
     '11~13세 무렵부터 병원 진료 때 아이가 의사와 따로 이야기하는 시간을 두라고 해요 (미국소아과학회).',
-    '교제폭력으로 검거된 10대는 2020년 280명에서 2024년 626명으로 늘었어요(경찰청 자료).',
     '물어볼 곳: 지역 청소년 성문화센터(서울은 아하!센터 02-2677-9220), 청소년전화 1388.',
   ],
-  src: [S.birthControl, S.teenStages, S.whoCse, S.teenSex, S.consentAge, S.morningAfter, S.datingViolence, S.aha, S.youth1388, S.cdc1517],
+  src: [S.birthControl, S.teenStages, S.whoCse, S.consentAge, S.morningAfter, S.aha, S.youth1388, S.cdc1517],
 };
 // 공통 문장은 초등과 같고, 통계와 대입 반영만 중·고등학생에 맞게
 const BULLYING_TEEN = {
   ...BULLYING,
   list: [
     ...BULLYING.list.slice(0, 4),
-    '2026년 1차 조사에서 피해응답률은 중학생 2.3%, 고등학생 0.8%(초등 5.7%)였고, 언어폭력이 가장 많았어요(전체 37.8%). 고등학생은 알리지 않은 이유로 "말해도 소용없을 것 같아서"를 많이 꼽았어요(20.8%).',
+    '고등학생은 피해를 알리지 않은 이유로 "말해도 소용없을 것 같아서"를 많이 꼽았어요 (교육부 실태조사).',
     '출석정지·학급교체·전학(6~8호) 조치는 졸업 뒤 최대 4년까지 학생부에 남고, 2026학년도 대입부터 모든 대학이 학교폭력 조치를 반영해요.',
     BULLYING.list[5],
   ],

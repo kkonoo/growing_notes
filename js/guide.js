@@ -1145,7 +1145,8 @@ export function guideBlock(childId, months, rerender) {
     sec.append(toggle(key, `${t.emoji} ${t.title}`, 'tip-title', rerender));
     if (opened.has(key)) sec.append(topicBody(t, key, rerender));
   }
-  sec.append(h('p', 'hint', `${GUIDE_CHECKED} 확인. 의학적 조언이 아니에요. 아이가 걱정되면 소아청소년과나 영유아 건강검진에서 상담해요.`));
+  const ask = p.months[0] < 72 ? '영유아 건강검진에서' : '학교 상담 선생님과'; // 만 6세부터는 영유아 건강검진이 없어서
+  sec.append(h('p', 'hint', `${GUIDE_CHECKED} 확인. 의학적 조언이 아니에요. 아이가 걱정되면 소아청소년과나 ${ask} 상담해요.`));
   return sec;
 }
 

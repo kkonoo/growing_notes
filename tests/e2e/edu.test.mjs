@@ -120,6 +120,7 @@ test('만 12세 아이는 교육 (사춘기): 학교 · 대화 · 관심사·진
   assert.equal(await badge(), '📚 교육 (사춘기)');
   assert.equal(await A.page.locator('.tab[aria-selected="true"]').innerText(), '📚 교육');
   assert.deepEqual(await chips(), ['🏫 학교', '💬 대화', '💡 관심사·진로']);
+  assert.match(await A.page.locator('.guide .tips-head').innerText(), /이 시기 아이 · 만 12~14세/, '사춘기도 이 시기 아이');
 });
 
 test('학교 추가 (기본 종류 = 학교)', async () => {

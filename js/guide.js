@@ -228,12 +228,13 @@ const S = {
   hpvBoys: { label: '질병관리청: 남아 HPV 무료 접종 시작 (2026)', url: 'https://www.kdca.go.kr/bbs/kdca/42/306764/download.do' },
   flu2026: { label: '질병관리청: 2026~2027 인플루엔자 예방접종', url: 'https://www.kdca.go.kr/bbs/kdca/42/309201/download.do' },
   schoolVaccine: { label: '예방접종도우미: 입학생 예방접종 확인', url: 'https://nip.kdca.go.kr/irhp/infm/goVcntInfo.do?menuCd=136&menuLv=1' },
-  schoolCheckupLaw: { label: '찾기쉬운 생활법령: 학생 건강검사', url: 'https://easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=1&cciNo=2&cnpClsNo=1&csmSeq=1138&popMenu=ov' },
+  schoolCheckupLaw: { label: '찾기쉬운 생활법령: 어린이·학생 건강검사', url: 'https://easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=1&cciNo=2&cnpClsNo=1&csmSeq=1138&popMenu=ov' },
   kfspSigns: { label: '한국생명존중희망재단: 자살 경고 신호', url: 'https://www.kfsp.or.kr/home/kor/contents.do?menuPos=33' },
   aapSuicide: { label: 'AAP: 10대 자살 위험, 부모가 알 것', url: 'https://www.healthychildren.org/English/healthy-living/emotional-wellness/Pages/teen-suicide-risk-what-parents-need-to-know.aspx' },
   aapMeans: { label: 'AAP: 집 안의 위험한 수단 줄이기', url: 'https://www.healthychildren.org/English/healthy-living/emotional-wellness/Pages/lethal-means-how-to-continue-the-conversation-at-home.aspx' },
   dazzi: { label: 'Dazzi 2014 (자살을 물어보는 것의 영향)', url: 'https://pubmed.ncbi.nlm.nih.gov/24998511/' },
   youth1388: { label: '청소년상담1388 (전화·문자·카카오톡·채팅)', url: 'https://www.1388.go.kr/cco/YTOSP_SC_CCI_01' },
+  eyouth: { label: '청소년상담복지센터 (지역번호+1388)', url: 'https://www.youth.go.kr/youth/eYouth/sub.do?menuSn=381' },
   wee: { label: 'Wee 프로젝트 (학교 상담)', url: 'https://www.wee.go.kr/mps' },
   youthLaw: { label: '청소년보호법 제2조 (청소년 나이)', url: 'https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1028328781' },
   alcoholLaw: { label: '찾기쉬운 생활법령: 청소년 술·담배 판매 금지', url: 'https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=3&cciNo=2&cnpClsNo=1&csmSeq=718&popMenu=ov' },
@@ -247,7 +248,7 @@ const S = {
   kcgp1336: { label: '한국도박문제예방치유원: 1336 상담', url: 'https://www.kcgp.or.kr/portal/main/contents.do?menuNo=200062' },
   gamblingPolice: { label: '연합뉴스: 청소년 사이버도박 단속 (2024)', url: 'https://www.yna.co.kr/view/AKR20241109021200004' },
   gambleSigns: { label: '사행산업통합감독위원회: 청소년 도박 신호', url: 'https://www.ngcc.go.kr/data/youthGambleSOS.do' },
-  gambleManual: { label: '경상남도교육청: 학교 도박문제 대응 매뉴얼', url: 'https://www.gne.go.kr/component/file/ND_fileDownload.do?q_fileId=1696976&q_fileSn=181307265' },
+  gambleManual: { label: '한국도박문제예방치유원: 학교 도박문제 대응 매뉴얼 (2022)', url: 'https://www.gne.go.kr/component/file/ND_fileDownload.do?q_fileId=1696976&q_fileSn=181307265' },
   cfpbTeen: { label: '미국 소비자금융보호국: 10대와 돈', url: 'https://www.consumerfinance.gov/consumer-tools/money-as-you-grow/teen-young-adult/' },
   cfpbSave: { label: '미국 소비자금융보호국: 10대와 저축', url: 'https://www.consumerfinance.gov/consumer-tools/money-as-you-grow/teen-young-adult/explore-saving/' },
   checkCard: { label: '정책브리핑: 체크카드 만 7세부터 (2026)', url: 'https://www.korea.kr/multi/visualNewsView.do?newsId=148963880' },
@@ -1022,7 +1023,7 @@ const TEEN_BODY = {
     '여자아이는 만 13세까지 사춘기 신호가 없거나 신호는 있는데 만 15세까지 첫 생리가 없을 때, 남자아이는 만 14세까지 신호가 없을 때 소아청소년과에 물어봐요. 사춘기가 2~3년 늦게 오는 아이도 있는데, 이때 다 자란 키는 대개 보통이고 남자아이에게 더 흔해요 (질병관리청).',
     '기초생활수급·차상위·한부모 가정이면 9~24세 여성청소년 생리용품 바우처를 주민센터나 복지로에서 신청할 수 있어요.',
   ],
-  src: [S.pubertyGirls, S.pubertyBoys, S.pubertyKids, S.kdcaGrowth, S.kdcaMenses, S.cdc1214, S.bodyTalk, S.padVoucher],
+  src: [S.pubertyGirls, S.pubertyBoys, S.pubertyKids, S.kdcaGrowth, S.kdcaMenses, S.cdc1214, S.aapWeightNews, S.bodyTalk, S.padVoucher],
 };
 const MIND_TEEN = {
   id: 'mind-teen', emoji: '😟', title: '우울·불안·자해',
@@ -1034,21 +1035,21 @@ const MIND_TEEN = {
     '마음이 힘들 땐 자살예방상담 109, 청소년전화 1388(문자 1388, 카카오톡 "청소년상담1388"), 정신건강상담 1577-0199에 연락해요. 모두 24시간이에요. 위급하면 112·119예요.',
     '학교 Wee클래스·Wee센터, 지역 청소년상담복지센터, 정신건강복지센터에서도 상담받을 수 있어요.',
   ],
-  src: [S.yhs, S.kfspSigns, S.aapSuicide, S.cdc1517, S.dazzi, S.aapMeans, S.helpLines, S.youth1388, S.wee],
+  src: [S.yhs, S.kfspSigns, S.aapSuicide, S.cdc1517, S.dazzi, S.aapMeans, S.helpLines, S.youth1388, S.eyouth, S.wee],
 };
 const SUBSTANCE = {
   id: 'substance', emoji: '🚭', title: '술·담배·약물',
   body: '청소년보호법은 청소년(만 19세 미만, 19세가 되는 해 1월 1일부터는 빠짐)에게 술·담배를 팔거나 그냥 주는 걸 막아요. 2026년 4월 24일부터는 합성니코틴 액상형 전자담배도 담배로 규제돼요.',
   list: [
-    '2025년 최근 30일 안에 술을 마신 학생은 중학생 남 4.8%·여 3.4%, 고등학생 남 15.1%·여 8.9%였어요. 술을 마신 학생 중 남 42.1%, 여 52.0%는 한 번에 남자 소주 5잔, 여자 3잔 이상을 마셨어요.',
-    '담배 제품을 쓰는 학생은 남 5.4%, 여 2.8%이고, 그중 61.4%는 궐련·액상형·궐련형 전자담배 중 두 가지 넘게 같이 써요.',
+    '2025년 최근 30일 안에 술을 마신 학생은 중학생 남 4.8%·여 3.4%, 고등학생 남 15.1%·여 8.9%였어요. 술을 마신 학생 중 남 42.1%, 여 52.0%는 마실 때 한 번에 평균 남자 소주 5잔, 여자 3잔 이상을 마셨어요.',
+    '담배 제품을 쓰는 학생은 남 5.4%, 여 2.8%이고, 그중 61.4%는 궐련·액상형·궐련형 전자담배 중 두 가지 이상을 같이 써요.',
     '한 번의 훈계보다 짧은 대화를 여러 번 해요. 아이가 아는 것과 생각을 먼저 묻고, 친구가 권하거나 곤란한 자리에 있을 때 어떻게 거절하고 언제 부모에게 연락할지 미리 같이 정해 둬요.',
-    '"공부 잘하는 약"이라며 ADHD 치료제(메틸페니데이트)를 치료 말고 다른 목적으로 쓰는 건 위험해요 (식약처). 10대 마약사범은 2023년 1,477명으로 가장 많았고 2025년엔 674명이었어요.',
+    '"공부 잘하는 약"이라며 ADHD 치료제(메틸페니데이트)를 치료 말고 다른 목적으로 쓰는 건 위험해요 (식약처). 2025년 10대 마약사범은 674명으로 전년(649명)보다 3.9% 늘었어요.',
   ],
   options: [
     {
       name: '집에서 조금씩 맛보게 하기', how: '어른이 함께 있는 자리에서 조금 맛보게 하며 술을 대하는 법을 가르쳐요 ("유럽식"이라고도 해요).',
-      known: '보호 효과를 보고한 연구도 있지만 대부분 한 시점만 본 연구라 근거가 엇갈려요(리뷰 2014). 호주 청소년 1,927명을 6년 따라간 연구에서는 부모만 술을 준 아이가 나중에 폭음할 가능성이 2.6배쯤 높았고, 보호 효과는 보이지 않았어요(관찰 연구).',
+      known: '보호 효과를 보고한 연구도 있지만 모두 한 시점만 본 연구라 근거가 확실하지 않아요(리뷰 2014). 호주 청소년 1,927명을 6년 따라간 연구에서는 부모만 술을 준 아이가 나중에 폭음할 가능성이 2.6배쯤 높았고, 보호 효과는 보이지 않았어요(관찰 연구).',
     },
     {
       name: '법적 나이까지 안 마시기로 약속', how: '법적 나이 전에는 술을 마시지 않는다는 규칙을 분명히 하고, 왜 그런지 여러 번 나눠 이야기해요. 아이 친구들에게도 술을 주지 않아요.',
@@ -1063,9 +1064,9 @@ const SLEEP_TEEN = {
     '만 13~18세는 하루 8~10시간 자는 게 권장돼요 (미국수면의학회, 미국소아과학회 지지). 2025년 한국 중·고등학생의 주중 평균 수면은 6.3시간(중학생 6.9시간, 고등학생 5.6시간)이었고, 잠으로 피로가 충분히 풀린다는 학생은 남 28.3%, 여 16.9%였어요.',
     '사춘기에는 몸의 시계가 늦어져서 밤늦게까지 졸리지 않고 아침에 일어나기 힘들어요. 미국소아과학회는 그래서 중·고등학교 등교를 오전 8시 30분 이후로 하자고 권했어요(2014).',
     '주말에도 평일과 일어나는 시간을 크게 다르게 하지 않고, 잠들기 1시간 전엔 화면을 끄고 침실엔 화면 기기를 두지 않아요.',
-    '하루 60분 넘게 숨이 찰 만큼 움직이고, 일주일에 3일은 근육·뼈를 쓰는 운동을 하는 게 권장돼요 (WHO). 2025년 하루 60분씩 주 5일 이상 움직인 학생은 남 24.5%, 여 8.5%였어요.',
+    '하루 평균 60분 이상 숨이 찰 만큼 움직이고, 일주일에 3일은 근육·뼈를 쓰는 운동을 하는 게 권장돼요 (WHO). 2025년 하루 60분씩 주 5일 이상 움직인 학생은 남 24.5%, 여 8.5%였어요.',
   ],
-  src: [S.sleepHours, S.teenSleep, S.schoolStart, S.schoolSleep, S.yhs, S.whoActivity],
+  src: [S.sleepHours, S.teenSleep, S.schoolStart, S.schoolSleep, S.yhs, S.yhsStats, S.whoActivity],
 };
 const FOOD_TEEN = {
   id: 'food-teen', emoji: '🍽', title: '먹기·몸 이미지',
@@ -1073,7 +1074,7 @@ const FOOD_TEEN = {
     '2025년 중·고등학생 10명 중 4명 넘게(남 41.9%, 여 45.3%) 일주일에 5일 이상 아침을 걸렀어요.',
     '집에서는 몸무게·외모 대신 건강하게 먹고 움직이는 이야기를 해요. 미국소아과학회는 다이어트·끼니 거르기·다이어트약을 말리고, 가족이 함께 먹는 끼니를 늘리라고 해요(2016).',
     '2025년 정상 체중이거나 그보다 덜 나가는데도 "살쪘다"고 느끼는 학생이 남 17.6%, 여 28.2%였어요.',
-    '섭식장애는 평균 12.5세쯤 시작돼요. 갑자기 살이 많이 빠지거나, 먹은 걸 숨기거나, 식사 뒤 바로 화장실에 자주 가거나, 지나치게 운동하거나, 같이 먹는 자리를 피하면 소아청소년과나 정신건강 전문가와 이야기해요. 남자아이는 근육에 집착하거나 보충제에 매달리는 모습으로 나타나기도 해요.',
+    '섭식장애가 있는 아이의 평균 나이는 12.5세쯤이에요 (미국소아과학회). 갑자기 살이 많이 빠지거나, 먹은 걸 숨기거나, 식사 뒤 바로 화장실에 자주 가거나, 지나치게 운동하거나, 같이 먹는 자리를 피하면 소아청소년과나 정신건강 전문가와 이야기해요. 남자아이는 근육에 집착하거나 보충제에 매달리는 모습으로 나타나기도 해요.',
     '청소년 카페인은 하루 몸무게 1kg당 2.5mg 이하가 권고돼요(60kg이면 150mg). 에너지음료 한 캔(250mL)에 80mg쯤 들어 있어 커피음료나 에너지음료 두 개면 넘을 수 있어요. 고카페인 제품엔 "고카페인 함유"와 카페인 양이 적혀 있고, 학교에서는 커피·고카페인 음료를 팔지 않아요.',
   ],
   src: [S.yhs, S.yhsStats, S.aapWeight, S.aapWeightNews, S.aapEd, S.nhsEd, S.caffeine, S.kdcaCaffeine],
@@ -1092,20 +1093,20 @@ const VACCINE_TEEN = {
 const MONEY_TEEN = {
   id: 'money-teen', emoji: '💰', title: '용돈·결제·도박',
   list: [
-    '계획 세우기, 모으기, 비교해서 사기를 아이가 스스로 해 보게 하고, 번 돈이나 받은 돈의 10% 넘게 모으기 같은 목표를 같이 정해 봐요 (미국 소비자금융보호국).',
+    '계획 세우기, 모으기, 비교해서 사기를 아이가 스스로 해 보게 하고, 번 돈의 10% 이상 모으기 같은 목표를 같이 정해 봐요 (미국 소비자금융보호국).',
     '2026년 5월부터 후불교통 기능이 없는 체크카드는 만 7세부터, 후불교통 체크카드는 만 12세부터 만들 수 있어요 (후불교통 한도 월 10만 원).',
     '보호자 동의 없이 한 게임·앱 결제는 취소하고 환불받을 수 있어요. 다만 아이가 속임수로 동의를 받은 것처럼 꾸몄으면 안 될 수 있어요. 분쟁은 한국소비자원 1372, 콘텐츠분쟁조정위원회 1588-2594예요.',
-    '2025년 조사(초4~고3)에서 4.0%가 도박을 해 본 적이 있었고, 온라인 카지노(35.8%)·복권(31.7%)·온라인 미니게임(29.8%) 순이었어요. 절반 넘게(54.0%) 도박 광고를 본 적이 있었어요. 경찰 단속(2023년 9월~2024년 10월)에서 붙잡힌 사이버도박 사범의 47.2%가 19세 미만이었어요.',
+    '2025년 조사(초4~고3)에서 4.0%가 도박을 해 본 적이 있었고, 온라인 카지노(35.8%)·오프라인 복권(31.7%)·온라인 미니게임(29.8%) 순이었어요. 절반 넘게(54.0%) 도박 광고를 본 적이 있었어요. 경찰 단속(2023년 9월~2024년 10월)에서 붙잡힌 사이버도박 사범의 47.2%가 19세 미만이었어요.',
     '친구와 돈거래가 잦아지거나, 빚이 생기거나, 갑자기 돈이나 비싼 물건이 늘거나, 스포츠 경기 결과에 민감해지면 도박 신호일 수 있어요 (사행산업통합감독위원회). 아이 빚은 서둘러 갚아 주거나 약속하기 전에 전문 상담을 먼저 받아요.',
     '도박 상담은 한국도박문제예방치유원 1336(매일 9~22시, 문자 #1336)이나 청소년전화 1388(24시간)이에요.',
   ],
-  src: [S.cfpbTeen, S.cfpbSave, S.checkCard, S.gamePay, S.gamblingSurvey, S.gamblingPolice, S.gambleSigns, S.gambleManual, S.kcgp1336],
+  src: [S.cfpbTeen, S.cfpbSave, S.checkCard, S.gamePay, S.gamblingSurvey, S.gamblingPolice, S.gambleSigns, S.gambleManual, S.kcgp1336, S.youth1388],
 };
 const MIDDLE_SCHOOL = {
   id: 'middle-school', emoji: '🏫', title: '중학교 공부·자유학기',
   list: [
     '중1 중 한 학기는 자유학기예요(1학기나 2학기, 학교나 시도가 정해요). 주제선택·진로탐색 활동을 하고, 다 같이 보는 지필시험이 없어서 성적 대신 활동 내용을 글로 적어요.',
-    '다른 학기에는 지필평가를 보고 과목마다 성취도가 나와요. A(90% 이상)~E(60% 미만) 다섯 단계이고, 체육·음악·미술은 A~C 세 단계예요. 석차는 적지 않아요.',
+    '다른 학기에는 대개 지필평가와 수행평가를 보고 과목마다 성취도가 나와요. A(90% 이상)~E(60% 미만) 다섯 단계이고, 체육·음악·미술은 A~C 세 단계예요. 석차는 적지 않아요.',
     '상급 학교에 가기 전(중3 2학기 무렵)에는 고등학교 생활과 진로를 미리 알아보는 진로연계교육을 해요.',
     '고등학교는 일반고 말고도 특목고(과학고·외고·국제고 등), 자율고(자사고·자공고), 특성화고 등이 있어요. 자사고·외고·국제고는 2024년에 그대로 두기로 정해졌어요.',
     '학교 공부가 어려워지며 스트레스를 많이 느끼는 때예요. 성적 같은 목표는 분명히 함께 정하되, 언제 어떻게 공부할지는 아이 의견을 들어 정해요 (CDC).',

@@ -269,6 +269,8 @@ const S = {
   seoulRun: { label: '서울시: 서울런 3.0 (2026)', url: 'https://www.seoul.go.kr/news/news_report.do?nttNo=460828' },
   youthWork: { label: '정책브리핑: 청소년 근로상식', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148929151' },
   workLaw: { label: '찾기쉬운 생활법령: 근로청소년', url: 'https://easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=2&cciNo=1&cnpClsNo=1&csmSeq=1381&popMenu=ov' },
+  workAge: { label: '근로기준법 제64조 (최저 연령과 취직인허증)', url: 'https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=900552042' },
+  wageLaw: { label: '찾기쉬운 생활법령: 근로청소년 임금', url: 'https://easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=4&cciNo=1&cnpClsNo=1&csmSeq=1381&popMenu=ov' },
   workHours: { label: '근로기준법 제69~70조 (근로시간·야간근로)', url: 'https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsId=001872&lsJoLnkSeq=900552022&print=print' },
   minWage2026: { label: '고용노동부: 2026년 최저임금', url: 'https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144' },
   minWage2027: { label: '고용노동부: 2027년 최저임금', url: 'https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=19744' },
@@ -276,7 +278,10 @@ const S = {
   pmLaw: { label: '찾기쉬운 생활법령: 전동킥보드 운전자', url: 'https://www.easylaw.go.kr/CSP/CnpClsMainBtr.laf?ccfNo=2&cciNo=1&cnpClsNo=1&csmSeq=1506&popMenu=ov' },
   licenseAge: { label: '도로교통법 제82조 (면허 나이)', url: 'https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsId=001638&lsJoLnkSeq=1000923517&print=print' },
   pmAccidents: { label: '국회입법조사처: 개인형 이동장치 사고 (2025)', url: 'https://www.nars.go.kr/news/view.do?brdSeq=48139&cmsCode=CM0026' },
+  pmFines: { label: '경찰청 법령해석: 개인형 이동장치 범칙금·과태료 (2025)', url: 'https://www.law.go.kr/LSW/cgmExpcInfoP.do?cgmExpcDatSeq=409914&mode=2&ofiClsCd=350128' },
   pmBill: { label: '연합뉴스: PM법 국토위 통과 (2025)', url: 'https://www.yna.co.kr/view/AKR20251217075700001' },
+  pmBillBack: { label: '한국경제: PM법 다시 손본다 (2026년 1월)', url: 'https://www.hankyung.com/article/2026011259961' },
+  pmBillNow: { label: '시사오늘: 무면허 킥보드 입법 논의 (2026년 8월)', url: 'https://www.sisaon.co.kr/news/articleView.html?idxno=203338' },
   seoulKick: { label: '서울시: 킥보드 없는 거리 (2026)', url: 'https://www.seoul.go.kr/news/news_report.do?nttNo=465251' },
   kerrStattin: { label: 'Kerr·Stattin 2000 (부모가 아는 것은 어디서 오나)', url: 'https://pubmed.ncbi.nlm.nih.gov/10830980/' },
   pinquart: { label: 'Pinquart 2017 (양육 방식 메타분석)', url: 'https://pubmed.ncbi.nlm.nih.gov/28459276/' },
@@ -297,7 +302,9 @@ const S = {
   deepfakePolice: { label: '경찰청: 딥페이크 성범죄 집중단속 결과', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148941987' },
   groomingLaw: { label: '아동·청소년성보호법 제15조의2 (그루밍)', url: 'https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033366091' },
   cyberViolence: { label: '학교폭력예방법 제2조 (사이버폭력)', url: 'https://law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=900727212' },
-  victimHelp: { label: '찾기쉬운 생활법령: 디지털성범죄 피해 지원', url: 'https://www.easylaw.go.kr/CSP/OnhunqueansLstRetrieve.laf?onhunqnaAstSeq=86&onhunqueAstSeq=398&pageType=20&sortType=21' },
+  victimHelp: { label: '찾기쉬운 생활법령: 디지털성범죄 피해자 지원센터 지원 내용', url: 'https://easylaw.go.kr/CSP/common/OnhunqueansInfoRetrieve.laf?onhunqnaAstSeq=86&onhunqueSeq=5824' },
+  victimFamily: { label: '정부24: 디지털성범죄 피해 지원 (가족 대리 신청)', url: 'https://www.gov.kr/portal/service/serviceInfo/138300000038' },
+  deepfakeArticle: { label: '성폭력처벌법 제14조의2 (허위영상물)', url: 'https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1024887659' },
   help1366: { label: '정책브리핑: 디지털성범죄 상담 1366으로 (2025)', url: 'https://www.korea.kr/news/policyNewsView.do?newsId=148941931' },
   birthControl: { label: 'AAP: 10대와 피임', url: 'https://www.healthychildren.org/English/ages-stages/teen/dating-sex/Pages/Birth-Control-for-Sexually-Active-Teens.aspx' },
   whoCse: { label: 'WHO: 포괄적 성교육', url: 'https://www.who.int/news-room/fact-sheets/detail/comprehensive-sexuality-education' },
@@ -1135,7 +1142,7 @@ const PRIVATE_EDU_TEEN = {
     {
       name: '필요한 과목만 보충', how: '어려워하는 과목만 골라 학원·과외·방과후학교로 보충해요.',
       fits: '특정 과목이 뒤처질까 걱정되는 집',
-      known: '사교육을 받는 목적으로 가장 많은 게 학교 수업 보충이에요. 과목마다 효과가 엇갈려서, 한 연구에서는 수학 사교육비만 성적 향상과 관련이 있었어요(관찰 연구).',
+      known: '사교육을 받는 목적으로 가장 많은 게 학교 수업 보충이에요. 과목마다 효과가 엇갈려서, 한 연구에서는 수학 사교육비만 성적과 관련이 있었어요(관찰 연구).',
     },
     {
       name: '인강·EBS·혼자 공부 중심', how: 'EBS 중학 프리미엄·EBSi(고교) 같은 무료 강의와 혼자 공부하는 시간을 중심으로 해요. 서울런처럼 지역에서 무료 강의·멘토링을 주는 곳도 있어요.',
@@ -1149,14 +1156,14 @@ const PRIVATE_EDU_TEEN = {
 const WORK = {
   id: 'work', emoji: '💼', title: '아르바이트',
   list: [
-    '만 15세부터 일할 수 있어요. 만 13~14세는 고용노동부 취직인허증이 있어야 해요. 만 18세 전에는 근로계약서와 함께 친권자 동의서·가족관계증명서를 일하는 곳에 내요.',
+    '만 15세부터 일할 수 있어요. 만 13~14세이거나, 만 15세라도 중학생이면 고용노동부 취직인허증이 있어야 해요. 만 18세 전에는 근로계약서와 함께 친권자 동의서·가족관계증명서를 일하는 곳에 내요.',
     '근로계약은 부모가 대신하지 않고 아이가 직접 해요. 임금·근로시간·휴일·하는 일을 적은 계약서를 받아 두고, 임금도 아이가 직접 받아요.',
     '만 18세 전에는 하루 7시간, 일주일 35시간까지 일할 수 있어요(동의하면 하루 1시간, 일주일 5시간 더). 밤 10시~아침 6시와 휴일엔 본인 동의와 고용노동부 인가가 없으면 일할 수 없어요.',
     '최저임금은 어른과 같아요. 2026년 시간당 10,320원, 2027년 10,700원이에요. 술을 주로 파는 음식점, 숙박업, 성인오락실 같은 청소년 유해업소에서는 일할 수 없어요.',
     '임금을 못 받거나 부당한 일을 겪으면 청소년·청년근로권익센터 1644-3119(평일 9~18시), 고용노동부 1350, 청소년전화 1388에 물어봐요.',
     '아이가 일을 하면 책임과 예의 같은 기대를 이야기할 기회로 삼아요 (CDC).',
   ],
-  src: [S.youthWork, S.workLaw, S.workHours, S.minWage2026, S.minWage2027, S.youthLabor, S.cdc1517],
+  src: [S.youthWork, S.workAge, S.workLaw, S.wageLaw, S.workHours, S.minWage2026, S.minWage2027, S.youthLabor, S.cdc1517],
 };
 const PM = {
   id: 'pm', emoji: '🛴', title: '전동킥보드·운전',
@@ -1164,10 +1171,10 @@ const PM = {
     '전동킥보드 같은 개인형 이동장치는 원동기장치자전거 면허(만 16세부터) 이상이 있어야 탈 수 있어요. 면허 없이 타면 범칙금 10만 원이고, 만 13세 미만 아이가 타게 하면 보호자에게 과태료 10만 원이에요.',
     '헬멧을 꼭 쓰고(안 쓰면 범칙금 2만 원), 혼자만 타요(둘이 타면 4만 원). 술을 마시고 타면 10만 원이에요.',
     '2024년 개인형 이동장치 사고는 2,232건, 사망은 23명이었고, 사고의 47.6%가 20세 이하였어요 (국회입법조사처).',
-    '만 16세 미만 이용 제한, 본인 확인·안전교육 의무를 담은 "PM법"이 2025년 12월 국회 국토교통위원회를 통과했어요. 본회의를 통과하면 공포 1년 뒤부터 시행돼요. 서울은 홍대·반포·대치동 학원가 같은 "킥보드 없는 거리"를 운영해요.',
+    '만 16세 미만 이용 제한, 본인 확인·안전교육 의무를 담은 "PM법"은 2025년 12월 국회 국토교통위원회를 통과했지만, 2026년 1월 다시 상임위로 돌아가 고치는 중이에요(2026년 8월 기사 기준 국회 논의 중). 서울은 홍대·반포·대치동 학원가 같은 "킥보드 없는 거리"를 운영해요.',
     '자동차 운전면허는 만 18세부터예요. 교통사고는 10대가 숨지는 가장 큰 원인 가운데 하나라, 안전띠와 안전 운전 이야기를 일찍부터 나눠요. 자전거·스케이트보드를 탈 때도 헬멧을 써요 (CDC).',
   ],
-  src: [S.pmLaw, S.licenseAge, S.pmAccidents, S.pmBill, S.seoulKick, S.cdc1214, S.cdc1517],
+  src: [S.pmLaw, S.pmFines, S.licenseAge, S.pmAccidents, S.pmBill, S.pmBillBack, S.pmBillNow, S.seoulKick, S.cdc1214, S.cdc1517],
 };
 const TALK_TEEN = {
   id: 'talk-teen', emoji: '💬', title: '대화·규칙·자율',
@@ -1180,7 +1187,7 @@ const TALK_TEEN = {
     {
       name: '앱·위치 공유로 확인', how: '자녀 보호 앱이나 위치 공유로 어디 있는지, 무엇을 하는지 확인해요.',
       fits: '늦게 다니거나 먼 곳을 다녀서 안전이 걱정되는 집',
-      known: '미국 12~18세 729명 연구에서 절반쯤이 위치 추적을 받았고, 추적과 음주·문제 행동 사이에 뚜렷한 관련은 없었어요. 아이들이 쓴 자녀 보호 앱 리뷰 736건 중 76%가 별 하나였고, 사생활 침해와 부모와의 관계가 나빠진 걸 이야기했어요(스스로 리뷰를 쓴 아이들이라 치우칠 수 있어요).',
+      known: '미국 12~18세 729명 연구에서 절반쯤이 위치 추적을 받았어요. 추적받는 아이가 문제 행동·음주가 조금 많게 나왔지만, 응답자나 분석 방법을 바꾸면 유지되지 않을 만큼 약했어요. 아이들이 쓴 자녀 보호 앱 리뷰 736건 중 76%가 별 하나였고, 사생활 침해와 부모와의 관계가 나빠진 걸 이야기했어요(스스로 리뷰를 쓴 아이들이라 치우칠 수 있어요).',
     },
     {
       name: '약속하고 스스로 말하게', how: '어디에, 누구와, 언제 들어올지 아이가 먼저 말하는 약속을 정하고, 들어오면 얼굴 보고 인사해요. 솔직하게 말해 준 걸로 크게 혼내지 않아요.',
@@ -1221,13 +1228,13 @@ const SNS_TEEN = {
 const DEEPFAKE = {
   id: 'deepfake', emoji: '🔐', title: '사진·딥페이크·성착취',
   list: [
-    '딥페이크 같은 성적 허위영상물은 만들기만 해도 7년 이하 징역이고, 갖고 있거나 사거나 저장하거나 보기만 해도 3년 이하 징역 또는 3천만 원 이하 벌금이에요(2024년 10월부터). 장난이라도 범죄라고 분명히 알려 줘요.',
+    '딥페이크 같은 성적 허위영상물은 만들기만 해도 7년 이하 징역 또는 5천만 원 이하 벌금이고, 갖고 있거나 사거나 저장하거나 보기만 해도 3년 이하 징역 또는 3천만 원 이하 벌금이에요(2024년 10월부터). 장난이라도 범죄라고 분명히 알려 줘요.',
     '2024년 8월~2025년 3월 경찰 집중단속에서 딥페이크 성범죄로 검거된 963명 가운데 669명이 10대였어요.',
     '학교폭력예방법도 딥페이크를 만들거나 퍼뜨리는 걸 사이버폭력으로 봐요.',
     '19세 이상이 성적인 대화를 이어 가거나 성적인 행동을 하자고 꾀면 처벌 대상이에요(그루밍). 대화방을 나가지 말고 화면을 캡처해 둔 뒤 보호자에게 알리라고 가르쳐요.',
     '내 사진이 퍼졌다면 혼내기보다 도움부터 받아요. 상담과 삭제 지원은 무료이고 부모가 대신 신청할 수도 있어요: 1366(24시간, 디지털성범죄 대표 번호), 중앙디지털성범죄피해자지원센터 02-735-8994(평일 8~22시, 주말 9~18시), 긴급하면 112, 학교폭력은 117이에요.',
   ],
-  src: [S.deepfakeLaw, S.deepfakePolice, S.cyberViolence, S.groomingLaw, S.grooming, S.victimHelp, S.help1366, S.d4u, S.report117],
+  src: [S.deepfakeArticle, S.deepfakeLaw, S.deepfakePolice, S.cyberViolence, S.groomingLaw, S.grooming, S.victimHelp, S.victimFamily, S.help1366, S.d4u, S.report117],
 };
 const LOVE = {
   id: 'love', emoji: '💕', title: '연애·성·동의',
@@ -1240,14 +1247,14 @@ const LOVE = {
     '교제폭력으로 검거된 10대는 2020년 280명에서 2024년 626명으로 늘었어요(경찰청 자료).',
     '물어볼 곳: 지역 청소년 성문화센터(서울은 아하!센터 02-2677-9220), 청소년전화 1388.',
   ],
-  src: [S.birthControl, S.teenStages, S.whoCse, S.teenSex, S.consentAge, S.morningAfter, S.datingViolence, S.aha, S.cdc1517],
+  src: [S.birthControl, S.teenStages, S.whoCse, S.teenSex, S.consentAge, S.morningAfter, S.datingViolence, S.aha, S.youth1388, S.cdc1517],
 };
 // 공통 문장은 초등과 같고, 통계와 대입 반영만 중·고등학생에 맞게
 const BULLYING_TEEN = {
   ...BULLYING,
   list: [
     ...BULLYING.list.slice(0, 4),
-    '2026년 1차 조사에서 피해응답률은 중학생 2.3%, 고등학생 0.8%(초등 5.7%)였고, 언어폭력(37.8%)이 가장 많았어요. 고등학생은 알리지 않은 이유로 "말해도 소용없을 것 같아서"를 많이 꼽았어요(20.8%).',
+    '2026년 1차 조사에서 피해응답률은 중학생 2.3%, 고등학생 0.8%(초등 5.7%)였고, 언어폭력이 가장 많았어요(전체 37.8%). 고등학생은 알리지 않은 이유로 "말해도 소용없을 것 같아서"를 많이 꼽았어요(20.8%).',
     '출석정지·학급교체·전학(6~8호) 조치는 졸업 뒤 최대 4년까지 학생부에 남고, 2026학년도 대입부터 모든 대학이 학교폭력 조치를 반영해요.',
     BULLYING.list[5],
   ],

@@ -32,7 +32,7 @@ export function renderSubject(main, s) {
   const title = h('div', 'subject-title');
   title.append(h('h1', null, nameOf(s)), stageBadge(stage));
   info.append(title, h('div', 'subject-line', keyLine(s)));
-  const edit = button('✏️', () => editSubject(s), 'icon-btn');
+  const edit = button('✎', () => editSubject(s), 'icon-btn');
   edit.setAttribute('aria-label', '정보 고치기');
   head.append(h('span', 'big-emoji', emojiOf(s)), info, edit);
 

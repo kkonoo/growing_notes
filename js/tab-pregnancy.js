@@ -158,7 +158,10 @@ function timerCard(list) {
   else if (rows.length) {
     const sum = contractionSummary(rows, Date.now());
     line.textContent = `마지막 진통 ${fmtTime(rows.at(-1).start)}${sum.count ? ` · 최근 1시간 ${sum.count}회` : ''}`;
-  } else line.textContent = '진통이 오면 시작·끝을 눌러 간격과 지속시간을 기록해요.';
+  } else {
+    line.className = 'hint'; // 기록 전에는 굵은 요약 대신 설명
+    line.textContent = '진통이 오면 시작·끝을 눌러 간격과 지속시간을 기록해요.';
+  }
   sec.append(line, button(running ? '⏱ 타이머 열기 (진통 중)' : '⏱ 진통 타이머 열기', () => go({ ...state.view, panel: 'timer' }), 'btn big wide'));
   return sec;
 }

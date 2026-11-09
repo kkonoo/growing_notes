@@ -229,7 +229,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
   background: var(--stage-soft);
   text-align: center;
 }
-.hero-big { font-size: 2em; font-weight: 800; color: var(--stage); }
+.hero-big { font-size: 2em; font-weight: 700; color: var(--stage); }
 .hero-sub { color: var(--muted); }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .actions .btn { flex: 1; }
@@ -254,7 +254,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
   width: 32px; height: 32px; margin: 6px 0;
   border: 2px solid var(--faint); border-radius: 9px;
   background: var(--surface);
-  color: var(--on-accent); font-weight: 800;
+  color: var(--on-accent); font-weight: 700;
   cursor: pointer;
 }
 .q-row.done .check { background: var(--accent); border-color: var(--accent); }
@@ -340,7 +340,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 }
 .timer-btn.on { background: var(--baby); }
 .timer-btn:active { transform: scale(.97); }
-.timer-label { font-size: 1.7em; font-weight: 800; }
+.timer-label { font-size: 1.7em; font-weight: 700; }
 .timer-clock { font-size: 2.4em; font-weight: 700; font-variant-numeric: tabular-nums; }
 .timer-sub { font-size: .95em; opacity: .9; font-variant-numeric: tabular-nums; }
 .timer-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -394,7 +394,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 /* ---------- 육아 탭 ---------- */
 .now-card { text-align: left; display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; }
 .now-line { font-size: 1.02em; }
-.now-strong { font-weight: 800; color: var(--stage); }
+.now-strong { font-weight: 700; color: var(--stage); }
 .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .tile {
   display: flex; flex-direction: column; gap: 2px;
@@ -548,7 +548,7 @@ textarea { resize: vertical; }
   text-align: left; cursor: pointer;
 }
 .invite { margin-top: 10px; padding: 14px; border-radius: 14px; background: var(--accent-soft); }
-.invite-code { font-size: 1.6em; font-weight: 800; letter-spacing: .08em; text-align: center; font-variant-numeric: tabular-nums; }
+.invite-code { font-size: 1.6em; font-weight: 700; letter-spacing: .08em; text-align: center; font-variant-numeric: tabular-nums; }
 
 /* ---------- 토스트 ---------- */
 .toast {

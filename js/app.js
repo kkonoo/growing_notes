@@ -5,7 +5,7 @@ import { startUser } from './family.js';
 import { renderHome } from './home.js';
 import { renderSubject } from './subject.js';
 import { openSettings, renderSettings, startJoin, applyTheme, applyFont } from './settings.js';
-import { $, h, button, toast } from './ui.js';
+import { $, h, button, toast, appIcon } from './ui.js';
 import { beginRender, endRender } from './live.js';
 
 // ---------- 초대 링크(#join=코드): 로그인·가족 공간을 불러온 뒤 합류 확인 ----------
@@ -35,12 +35,12 @@ function maybeJoin() {
 // ---------- 그리기 ----------
 function msgView(emoji, text, ...extra) {
   const s = h('section', 'message');
-  s.append(h('div', 'empty', emoji), h('p', 'empty-text', text), ...extra);
+  s.append(typeof emoji === 'string' ? h('div', 'empty', emoji) : emoji, h('p', 'empty-text', text), ...extra);
   return s;
 }
 function loginView() {
   const s = h('section', 'login');
-  s.append(h('div', 'login-emoji', '🌱'), h('h1', null, '성장노트'), h('p', null, '임신부터 육아·교육까지\n가족이 함께 쓰는 기록장이에요.'));
+  s.append(appIcon('login-logo'), h('h1', null, '성장노트'), h('p', null, '임신부터 육아·교육까지\n가족이 함께 쓰는 기록장이에요.'));
   if (session.get()) s.append(h('p', 'note', '💌 초대를 받으셨네요! 로그인하면 가족 공간에 합류할 수 있어요.'));
   s.append(button('Google로 로그인', login, 'btn primary big'), h('p', 'hint', '기록은 가족으로 초대한 사람만 볼 수 있어요.'));
   return s;
@@ -80,11 +80,11 @@ function draw() {
   if (!state.configured) {
     return main.replaceChildren(msgView('🔧', 'Firebase 설정이 필요해요.\nREADME의 「Firebase 설정」 순서대로 js/firebase-config.js를 채워 주세요.'));
   }
-  if (state.user === undefined) return main.replaceChildren(msgView('🌱', state.error || '불러오는 중이에요…'));
+  if (state.user === undefined) return main.replaceChildren(msgView(appIcon('empty-logo'), state.error || '불러오는 중이에요…'));
   if (!state.user) return main.replaceChildren(loginView());
   if (state.error) return main.replaceChildren(msgView('⚠️', state.error));
   if (!familyReady()) {
-    return main.replaceChildren(msgView('🌱', navigator.onLine ? '가족 공간을 불러오는 중이에요…' : '처음 한 번은 인터넷 연결이 필요해요.\n연결되면 자동으로 이어져요.'));
+    return main.replaceChildren(msgView(appIcon('empty-logo'), navigator.onLine ? '가족 공간을 불러오는 중이에요…' : '처음 한 번은 인터넷 연결이 필요해요.\n연결되면 자동으로 이어져요.'));
   }
   maybeJoin();
   const s = state.view.name === 'subject' && findSubject(state.view.key);

@@ -6,6 +6,13 @@ export function h(tag, cls, text) {
   if (text != null) e.textContent = text;
   return e;
 }
+// 앱 아이콘 그림 (icons/icon.svg): 로그인·불러오는 중·빈 화면
+export function appIcon(cls) {
+  const i = h('img', cls);
+  i.src = 'icons/icon.svg';
+  i.alt = '';
+  return i;
+}
 export function button(label, onClick, cls = 'btn') {
   const b = h('button', cls, label);
   b.type = 'button';

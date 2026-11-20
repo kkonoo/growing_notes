@@ -107,7 +107,8 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
   max-width: 760px; margin: 0 auto;
   padding: 6px 8px 6px 12px;
 }
-.brand { border: 0; background: none; padding: 6px 4px; font-weight: 700; font-size: 1.1em; cursor: pointer; }
+.brand { border: 0; background: none; padding: 6px 4px; font-weight: 700; font-size: 1.1em; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.brand img { width: 1.5em; height: 1.5em; }
 .sync { margin-left: auto; font-size: .82em; color: var(--muted); white-space: nowrap; }
 .sync[data-state="offline"], .sync[data-state="pending"] { color: var(--baby); }
 .chips {
@@ -169,6 +170,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .home-add { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
 
 .empty { font-size: 3em; text-align: center; margin-top: 40px; }
+.empty-logo { display: block; width: 4em; height: 4em; margin: 40px auto 12px; }
 .empty-text { text-align: center; color: var(--muted); white-space: pre-line; }
 .message { padding-top: 10vh; text-align: center; }
 .message .empty-text { color: var(--text); }
@@ -177,7 +179,7 @@ main { max-width: 760px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe
 .login { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 12vh; text-align: center; }
 .login p { white-space: pre-line; margin: 0; }
 .login .btn.primary { width: 100%; max-width: 320px; margin-top: 12px; }
-.login-emoji { font-size: 4em; }
+.login-logo { width: 5em; height: 5em; }
 .note { padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); }
 
 /* ---------- 앱 설치 안내 (main과 같은 폭) ---------- */

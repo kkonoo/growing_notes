@@ -1,53 +1,40 @@
-# 앱 아이콘(icons/app-*.png) 그리기: 크림색 둥근 사각형 위에 새싹(떡잎 두 장) + 흙.
-# maskable = 연한 세이지 배경을 꽉 채우고 새싹을 가운데 작게 (안드로이드·아이폰이 모양대로 잘라 씀)
-# 실행: python tools/make-icons.py   (Pillow 필요: pip install pillow)
-import math
+"""앱 아이콘(icons/*.png)을 icons/icon.svg에서 그려요.
+
+    python3 tools/make-icons.py      (Playwright 필요: pip install playwright && playwright install chromium)
+
+icon.svg = 둥근 타일(512 기준 모서리 114) 위에 흰 심볼 하나. 심볼은 가운데 288px 안에 두고,
+디테일은 타일 색으로 파내요. 그림을 바꾸려면 icon.svg만 고치고 다시 돌려요.
+- app-*.png          둥근 사각형 (PC·안드로이드)
+- app-maskable-*.png 꽉 찬 사각형 (기기가 알아서 동그랗게·둥글게 자름)
+- apple-touch-icon   꽉 찬 사각형, 투명 없음 (아이폰). icons/apple-touch-icon.png가 있는 앱만
+"""
+import asyncio
+import re
 from pathlib import Path
-from PIL import Image, ImageDraw
 
-OUT = Path(__file__).resolve().parent.parent / 'icons'
-S = 4  # 크게 그린 뒤 줄여서 테두리를 매끄럽게
+from playwright.async_api import async_playwright
 
+ICONS = Path(__file__).resolve().parent.parent / 'icons'
+SVG = (ICONS / 'icon.svg').read_text(encoding='utf-8')
+SQUARE = re.sub(r'rx="\d+"', 'rx="0"', SVG, count=1)  # 맨 앞 타일만 모서리 없이 (심볼 안 둥근 모서리는 그대로)
 
-def leaf(d, base, length, width, angle, color):
-    """base에서 angle(도, 0 = 오른쪽, 90 = 위) 방향으로 뻗은 잎. 양 끝이 뾰족한 렌즈 모양"""
-    a = math.radians(angle)
-    ux, uy = math.cos(a), -math.sin(a)   # 잎 방향
-    nx, ny = -uy, ux                     # 잎 폭 방향
-    pts = []
-    for side in (1, -1):
-        for i in range(41):
-            t = i / 40 if side == 1 else 1 - i / 40
-            half = width / 2 * math.sin(math.pi * t) ** 0.85
-            pts.append((base[0] + ux * length * t + nx * half * side, base[1] + uy * length * t + ny * half * side))
-    d.polygon(pts, fill=color)
+JOBS = [
+    ('app-192.png', SVG, 192), ('app-512.png', SVG, 512),
+    ('app-maskable-192.png', SQUARE, 192), ('app-maskable-512.png', SQUARE, 512),
+]
+if (ICONS / 'apple-touch-icon.png').exists():
+    JOBS.append(('apple-touch-icon.png', SQUARE, 180))
 
 
-def sprout(d, cx, cy, k):
-    """cx, cy = 줄기 아래 끝, k = 크기 (512 기준 1.0) × S"""
-    d.ellipse((cx - 125 * k, cy - 30 * k, cx + 125 * k, cy + 42 * k), fill='#A7825F')   # 흙
-    top = (cx, cy - 165 * k)
-    d.rounded_rectangle((cx - 10 * k, top[1], cx + 10 * k, cy + 4 * k), radius=10 * k, fill='#4E7D52')  # 줄기
-    leaf(d, top, 150 * k, 86 * k, 150, '#6FA572')  # 왼쪽 떡잎
-    leaf(d, top, 150 * k, 86 * k, 30, '#5B8A5F')   # 오른쪽 떡잎
+async def main():
+    async with async_playwright() as p:
+        b = await p.chromium.launch()
+        pg = await b.new_page()
+        for name, svg, size in JOBS:
+            await pg.set_viewport_size({'width': size, 'height': size})
+            await pg.set_content(f'<style>html,body{{margin:0;background:transparent}}svg{{display:block;width:{size}px;height:{size}px}}</style>{svg}')
+            await pg.screenshot(path=str(ICONS / name), omit_background=name != 'apple-touch-icon.png')
+            print(name)
+        await b.close()
 
-
-def icon(maskable):
-    n = 512 * S
-    img = Image.new('RGBA', (n, n), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    if maskable:
-        d.rectangle((0, 0, n, n), fill='#EAF1E6')
-        sprout(d, n / 2, n * 0.68, 0.78 * S)
-    else:
-        d.rounded_rectangle((32 * S, 32 * S, n - 32 * S, n - 32 * S), radius=110 * S, fill='#FFF8F0')
-        sprout(d, n / 2, n * 0.74, 1.0 * S)
-    return img
-
-
-for maskable in (False, True):
-    big = icon(maskable)
-    for size in (192, 512):
-        name = f"app-{'maskable-' if maskable else ''}{size}.png"
-        big.resize((size, size), Image.LANCZOS).save(OUT / name, optimize=True)
-        print('saved', name)
+asyncio.run(main())
